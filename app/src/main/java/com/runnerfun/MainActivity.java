@@ -2,13 +2,13 @@ package com.runnerfun;
 
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
 import com.runnerfun.model.AccountModel;
 
@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         installTabs();
     }
 
-    private void installTabs(){
+    private void installTabs() {
         mContents.setAdapter(new ContentFragmentAdapter(getSupportFragmentManager()));
         mContents.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -44,9 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                if(position == 2 && !AccountModel.instance.hasLoginInfo()){
+                if (position == 2 && !AccountModel.instance.hasLoginInfo()) {
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                    finish();
                 }
             }
 
@@ -63,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         mContents.setCurrentItem(1);
     }
 
-    private void initMainUI(){
+    private void initMainUI() {
 
     }
 

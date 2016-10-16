@@ -1,8 +1,8 @@
 package com.runnerfun;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -23,7 +23,6 @@ public class RegisterActivity extends AppCompatActivity {
     @BindView(R.id.password)
     EditText mPassword;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +34,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.get_code)
-    void getCode(){
+    void getCode() {
         String tel = mTel.getText().toString();
         AccountModel.instance.sendCode(tel, 1, new Subscriber<CodeBean>() {
             @Override
@@ -56,7 +55,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.register)
-    void register(){
+    void register() {
         String tel = mTel.getText().toString();
         String code = mCode.getText().toString();
         String pwd = mPassword.getText().toString();
