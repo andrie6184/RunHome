@@ -76,7 +76,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
             return;
         }
 
-        AccountModel.instance.regiseter(tel, password, code, new Subscriber<RegisterInfo>() {
+        AccountModel.instance.register(tel, password, code, new Subscriber<RegisterInfo>() {
             @Override
             public void onCompleted() {
 

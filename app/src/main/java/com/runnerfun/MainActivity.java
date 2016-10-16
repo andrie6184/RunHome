@@ -55,10 +55,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         mTabs.setTabMode(TabLayout.MODE_FIXED);
-        mTabs.addTab(mTabs.newTab().setText("shop"));
-        mTabs.addTab(mTabs.newTab().setText("run"));
-        mTabs.addTab(mTabs.newTab().setText("userInfo"));
         mTabs.setupWithViewPager(mContents);
+        mTabs.getTabAt(0).setText("商城").setIcon(R.drawable.icon_store);
+        mTabs.getTabAt(1).setText("运动").setIcon(R.drawable.icon_yundong);
+        mTabs.getTabAt(2).setText("我的").setIcon(R.drawable.icon_wo);
         mContents.setCurrentItem(1);
     }
 

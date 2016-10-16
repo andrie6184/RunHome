@@ -47,7 +47,7 @@ public class AccountModel {
                 .subscribe(callback);
     }
 
-    public void regiseter(String tel, String pwd, String code, Subscriber<RegisterInfo> callback) {
+    public void register(String tel, String pwd, String code, Subscriber<RegisterInfo> callback) {
         RegisterRequest request = retrofitIP.create(RegisterRequest.class);
         request.register(tel, pwd, code).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

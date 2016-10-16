@@ -59,7 +59,7 @@ public class RegisterActivity extends AppCompatActivity {
         String tel = mTel.getText().toString();
         String code = mCode.getText().toString();
         String pwd = mPassword.getText().toString();
-        AccountModel.instance.regiseter(tel, code, pwd, new Subscriber<RegisterInfo>() {
+        AccountModel.instance.register(tel, code, pwd, new Subscriber<RegisterInfo>() {
             @Override
             public void onCompleted() {
 
