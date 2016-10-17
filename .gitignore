@@ -1,0 +1,5 @@
+/build
+.gradle/*
+.idea/*
+RunnerFun.iml
+local.properties
