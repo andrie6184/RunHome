@@ -45,7 +45,7 @@ public class ShopFragment extends Fragment {
             }
         });
 
-        _webView.loadUrl("http://www.qq.com/");
+        _webView.loadUrl("http://mall.paobuzhijia.com/mobile/");
     }
 
     private void initListener() {
