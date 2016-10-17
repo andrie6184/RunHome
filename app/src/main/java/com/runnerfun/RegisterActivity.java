@@ -6,8 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.runnerfun.beans.CodeBean;
 import com.runnerfun.beans.RegisterInfo;
+import com.runnerfun.beans.ResponseBean;
 import com.runnerfun.model.AccountModel;
 
 import butterknife.BindView;
@@ -36,7 +36,7 @@ public class RegisterActivity extends AppCompatActivity {
     @OnClick(R.id.get_code)
     void getCode() {
         String tel = mTel.getText().toString();
-        AccountModel.instance.sendCode(tel, 1, new Subscriber<CodeBean>() {
+        AccountModel.instance.sendCode(tel, 1, new Subscriber<String>() {
             @Override
             public void onCompleted() {
 
@@ -48,8 +48,8 @@ public class RegisterActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNext(CodeBean codeBean) {
-                Toast.makeText(RegisterActivity.this, "get code success" + codeBean.msg, Toast.LENGTH_SHORT).show();
+            public void onNext(String codeBean) {
+                Toast.makeText(RegisterActivity.this, "get code success" + codeBean, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -72,7 +72,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void onNext(RegisterInfo registerInfo) {
-                Toast.makeText(RegisterActivity.this, "register success" + registerInfo.msg, Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterActivity.this, "register success" + registerInfo, Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(RegisterActivity.this, UserInfoActivity.class));
             }
         });

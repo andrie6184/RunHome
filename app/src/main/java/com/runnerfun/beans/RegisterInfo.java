@@ -7,7 +7,22 @@ import java.io.Serializable;
  */
 
 public class RegisterInfo implements Serializable {
-    public int code;
-    public String msg;
-    public String data;
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    private String token;
+    private String uid;
 }

@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.runnerfun.beans.RegisterInfo;
 import com.runnerfun.beans.UserBean;
+import com.runnerfun.beans.UserInfo;
 import com.runnerfun.model.AccountModel;
 
 import butterknife.BindView;
@@ -50,7 +51,7 @@ public class UserInfoActivity extends AppCompatActivity {
         }
         int age = Integer.parseInt(mAge.getText().toString());
         int height = Integer.parseInt(mHeight.getText().toString());
-        AccountModel.instance.updateUserInfo("", age, "", "", mIsMale ? "英雄" : "美人", height, new Subscriber<UserBean>() {
+        AccountModel.instance.updateUserInfo("", age, "", "", mIsMale ? "英雄" : "美人", height, new Subscriber<UserInfo>() {
             @Override
             public void onCompleted() {
 
@@ -62,7 +63,7 @@ public class UserInfoActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNext(UserBean registerInfo) {
+            public void onNext(UserInfo registerInfo) {
                 finish();
                 startActivity(new Intent(UserInfoActivity.this, MainActivity.class));
             }

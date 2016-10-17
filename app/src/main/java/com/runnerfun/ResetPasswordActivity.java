@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.runnerfun.beans.CodeBean;
 import com.runnerfun.beans.RegisterInfo;
 import com.runnerfun.model.AccountModel;
 
@@ -46,7 +45,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
     void sendCode(){
         String tel = mTel.getText().toString();
 
-        AccountModel.instance.sendCode(tel, 2, new Subscriber<CodeBean>() {
+        AccountModel.instance.sendCode(tel, 2, new Subscriber<String>() {
             @Override
             public void onCompleted() {
 
@@ -58,8 +57,8 @@ public class ResetPasswordActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNext(CodeBean codeBean) {
-                Toast.makeText(ResetPasswordActivity.this, "send code success" + codeBean.msg, Toast.LENGTH_SHORT).show();
+            public void onNext(String codeBean) {
+                Toast.makeText(ResetPasswordActivity.this, "send code success" + codeBean, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -89,7 +88,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
             @Override
             public void onNext(RegisterInfo registerInfo) {
-                Toast.makeText(ResetPasswordActivity.this, "register success"+ registerInfo.msg, Toast.LENGTH_SHORT).show();
+                Toast.makeText(ResetPasswordActivity.this, "register success"+ registerInfo, Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(ResetPasswordActivity.this, MainActivity.class));
             }
         });

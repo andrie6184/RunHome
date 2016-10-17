@@ -1,6 +1,7 @@
 package com.runnerfun.model;
 
-import com.runnerfun.beans.LoginInfo;
+import com.runnerfun.beans.LoginBean;
+import com.runnerfun.beans.ResponseBean;
 
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -12,7 +13,7 @@ import rx.Observable;
 
 public interface LoginRequest {
     @GET("/user/login")
-    Observable<LoginInfo> login(@Query(value = "tel") String tel,
-                                @Query(value = "pwd") String pwd,
-                                @Query(value = "sign") String sign);
+    Observable<ResponseBean<LoginBean>> login(@Query(value = "tel") String tel,
+                                              @Query(value = "pwd") String pwd,
+                                              @Query(value = "sign") String sign);
 }

@@ -1,6 +1,6 @@
 package com.runnerfun.model;
 
-import com.runnerfun.beans.CodeBean;
+import com.runnerfun.beans.ResponseBean;
 
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -12,7 +12,7 @@ import rx.Observable;
 
 public interface CodeRequest {
     @GET("/user/sendcode")
-    Observable<CodeBean> sendCode(@Query(value = "tel") String tel,
-                                  @Query(value = "type") int type,
-                                  @Query(value = "sign") String sign);
+    Observable<ResponseBean<String>> sendCode(@Query(value = "tel") String tel,
+                                              @Query(value = "type") int type,
+                                              @Query(value = "sign") String sign);
 }
