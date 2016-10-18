@@ -4,9 +4,9 @@ package com.runnerfun.model;
 import com.runnerfun.beans.LoginBean;
 import com.runnerfun.beans.RegisterInfo;
 import com.runnerfun.beans.ResponseBean;
-import com.runnerfun.beans.UserBean;
 import com.runnerfun.beans.UserInfo;
 
+import java.io.UnsupportedEncodingException;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.security.MessageDigest;
@@ -65,11 +65,10 @@ public class AccountModel {
     private Retrofit retrofitIP = null;
     private OkHttpClient mClient = null;
 
-
     public void login(String tel, String pwd, Subscriber<LoginBean> callback) {
-        String code = md5(KEY + tel + pwd);
+        String code = toMD5(KEY + tel + pwd);
         LoginRequest request = retrofitApi.create(LoginRequest.class);
-        rxRequest(request.login(tel, pwd, code), callback);
+        rxRequest(request.login(tel, toMD5(pwd), code), callback);
     }
 
     public void register(String tel, String pwd, String code, Subscriber<RegisterInfo> callback) {
@@ -78,7 +77,7 @@ public class AccountModel {
     }
 
     public void sendCode(String tel, int type, Subscriber<String> callback) {
-        String code = md5(KEY + tel + type);
+        String code = toMD5(KEY + tel + type);
         CodeRequest request = retrofitApi.create(CodeRequest.class);
         rxRequest(request.sendCode(tel, type, code), callback);
     }
@@ -90,9 +89,9 @@ public class AccountModel {
 
     public boolean hasLoginInfo() {
         List<Cookie> cookies = mClient.cookieJar().loadForRequest(HttpUrl.parse("http://api.paobuzhijia.com/"));
-        if(cookies.size() > 0) {
-            for(Cookie c : cookies){
-                if(c.name().equals("PHPSESSID")){
+        if (cookies.size() > 0) {
+            for (Cookie c : cookies) {
+                if (c.name().equals("PHPSESSID")) {
                     return true;
                 }
             }
@@ -100,12 +99,12 @@ public class AccountModel {
         return false;
     }
 
-    private <T> void rxRequest(Observable<ResponseBean<T>> response, Subscriber<T> callback){
+    private <T> void rxRequest(Observable<ResponseBean<T>> response, Subscriber<T> callback) {
         response.subscribeOn(Schedulers.io())
                 .map(new Func1<ResponseBean<T>, T>() {
                     @Override
                     public T call(ResponseBean<T> result) {
-                        if(result.getCode() == -1){
+                        if (result.getCode() == -1) {
                             throw new IllegalArgumentException(result.getMsg());
                         }
                         return result.getData();
@@ -115,15 +114,22 @@ public class AccountModel {
                 .subscribe(callback);
     }
 
-    private String md5(String info) {
-        MessageDigest md5 = null;
+    public static String toMD5(String string) {
+        byte[] hash;
         try {
-            md5 = MessageDigest.getInstance("MD5");
-            md5.update(info.getBytes());
-            byte[] m = md5.digest();//加密
-            return new String(m);
+            hash = MessageDigest.getInstance("MD5").digest(string.getBytes("UTF-8"));
         } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Huh, MD5 should be supported?", e);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("Huh, UTF-8 should be supported?", e);
         }
-        return null;
+
+        StringBuilder hex = new StringBuilder(hash.length * 2);
+        for (byte b : hash) {
+            if ((b & 0xFF) < 0x10) hex.append("0");
+            hex.append(Integer.toHexString(b & 0xFF));
+        }
+        return hex.toString();
     }
+
 }

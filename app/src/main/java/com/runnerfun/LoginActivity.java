@@ -7,7 +7,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.runnerfun.beans.LoginBean;
-import com.runnerfun.beans.ResponseBean;
 import com.runnerfun.model.AccountModel;
 
 import butterknife.BindView;
@@ -36,7 +35,6 @@ public class LoginActivity extends AppCompatActivity {
         AccountModel.instance.login(tel, pwd, new Subscriber<LoginBean>() {
             @Override
             public void onCompleted() {
-
             }
 
             @Override
@@ -46,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onNext(LoginBean loginBean) {
-                        Toast.makeText(LoginActivity.this, "login success" + loginBean.getSid(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "login success" + loginBean.getSid(), Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
             }
         });
