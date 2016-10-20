@@ -72,7 +72,7 @@ public class AccountModel {
     }
 
     public void register(String tel, String pwd, String code, Subscriber<RegisterInfo> callback) {
-        RegisterRequest request = retrofitIP.create(RegisterRequest.class);
+        RegisterRequest request = retrofitApi.create(RegisterRequest.class);
         rxRequest(request.register(tel, pwd, code), callback);
     }
 

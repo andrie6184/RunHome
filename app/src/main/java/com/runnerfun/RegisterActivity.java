@@ -7,7 +7,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.runnerfun.beans.RegisterInfo;
-import com.runnerfun.beans.ResponseBean;
 import com.runnerfun.model.AccountModel;
 
 import butterknife.BindView;
@@ -59,7 +58,7 @@ public class RegisterActivity extends AppCompatActivity {
         String tel = mTel.getText().toString();
         String code = mCode.getText().toString();
         String pwd = mPassword.getText().toString();
-        AccountModel.instance.register(tel, code, pwd, new Subscriber<RegisterInfo>() {
+        AccountModel.instance.register(tel, pwd, code, new Subscriber<RegisterInfo>() {
             @Override
             public void onCompleted() {
 
