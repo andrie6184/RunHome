@@ -1,5 +1,7 @@
 package com.runnerfun;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,7 +14,14 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
+import com.amap.api.maps2d.CameraUpdate;
+import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.MapView;
+import com.amap.api.maps2d.UiSettings;
+import com.amap.api.maps2d.model.BitmapDescriptor;
+import com.amap.api.maps2d.model.BitmapDescriptorFactory;
+import com.amap.api.maps2d.model.LatLng;
+import com.amap.api.maps2d.model.MarkerOptions;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,6 +29,8 @@ import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.amap.api.maps2d.CameraUpdateFactory.newLatLngZoom;
 
 /**
  * Created by lixiaoyang on 16/10/2016.
@@ -51,6 +62,8 @@ public class MapFragment extends Fragment implements AMapLocationListener {
         mLocationOption.setInterval(2000);
         mlocationClient.setLocationOption(mLocationOption);
         mlocationClient.startLocation();
+
+        mMap.getMap().getUiSettings().setZoomControlsEnabled(false);
     }
 
     @Override
@@ -83,14 +96,7 @@ public class MapFragment extends Fragment implements AMapLocationListener {
     public void onLocationChanged(AMapLocation amapLocation) {
         if (amapLocation != null) {
             if (amapLocation.getErrorCode() == 0) {
-                //定位成功回调信息，设置相关消息
-                amapLocation.getLocationType();//获取当前定位结果来源，如网络定位结果，详见定位类型表
-                amapLocation.getLatitude();//获取纬度
-                amapLocation.getLongitude();//获取经度
-                amapLocation.getAccuracy();//获取精度信息
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                Date date = new Date(amapLocation.getTime());
-                df.format(date);//定位时间
+                setLocationMark(amapLocation.getLatitude(), amapLocation.getLongitude());
             } else {
                 //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
                 Log.e("AmapError","location Error, ErrCode:"
@@ -98,6 +104,17 @@ public class MapFragment extends Fragment implements AMapLocationListener {
                         + amapLocation.getErrorInfo());
             }
         }
+    }
+
+    private void setLocationMark(double lat, double lgt){
+        Bitmap pin = BitmapFactory.decodeResource(getResources(), R.drawable.icon_shezhi);
+        MarkerOptions mark = new MarkerOptions()
+                .position(new LatLng(lat, lgt))
+                .title("your location");
+        mMap.getMap().clear();
+        mMap.getMap().addMarker(mark);
+        CameraUpdate newPos = CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lgt), 14.f);
+        mMap.getMap().animateCamera(newPos);
     }
 
 }
