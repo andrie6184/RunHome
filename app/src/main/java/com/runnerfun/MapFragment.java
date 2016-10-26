@@ -9,6 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
+import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -22,6 +26,7 @@ import com.amap.api.maps2d.model.BitmapDescriptor;
 import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.MarkerOptions;
+import com.runnerfun.widget.HorizontalListView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -39,6 +44,8 @@ import static com.amap.api.maps2d.CameraUpdateFactory.newLatLngZoom;
 public class MapFragment extends Fragment implements AMapLocationListener {
     @BindView(R.id.map)
     MapView mMap;
+    @BindView(R.id.data_list)
+    HorizontalListView mList;
 
     private AMapLocationClientOption mLocationOption = null;
     private AMapLocationClient mlocationClient = null;
@@ -64,6 +71,33 @@ public class MapFragment extends Fragment implements AMapLocationListener {
         mlocationClient.startLocation();
 
         mMap.getMap().getUiSettings().setZoomControlsEnabled(false);
+
+
+        mList.setAdapter(new BaseAdapter() {
+            @Override
+            public int getCount() {
+                return 100;
+            }
+
+            @Override
+            public Object getItem(int position) {
+                return position  % 5;
+            }
+
+            @Override
+            public long getItemId(int position) {
+                return position;
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                if(convertView == null){
+                    convertView = new TextView(getActivity());
+                }
+                ((TextView)convertView).setText(String.valueOf(position));
+                return convertView;
+            }
+        });
     }
 
     @Override
