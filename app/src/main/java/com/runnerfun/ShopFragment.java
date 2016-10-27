@@ -1,7 +1,6 @@
 package com.runnerfun;
 
 import android.annotation.SuppressLint;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,10 +10,13 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.runnerfun.tools.CookieUtils;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
+ * ShopFragment
  * Created by lixiaoyang on 16/10/2016.
  */
 
@@ -45,7 +47,9 @@ public class ShopFragment extends Fragment {
             }
         });
 
-        _webView.loadUrl("http://mall.paobuzhijia.com/mobile/");
+        String shopUrl = "http://mall.paobuzhijia.com/mobile/";
+        _webView.loadUrl(shopUrl);
+        CookieUtils.synWebViewCookies(getActivity(), shopUrl, CookieUtils.getLocalCookies());
     }
 
     private void initListener() {

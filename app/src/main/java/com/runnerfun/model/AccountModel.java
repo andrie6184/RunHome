@@ -1,21 +1,23 @@
 package com.runnerfun.model;
 
 
+import com.franmontiel.persistentcookiejar.ClearableCookieJar;
+import com.franmontiel.persistentcookiejar.PersistentCookieJar;
+import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
+import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
+import com.runnerfun.RunApplication;
 import com.runnerfun.beans.LoginBean;
 import com.runnerfun.beans.RegisterInfo;
 import com.runnerfun.beans.ResponseBean;
 import com.runnerfun.beans.UserInfo;
 
 import java.io.UnsupportedEncodingException;
-import java.net.CookieManager;
-import java.net.CookiePolicy;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import okhttp3.Cookie;
 import okhttp3.HttpUrl;
-import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -28,6 +30,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
+ * AccountModel
  * Created by lixiaoyang on 12/10/2016.
  */
 
@@ -38,12 +41,13 @@ public class AccountModel {
     private AccountModel() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        CookieManager cookie = new CookieManager();
-        cookie.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
+
+        ClearableCookieJar cookieJar = new PersistentCookieJar(new SetCookieCache(),
+                new SharedPrefsCookiePersistor(RunApplication.getAppContex()));
 
         mClient = new OkHttpClient.Builder()
                 .addInterceptor(logging)
-                .cookieJar(new JavaNetCookieJar(cookie))
+                .cookieJar(cookieJar)
                 .build();
 
         retrofitApi = new Retrofit.Builder()
@@ -85,6 +89,11 @@ public class AccountModel {
     public void updateUserInfo(String name, int age, String headimg, String remarks, String sexy, int height, Subscriber<UserInfo> callback) {
         UserInfoRequest request = retrofitApi.create(UserInfoRequest.class);
         rxRequest(request.register(name, age, headimg, remarks, height, sexy), callback);
+    }
+
+    public void logout(Subscriber<String> callback) {
+        LogoutRequest request = retrofitApi.create(LogoutRequest.class);
+        rxRequest(request.logout(), callback);
     }
 
     public boolean hasLoginInfo() {

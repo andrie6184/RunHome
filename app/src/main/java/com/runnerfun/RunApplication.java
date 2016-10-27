@@ -6,13 +6,23 @@ import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 
 /**
+ * RunApplication
  * Created by lixiaoyang on 18/10/2016.
  */
 
 public class RunApplication extends Application {
+
+    private static RunApplication _instance;
+
+    public static RunApplication getAppContex() {
+        return _instance;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
+
+        _instance = this;
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             CookieSyncManager.createInstance(this);
@@ -22,6 +32,6 @@ public class RunApplication extends Application {
         }
         CookieManager.getInstance().setAcceptCookie(true);
         // magic starts here
-
     }
+
 }
