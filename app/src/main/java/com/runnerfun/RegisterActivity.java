@@ -77,6 +77,11 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+    @OnClick(R.id.back_btn)
+    void back() {
+        finish();
+    }
+
     @Override
     public boolean onSupportNavigateUp() {
         finish();

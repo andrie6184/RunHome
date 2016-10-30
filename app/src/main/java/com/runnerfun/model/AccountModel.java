@@ -100,7 +100,7 @@ public class AccountModel {
         List<Cookie> cookies = mClient.cookieJar().loadForRequest(HttpUrl.parse("http://api.paobuzhijia.com/"));
         if (cookies.size() > 0) {
             for (Cookie c : cookies) {
-                if (c.name().equals("PHPSESSID")) {
+                if (c.name().equals("sid")) {
                     return true;
                 }
             }

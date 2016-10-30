@@ -27,7 +27,7 @@ public class LoginActivity extends AppCompatActivity {
         ButterKnife.bind(this);
     }
 
-    @OnClick(R.id.login)
+    @OnClick(R.id.login_btn)
     void login() {
         String tel = mTel.getText().toString();
         String pwd = mPassword.getText().toString();
@@ -50,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    @OnClick(R.id.register)
+    @OnClick(R.id.register_btn)
     void register() {
         startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
     }
@@ -58,6 +58,21 @@ public class LoginActivity extends AppCompatActivity {
     @OnClick(R.id.forgot_password)
     void resetPassword() {
         startActivity(new Intent(LoginActivity.this, ResetPasswordActivity.class));
+    }
+
+    @OnClick(R.id.login_weixin)
+    void weixinLogin() {
+        // TODO
+    }
+
+    @OnClick(R.id.login_qq)
+    void qqLogin() {
+        // TODO
+    }
+
+    @OnClick(R.id.login_weibo)
+    void weiboLogin() {
+        // TODO
     }
 
 }
