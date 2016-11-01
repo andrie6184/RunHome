@@ -6,6 +6,7 @@ import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.runnerfun.RunApplication;
+import com.runnerfun.beans.CoinBean;
 import com.runnerfun.beans.LoginBean;
 import com.runnerfun.beans.RegisterInfo;
 import com.runnerfun.beans.ResponseBean;
@@ -35,7 +36,11 @@ import rx.schedulers.Schedulers;
  */
 
 public class AccountModel {
+
     public static final AccountModel instance = new AccountModel();
+
+    public static final int COMMON_PAGE_SIZE = 20;
+
     private static final String KEY = "Paobuzhijia@163$";
 
     private AccountModel() {
@@ -94,6 +99,11 @@ public class AccountModel {
     public void logout(Subscriber<String> callback) {
         LogoutRequest request = retrofitApi.create(LogoutRequest.class);
         rxRequest(request.logout(), callback);
+    }
+
+    public void getUserCoins(int type, int page, Subscriber<CoinBean> callback) {
+        CoinRequest request = retrofitApi.create(CoinRequest.class);
+        rxRequest(request.list(type, page, COMMON_PAGE_SIZE), callback);
     }
 
     public boolean hasLoginInfo() {

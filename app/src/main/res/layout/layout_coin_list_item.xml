@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/coin_item_bg">
+
+    <TextView
+        android:id="@+id/coin_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="26dp"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center_horizontal"
+        android:textColor="#E60012"
+        android:textSize="32sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/image_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:contentDescription="@null"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toRightOf="@+id/coin_value"
+        app:layout_constraintTop_toTopOf="@+id/coin_value"
+        app:srcCompat="@drawable/icon_location" />
+
+    <TextView
+        android:id="@+id/coin_detail"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="26dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="26dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
+        android:maxLines="2"
+        android:textColor="#515151"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/coin_value"
+        app:layout_constraintLeft_toRightOf="@+id/image_location"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/coin_value" />
+
+    <TextView
+        android:id="@+id/coin_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="8dp"
+        android:text="里币"
+        android:textAlignment="center"
+        android:textColor="#E60012"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@+id/coin_value"
+        app:layout_constraintRight_toRightOf="@+id/coin_value"
+        app:layout_constraintTop_toBottomOf="@+id/coin_value" />
+
+    <TextView
+        android:id="@+id/coin_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:textColor="#808080"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/coin_title"
+        app:layout_constraintLeft_toLeftOf="@+id/coin_detail"
+        app:layout_constraintTop_toTopOf="@+id/coin_title" />
+
+</android.support.constraint.ConstraintLayout>
