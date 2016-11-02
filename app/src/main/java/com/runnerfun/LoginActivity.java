@@ -3,6 +3,7 @@ package com.runnerfun;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -28,17 +29,23 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.login_btn)
-    void login() {
+    void login(final View view) {
         String tel = mTel.getText().toString();
         String pwd = mPassword.getText().toString();
-        String code = mPassword.getText().toString();
+
+        view.setEnabled(false);
+        view.setClickable(false);
         AccountModel.instance.login(tel, pwd, new Subscriber<LoginBean>() {
             @Override
             public void onCompleted() {
+                view.setEnabled(true);
+                view.setClickable(true);
             }
 
             @Override
             public void onError(Throwable e) {
+                view.setEnabled(true);
+                view.setClickable(true);
                 Toast.makeText(LoginActivity.this, "login failed", Toast.LENGTH_SHORT).show();
             }
 

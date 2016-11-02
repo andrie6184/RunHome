@@ -44,16 +44,26 @@
             android:name=".LoginActivity"
             android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".ResetPasswordActivity" />
+        <activity
+            android:name=".RegisterActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+        <activity
+            android:name=".ResetPasswordActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
         <activity
             android:name=".UserInfoActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
-        <activity android:name=".run.RunConfigActivity" />
+        <activity
+            android:name=".run.RunConfigActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+        <activity
+            android:name=".CoinDetailActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+        <activity
+            android:name=".UserSettingActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
 
         <service android:name="com.amap.api.location.APSService" />
-
-        <activity android:name=".CoinDetailActivity"></activity>
     </application>
 
 </manifest>

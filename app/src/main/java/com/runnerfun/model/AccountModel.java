@@ -108,6 +108,8 @@ public class AccountModel {
 
     public boolean hasLoginInfo() {
         List<Cookie> cookies = mClient.cookieJar().loadForRequest(HttpUrl.parse("http://api.paobuzhijia.com/"));
+        // List<Cookie> cookies = new SharedPrefsCookiePersistor(RunApplication.getAppContex()).loadAll();
+
         if (cookies.size() > 0) {
             for (Cookie c : cookies) {
                 if (c.name().equals("sid")) {
