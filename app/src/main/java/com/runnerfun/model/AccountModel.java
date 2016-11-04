@@ -12,14 +12,21 @@ import com.runnerfun.beans.RegisterInfo;
 import com.runnerfun.beans.ResponseBean;
 import com.runnerfun.beans.UserInfo;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import okhttp3.Cookie;
+import okhttp3.FormBody;
 import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -52,6 +59,7 @@ public class AccountModel {
 
         mClient = new OkHttpClient.Builder()
                 .addInterceptor(logging)
+                .addInterceptor(new RunCommonParamsInterceptor())
                 .cookieJar(cookieJar)
                 .build();
 
@@ -151,6 +159,45 @@ public class AccountModel {
             hex.append(Integer.toHexString(b & 0xFF));
         }
         return hex.toString();
+    }
+
+    private MultipartBody addParamsToMultipartBody(MultipartBody body) {
+        MultipartBody.Builder builder = new MultipartBody.Builder();
+        builder.setType(MultipartBody.FORM);
+        builder.addFormDataPart("ver", "20B100");
+
+        //add original body
+        for (int i = 0; i < body.size(); i++) {
+            builder.addPart(body.part(i));
+        }
+        return builder.build();
+    }
+
+    private FormBody addParamsToFormBody(FormBody body) {
+        FormBody.Builder builder = new FormBody.Builder();
+        builder.add("ver", "20B100");
+
+        //add original body
+        for (int i = 0; i < body.size(); i++) {
+            builder.addEncoded(body.encodedName(i), body.encodedValue(i));
+        }
+        return builder.build();
+    }
+
+    private class RunCommonParamsInterceptor implements Interceptor {
+        @Override
+        public Response intercept(Chain chain) throws IOException {
+            Request oriRequest = chain.request();
+            RequestBody body = oriRequest.body();
+            RequestBody newBody = null;
+            if (body instanceof FormBody) {
+                newBody = addParamsToFormBody((FormBody) body);
+            } else if (body instanceof MultipartBody) {
+                newBody = addParamsToMultipartBody((MultipartBody) body);
+            }
+            Request request = oriRequest.newBuilder().method(oriRequest.method(), newBody).build();
+            return chain.proceed(request);
+        }
     }
 
 }
