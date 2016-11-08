@@ -10,6 +10,7 @@ import com.runnerfun.beans.CoinBean;
 import com.runnerfun.beans.LoginBean;
 import com.runnerfun.beans.RegisterInfo;
 import com.runnerfun.beans.ResponseBean;
+import com.runnerfun.beans.UploadResult;
 import com.runnerfun.beans.UserInfo;
 
 import java.io.IOException;
@@ -22,6 +23,7 @@ import okhttp3.Cookie;
 import okhttp3.FormBody;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
+import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -45,6 +47,10 @@ import rx.schedulers.Schedulers;
 public class AccountModel {
 
     public static final AccountModel instance = new AccountModel();
+
+    private Retrofit retrofitApi = null;
+    private Retrofit retrofitIP = null;
+    private OkHttpClient mClient = null;
 
     public static final int COMMON_PAGE_SIZE = 20;
 
@@ -78,14 +84,15 @@ public class AccountModel {
                 .build();
     }
 
-    private Retrofit retrofitApi = null;
-    private Retrofit retrofitIP = null;
-    private OkHttpClient mClient = null;
-
     public void login(String tel, String pwd, Subscriber<LoginBean> callback) {
         String code = toMD5(KEY + tel + pwd);
         LoginRequest request = retrofitApi.create(LoginRequest.class);
         rxRequest(request.login(tel, toMD5(pwd), code), callback);
+    }
+
+    public void logout(Subscriber<String> callback) {
+        LogoutRequest request = retrofitApi.create(LogoutRequest.class);
+        rxRequest(request.logout(), callback);
     }
 
     public void register(String tel, String pwd, String code, Subscriber<RegisterInfo> callback) {
@@ -99,19 +106,25 @@ public class AccountModel {
         rxRequest(request.sendCode(tel, type, code), callback);
     }
 
-    public void updateUserInfo(String name, int age, String headimg, String remarks, String sexy, int height, Subscriber<UserInfo> callback) {
-        UserInfoRequest request = retrofitApi.create(UserInfoRequest.class);
+    public void updateUserInfo(String name, int age, String headimg, String remarks, String sexy, int height, Subscriber<String> callback) {
+        UserEditRequest request = retrofitApi.create(UserEditRequest.class);
         rxRequest(request.register(name, age, headimg, remarks, height, sexy), callback);
     }
 
-    public void logout(Subscriber<String> callback) {
-        LogoutRequest request = retrofitApi.create(LogoutRequest.class);
-        rxRequest(request.logout(), callback);
+    public void getUserInfo(Subscriber<UserInfo> callback) {
+        UserInfoRequest request = retrofitApi.create(UserInfoRequest.class);
+        rxRequest(request.getUserInfo(), callback);
     }
 
     public void getUserCoins(int type, int page, Subscriber<CoinBean> callback) {
         CoinRequest request = retrofitApi.create(CoinRequest.class);
         rxRequest(request.list(type, page, COMMON_PAGE_SIZE), callback);
+    }
+
+    public void uploadAvatar(byte[] file, Subscriber<UploadResult> callback) {
+        UploadAvatarRequest request = retrofitApi.create(UploadAvatarRequest.class);
+        RequestBody pic = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        rxRequest(request.uploadAvatar(pic), callback);
     }
 
     public boolean hasLoginInfo() {

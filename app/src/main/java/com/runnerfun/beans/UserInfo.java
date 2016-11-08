@@ -3,16 +3,21 @@ package com.runnerfun.beans;
 import java.io.Serializable;
 
 /**
+ * UserInfo
  * Created by lixiaoyang on 04/10/2016.
  */
 
 public class UserInfo implements Serializable{
-    public boolean isLogin;
-    public String cellPhoneNumber;
-    public int age = -1;
-    public int height = -1;
-    public int sex = -1;//0 male, 1 female
-    public long userId;
-    public String userName;
-    public long money;
+
+    public String user_name;
+    public String height;
+    public String headimg;
+    public String age;
+    public String weight;
+    public String sex;
+    public String remarks;
+    public String level;
+    public String total_score;
+    public String total_mileage;
+
 }

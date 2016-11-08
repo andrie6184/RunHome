@@ -128,6 +128,7 @@ public class CoinDetailFragment extends Fragment implements SwipeRefreshLayout.O
             @Override
             public void onError(Throwable e) {
                 showError(R.string.network_common_err);
+                mPtrLayout.setRefreshing(false);
             }
 
             @Override
