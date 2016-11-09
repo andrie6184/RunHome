@@ -1,0 +1,27 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.runnerfun.PersonalRecordFragment">
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/precord_list_ptr_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#EDEDED">
+
+        <ListView
+            android:id="@+id/precord_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:cacheColorHint="@android:color/transparent"
+            android:divider="@null"
+            android:dividerHeight="0px"
+            android:fadingEdge="none"
+            android:focusable="false"
+            android:listSelector="@android:color/transparent" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+</FrameLayout>

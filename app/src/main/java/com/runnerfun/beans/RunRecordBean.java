@@ -3,10 +3,11 @@ package com.runnerfun.beans;
 import java.io.Serializable;
 
 /**
+ * RunRecordBean
  * Created by andrie on 16/11/7.
  */
 
-public class RunListBean implements Serializable {
+public class RunRecordBean implements Serializable {
 
     private String rid;
     private String calorie;

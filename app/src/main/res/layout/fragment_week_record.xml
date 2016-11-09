@@ -1,0 +1,116 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.runnerfun.PersonalRecordFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/week_one"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="45dp"
+            android:layout_marginTop="38dp"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="周一"
+            android:textColor="#E60012"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/week_two"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="45dp"
+            android:layout_marginTop="38dp"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="周二"
+            android:textColor="#808080"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/week_three"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="45dp"
+            android:layout_marginTop="38dp"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="周三"
+            android:textColor="#808080"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/week_four"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="45dp"
+            android:layout_marginTop="38dp"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="周四"
+            android:textColor="#808080"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/week_five"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="45dp"
+            android:layout_marginTop="38dp"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="周五"
+            android:textColor="#808080"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/week_six"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="45dp"
+            android:layout_marginTop="38dp"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="周六"
+            android:textColor="#808080"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/week_seven"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="45dp"
+            android:layout_marginTop="38dp"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="周日"
+            android:textColor="#808080"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/viewpager_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#EDEDED"
+        android:clipChildren="false"
+        android:gravity="center_horizontal">
+
+        <com.runnerfun.widget.TransformViewPager
+            android:id="@+id/week_viewpager"
+            android:layout_width="260dp"
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:overScrollMode="never" />
+    </RelativeLayout>
+
+</LinearLayout>

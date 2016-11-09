@@ -10,6 +10,9 @@ import com.runnerfun.beans.CoinBean;
 import com.runnerfun.beans.LoginBean;
 import com.runnerfun.beans.RegisterInfo;
 import com.runnerfun.beans.ResponseBean;
+import com.runnerfun.beans.RunRecordBean;
+import com.runnerfun.beans.RunTotalBean;
+import com.runnerfun.beans.RunWeekBean;
 import com.runnerfun.beans.UploadResult;
 import com.runnerfun.beans.UserInfo;
 
@@ -17,6 +20,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Cookie;
@@ -64,8 +68,8 @@ public class AccountModel {
                 new SharedPrefsCookiePersistor(RunApplication.getAppContex()));
 
         mClient = new OkHttpClient.Builder()
-                .addInterceptor(logging)
                 .addInterceptor(new RunCommonParamsInterceptor())
+                .addInterceptor(logging)
                 .cookieJar(cookieJar)
                 .build();
 
@@ -108,7 +112,7 @@ public class AccountModel {
 
     public void updateUserInfo(String name, int age, String headimg, String remarks, String sexy, int height, Subscriber<String> callback) {
         UserEditRequest request = retrofitApi.create(UserEditRequest.class);
-        rxRequest(request.register(name, age, headimg, remarks, height, sexy), callback);
+        rxRequest(request.editUserInfo(name, age, headimg, remarks, height, sexy), callback);
     }
 
     public void getUserInfo(Subscriber<UserInfo> callback) {
@@ -125,6 +129,21 @@ public class AccountModel {
         UploadAvatarRequest request = retrofitApi.create(UploadAvatarRequest.class);
         RequestBody pic = RequestBody.create(MediaType.parse("multipart/form-data"), file);
         rxRequest(request.uploadAvatar(pic), callback);
+    }
+
+    public void getUserPRecordList(int page, Subscriber<ArrayList<RunRecordBean>> callback) {
+        RunListsRequest request = retrofitApi.create(RunListsRequest.class);
+        rxRequest(request.getRunLists(page), callback);
+    }
+
+    public void getUserWRecordList(Subscriber<ArrayList<RunWeekBean>> callback) {
+        RunWeekRequest request = retrofitApi.create(RunWeekRequest.class);
+        rxRequest(request.getWeek(), callback);
+    }
+
+    public void getUserTRecordList(Subscriber<RunTotalBean> callback) {
+        RunTotalRequest request = retrofitApi.create(RunTotalRequest.class);
+        rxRequest(request.getTotal(), callback);
     }
 
     public boolean hasLoginInfo() {
@@ -146,7 +165,7 @@ public class AccountModel {
                 .map(new Func1<ResponseBean<T>, T>() {
                     @Override
                     public T call(ResponseBean<T> result) {
-                        if (result.getCode() == -1) {
+                        if (result.getCode() != 0) {
                             throw new IllegalArgumentException(result.getMsg());
                         }
                         return result.getData();

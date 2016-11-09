@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by andrie on 16/11/7.
  */
 
-public class TotalRunBean implements Serializable {
+public class RunTotalBean implements Serializable {
 
     private String maxHighSpeed;
     private String sumTimes;

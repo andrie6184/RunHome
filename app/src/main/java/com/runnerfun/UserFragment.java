@@ -73,7 +73,7 @@ public class UserFragment extends Fragment {
 
     @OnClick(R.id.record)
     void onClickRecord() {
-        // TODO
+        startActivity(new Intent(getActivity(), RecordDetailActivity.class));
     }
 
     @OnClick(R.id.detail)

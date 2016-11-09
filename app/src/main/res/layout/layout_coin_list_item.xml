@@ -25,6 +25,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:contentDescription="@null"
+        android:src="@drawable/icon_location"
         android:visibility="invisible"
         app:layout_constraintLeft_toRightOf="@+id/coin_value"
         app:layout_constraintTop_toTopOf="@+id/coin_value"

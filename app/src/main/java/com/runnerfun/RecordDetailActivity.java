@@ -13,26 +13,28 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class CoinDetailActivity extends FragmentActivity {
+public class RecordDetailActivity extends FragmentActivity {
 
-    @BindView(R.id.user_record_selected)
+    @BindView(R.id.personal_record_selected)
     ImageView mUserTabSelected;
-    @BindView(R.id.system_record_selected)
-    ImageView mSystemTabSelected;
+    @BindView(R.id.week_record_selected)
+    ImageView mWeekTabSelected;
+    @BindView(R.id.total_record_selected)
+    ImageView mTotalTabSelected;
 
-    @BindView(R.id.coin_fragment_pager)
+    @BindView(R.id.record_fragment_pager)
     ViewPager mContentPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_coin_detail);
+        setContentView(R.layout.activity_record_detail);
         ButterKnife.bind(this);
         init();
     }
 
     private void init() {
-        mContentPager.setAdapter(new CoinPagerAdapter(getSupportFragmentManager()));
+        mContentPager.setAdapter(new RecordPagerAdapter(getSupportFragmentManager()));
         mContentPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -42,10 +44,16 @@ public class CoinDetailActivity extends FragmentActivity {
             public void onPageSelected(int position) {
                 if (position == 0) {
                     mUserTabSelected.setVisibility(View.VISIBLE);
-                    mSystemTabSelected.setVisibility(View.GONE);
+                    mWeekTabSelected.setVisibility(View.GONE);
+                    mTotalTabSelected.setVisibility(View.GONE);
+                } else if (position == 1) {
+                    mUserTabSelected.setVisibility(View.GONE);
+                    mWeekTabSelected.setVisibility(View.VISIBLE);
+                    mTotalTabSelected.setVisibility(View.GONE);
                 } else {
                     mUserTabSelected.setVisibility(View.GONE);
-                    mSystemTabSelected.setVisibility(View.VISIBLE);
+                    mWeekTabSelected.setVisibility(View.GONE);
+                    mTotalTabSelected.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -55,14 +63,19 @@ public class CoinDetailActivity extends FragmentActivity {
         });
     }
 
-    @OnClick(R.id.user_record)
-    void onUserRecordClicked(View view) {
+    @OnClick(R.id.personal_record)
+    void onPersonalRecordClicked(View view) {
         mContentPager.setCurrentItem(0);
     }
 
-    @OnClick(R.id.system_record)
-    void onSystemRecordClicked(View view) {
+    @OnClick(R.id.week_record)
+    void onWeekRecordClicked(View view) {
         mContentPager.setCurrentItem(1);
+    }
+
+    @OnClick(R.id.total_record)
+    void onTotalRecordClicked(View view) {
+        mContentPager.setCurrentItem(2);
     }
 
     @OnClick(R.id.return_btn)
@@ -70,20 +83,26 @@ public class CoinDetailActivity extends FragmentActivity {
         finish();
     }
 
-    private class CoinPagerAdapter extends FragmentPagerAdapter {
+    private class RecordPagerAdapter extends FragmentPagerAdapter {
 
-        public CoinPagerAdapter(FragmentManager fm) {
+        public RecordPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
         public Fragment getItem(int position) {
-            return CoinDetailFragment.newInstance(position);
+            if (position == 1) {
+                return WeekRecordFragment.newInstance();
+            } else if (position == 2) {
+                return TotalRecordFragment.newInstance();
+            } else {
+                return PersonalRecordFragment.newInstance();
+            }
         }
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
     }
 
