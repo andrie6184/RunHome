@@ -33,7 +33,7 @@ import timber.log.Timber;
 
 /**
  * UserFragment
- * Created by lixiaoyang on 16/10/2016.
+ * Created by andrie on 16/10/2016.
  */
 
 public class UserFragment extends Fragment {
@@ -72,18 +72,23 @@ public class UserFragment extends Fragment {
     }
 
     @OnClick(R.id.record)
-    void onClickRecord() {
+    void onClickRecord(View view) {
         startActivity(new Intent(getActivity(), RecordDetailActivity.class));
     }
 
     @OnClick(R.id.detail)
-    void onClickDetail() {
+    void onClickDetail(View view) {
         startActivity(new Intent(getActivity(), CoinDetailActivity.class));
     }
 
     @OnClick(R.id.rule)
-    void onClickRule() {
+    void onClickRule(View view) {
         // TODO
+    }
+
+    @OnClick(R.id.icon_setting)
+    void onSettingClicked(View view) {
+        startActivity(new Intent(getActivity(), UserSettingActivity.class));
     }
 
     @OnClick(R.id.user_avatar)

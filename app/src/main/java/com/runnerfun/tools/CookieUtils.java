@@ -17,7 +17,7 @@ import timber.log.Timber;
 
 /**
  * CookieUtils
- * Created by lixiaoyang on 18/10/2016.
+ * Created by andrie on 18/10/2016.
  */
 
 public class CookieUtils {

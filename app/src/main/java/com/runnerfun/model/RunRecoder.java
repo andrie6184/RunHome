@@ -1,7 +1,7 @@
 package com.runnerfun.model;
 
 /**
- * Created by lixiaoyang on 25/10/2016.
+ * Created by andrie on 25/10/2016.
  */
 
 public class RunRecoder {

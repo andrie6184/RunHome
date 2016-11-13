@@ -10,7 +10,7 @@ import butterknife.ButterKnife;
 import rx.Subscription;
 
 /**
- * Created by lixiaoyang on 18/10/2016.
+ * Created by andrie on 18/10/2016.
  */
 
 abstract public class BaseActivity extends AppCompatActivity {

@@ -25,7 +25,7 @@ import rx.functions.Action1;
 
 /**
  * ResetPasswordActivity
- * Created by lixiaoyang on 05/10/2016.
+ * Created by andrie on 05/10/2016.
  */
 
 public class ResetPasswordActivity extends BaseActivity {

@@ -27,7 +27,7 @@ import timber.log.Timber;
 
 /**
  * RunApplication
- * Created by lixiaoyang on 18/10/2016.
+ * Created by andrie on 18/10/2016.
  */
 
 public class RunApplication extends Application {

@@ -20,7 +20,7 @@ import rx.functions.Action1;
 import rx.subjects.Subject;
 
 /**
- * Created by lixiaoyang on 02/11/2016.
+ * Created by andrie on 02/11/2016.
  */
 
 public class RecordService extends IntentService implements AMapLocationListener {

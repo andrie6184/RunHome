@@ -45,7 +45,7 @@ import rx.schedulers.Schedulers;
 
 /**
  * AccountModel
- * Created by lixiaoyang on 12/10/2016.
+ * Created by andrie on 12/10/2016.
  */
 
 public class AccountModel {

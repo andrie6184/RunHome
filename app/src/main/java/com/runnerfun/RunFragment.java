@@ -17,7 +17,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * Created by lixiaoyang on 16/10/2016.
+ * Created by andrie on 16/10/2016.
  */
 
 public class RunFragment extends Fragment {

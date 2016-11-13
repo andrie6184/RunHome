@@ -8,7 +8,7 @@ import retrofit2.http.Query;
 import rx.Observable;
 
 /**
- * Created by lixiaoyang on 13/10/2016.
+ * Created by andrie on 13/10/2016.
  */
 
 public interface RegisterRequest {

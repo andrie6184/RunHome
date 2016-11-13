@@ -8,7 +8,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 /**
- * Created by lixiaoyang on 16/10/2016.
+ * Created by andrie on 16/10/2016.
  */
 
 public class LEDClock extends View {

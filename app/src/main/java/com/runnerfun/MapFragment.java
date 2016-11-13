@@ -45,7 +45,7 @@ import okhttp3.Response;
 import static com.amap.api.maps2d.CameraUpdateFactory.newLatLngZoom;
 
 /**
- * Created by lixiaoyang on 16/10/2016.
+ * Created by andrie on 16/10/2016.
  */
 
 public class MapFragment extends Fragment implements AMapLocationListener {

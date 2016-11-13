@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * Record
- * Created by lixiaoyang on 04/10/2016.
+ * Created by andrie on 04/10/2016.
  */
 
 public class Record implements Serializable {
