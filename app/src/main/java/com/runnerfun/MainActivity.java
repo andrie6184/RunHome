@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.bean.ImageItem;
 import com.runnerfun.model.AccountModel;
-import com.runnerfun.widget.DisableScrollViewPager;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String INTENT_PARAMS_USER_AVATAR_PATH = "INTENT_PARAMS_USER_AVATAR_PATH";
 
     @BindView(R.id.fragment_content)
-    DisableScrollViewPager mContents;
+    ViewPager mContents;
     @BindView(R.id.tabs)
     TabLayout mTabs;
 
@@ -40,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        mContents.setScrollEnabled(false);
         installTabs();
     }
 
@@ -101,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
             super(fm);
             mFragmentList = new ArrayList<Fragment>();
             mFragmentList.add(new ShopFragment());
-            mFragmentList.add(new MainFragment());
+            mFragmentList.add(new RunFragment());
             mFragmentList.add(new UserFragment());
         }
 

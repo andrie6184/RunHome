@@ -1,5 +1,6 @@
 package com.runnerfun;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -72,10 +73,7 @@ public class RunFragment extends Fragment {
 
     @OnClick(R.id.btn_run)
     void start(){
-        Fragment f = getParentFragment();
-        if(f instanceof MainFragment){
-            ((MainFragment)f).switchToMap();
-        }
+       startActivity(new Intent(getActivity(), MapActivity.class));
     }
 
 }
