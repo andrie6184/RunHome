@@ -3,3 +3,7 @@
 .idea/*
 RunnerFun.iml
 local.properties
+/app/app.iml
+gradlew
+gradlew.bat
+

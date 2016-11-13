@@ -16,6 +16,7 @@ import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps2d.CameraUpdate;
 import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.MapView;
+import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.amap.api.maps2d.model.PolylineOptions;
@@ -42,6 +43,7 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         ButterKnife.bind(this);
         init();
         mMap.onCreate(savedInstanceState);
+        mMap.getMap().getUiSettings().setMyLocationButtonEnabled(true);
     }
 
     private void init() {
@@ -97,6 +99,11 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         MarkerOptions mark = new MarkerOptions()
                 .position(new LatLng(lat, lgt))
                 .title("your location");
+
+        mark.icon(
+                BitmapDescriptorFactory.fromBitmap(BitmapFactory
+                        .decodeResource(getResources(),
+                                R.drawable.icon_shezhi)));
 
         LatLng ll = new LatLng(lat, lgt);
         mMap.getMap().clear();

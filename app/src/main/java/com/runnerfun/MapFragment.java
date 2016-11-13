@@ -76,6 +76,7 @@ public class MapFragment extends Fragment implements AMapLocationListener {
         mLocationOption.setInterval(2000);
         mlocationClient.setLocationOption(mLocationOption);
         mlocationClient.startLocation();
+//        mMap.getMap().getUiSettings().setMyLocationButtonEnabled(true);
 
         mMap.getMap().getUiSettings().setZoomControlsEnabled(false);
         mMap.getMap().setMyLocationEnabled(true);
@@ -124,14 +125,13 @@ public class MapFragment extends Fragment implements AMapLocationListener {
     }
 
     private void setLocationMark(double lat, double lgt){
-        Bitmap pin = BitmapFactory.decodeResource(getResources(), R.drawable.icon_shezhi);
-        MarkerOptions mark = new MarkerOptions()
-                .position(new LatLng(lat, lgt))
-                .title("your location");
+//        MarkerOptions mark = new MarkerOptions()
+//                .position(new LatLng(lat, lgt))
+//                .title("your location");
 
         LatLng ll = new LatLng(lat, lgt);
         mMap.getMap().clear();
-        mMap.getMap().addMarker(mark);
+//        mMap.getMap().addMarker(mark);
         CameraUpdate newPos = CameraUpdateFactory.newLatLng(ll);
         mMap.getMap().animateCamera(newPos);
         mMap.getMap().addPolyline(new PolylineOptions()
