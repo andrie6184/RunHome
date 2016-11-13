@@ -6,4 +6,6 @@ local.properties
 /app/app.iml
 gradlew
 gradlew.bat
+/gradle
+/app/app.iml
 
