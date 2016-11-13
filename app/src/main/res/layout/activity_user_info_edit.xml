@@ -23,7 +23,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:singleLine="false"
-                android:text="设置"
+                android:text="修改个人信息"
                 android:textColor="#FFF"
                 android:textSize="16sp" />
 
@@ -37,10 +37,21 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/return_btn" />
 
+            <TextView
+                android:id="@+id/save_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_margin="10dip"
+                android:gravity="center"
+                android:text="保存"
+                android:textColor="#FFF"
+                android:textSize="14sp" />
+
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/speaking_setting"
+            android:id="@+id/user_avatar"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginEnd="12dp"
@@ -55,23 +66,23 @@
                 android:layout_centerVertical="true"
                 android:paddingLeft="3dp"
                 android:paddingRight="3dp"
-                android:text="语音提示"
+                android:text="头像"
                 android:textColor="#777777"
                 android:textSize="14sp" />
 
             <ImageView
-                android:id="@+id/speaking_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/avatar_image"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:paddingLeft="3dp"
                 android:paddingRight="3dp"
-                android:src="@drawable/switch_btn_off" />
+                android:src="@drawable/icon_avatar" />
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/push_setting"
+            android:id="@+id/nick_name"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginEnd="12dp"
@@ -86,166 +97,12 @@
                 android:layout_centerVertical="true"
                 android:paddingLeft="3dp"
                 android:paddingRight="3dp"
-                android:text="接受新消息通知"
+                android:text="昵称"
                 android:textColor="#777777"
                 android:textSize="14sp" />
 
             <ImageView
-                android:id="@+id/push_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:paddingLeft="3dp"
-                android:paddingRight="3dp"
-                android:src="@drawable/switch_btn_on" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/voice_setting"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginStart="12dp"
-            android:background="@drawable/edit_text_bg">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:paddingLeft="3dp"
-                android:paddingRight="3dp"
-                android:text="声音"
-                android:textColor="#777777"
-                android:textSize="14sp" />
-
-            <ImageView
-                android:id="@+id/voice_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:paddingLeft="3dp"
-                android:paddingRight="3dp"
-                android:src="@drawable/switch_btn_off" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/vibrate_setting"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginStart="12dp"
-            android:background="@drawable/edit_text_bg">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:paddingLeft="3dp"
-                android:paddingRight="3dp"
-                android:text="震动"
-                android:textColor="#777777"
-                android:textSize="14sp" />
-
-            <ImageView
-                android:id="@+id/vibrate_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:paddingLeft="3dp"
-                android:paddingRight="3dp"
-                android:src="@drawable/switch_btn_on" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/pwd_modify"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginStart="12dp"
-            android:background="@drawable/edit_text_bg">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:paddingLeft="3dp"
-                android:paddingRight="3dp"
-                android:text="修改密码"
-                android:textColor="#777777"
-                android:textSize="14sp" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:paddingLeft="3dp"
-                android:paddingRight="3dp"
-                android:src="@drawable/icon_enter" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/profile_modify"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginStart="12dp"
-            android:background="@drawable/edit_text_bg">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:paddingLeft="3dp"
-                android:paddingRight="3dp"
-                android:text="个人资料修改"
-                android:textColor="#777777"
-                android:textSize="14sp" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:paddingLeft="3dp"
-                android:paddingRight="3dp"
-                android:src="@drawable/icon_enter" />
-        </RelativeLayout>
-
-
-        <RelativeLayout
-            android:id="@+id/count_down"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginStart="12dp"
-            android:background="@drawable/edit_text_bg">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:paddingLeft="3dp"
-                android:paddingRight="3dp"
-                android:text="跑前倒计时"
-                android:textColor="#777777"
-                android:textSize="14sp" />
-
-            <ImageView
-                android:id="@+id/enter_image"
+                android:id="@+id/enter_image1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -255,19 +112,19 @@
                 android:src="@drawable/icon_enter" />
 
             <TextView
-                android:id="@+id/count_down_text"
+                android:id="@+id/nick_name_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_toLeftOf="@id/enter_image"
+                android:layout_toLeftOf="@id/enter_image1"
                 android:paddingRight="5dp"
-                android:text="3秒"
+                android:text="小猪快跑"
                 android:textColor="#777777"
                 android:textSize="14sp" />
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/user_protocol"
+            android:id="@+id/personal_signature"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginEnd="12dp"
@@ -282,11 +139,12 @@
                 android:layout_centerVertical="true"
                 android:paddingLeft="3dp"
                 android:paddingRight="3dp"
-                android:text="用户协议"
+                android:text="跑步宣言"
                 android:textColor="#777777"
                 android:textSize="14sp" />
 
             <ImageView
+                android:id="@+id/enter_image2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -294,10 +152,24 @@
                 android:paddingLeft="3dp"
                 android:paddingRight="3dp"
                 android:src="@drawable/icon_enter" />
+
+            <TextView
+                android:id="@+id/signature_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/enter_image2"
+                android:ellipsize="end"
+                android:maxEms="10"
+                android:maxLines="1"
+                android:paddingRight="5dp"
+                android:text="小猪快跑小猪快跑小猪快跑小猪快跑小猪快跑小猪快跑"
+                android:textColor="#777777"
+                android:textSize="14sp" />
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/about_us"
+            android:id="@+id/gender"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginEnd="12dp"
@@ -312,35 +184,121 @@
                 android:layout_centerVertical="true"
                 android:paddingLeft="3dp"
                 android:paddingRight="3dp"
-                android:text="关于我们"
+                android:text="性别"
                 android:textColor="#777777"
                 android:textSize="14sp" />
 
-            <ImageView
+            <TextView
+                android:id="@+id/gender_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:paddingLeft="3dp"
                 android:paddingRight="3dp"
-                android:src="@drawable/icon_enter" />
+                android:text="女"
+                android:textColor="#777777"
+                android:textSize="14sp" />
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/logout_btn"
+        <RelativeLayout
+            android:id="@+id/age"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginEnd="12dp"
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
             android:layout_marginStart="12dp"
-            android:background="@drawable/edit_text_bg"
-            android:gravity="center_vertical"
-            android:paddingLeft="3dp"
-            android:paddingRight="3dp"
-            android:text="退出登录"
-            android:textColor="#777777"
-            android:textSize="14sp" />
+            android:background="@drawable/edit_text_bg">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp"
+                android:text="年龄"
+                android:textColor="#777777"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/age_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp"
+                android:text="23"
+                android:textColor="#777777"
+                android:textSize="14sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/height"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginStart="12dp"
+            android:background="@drawable/edit_text_bg">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp"
+                android:text="身高"
+                android:textColor="#777777"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/height_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp"
+                android:text="164cm"
+                android:textColor="#777777"
+                android:textSize="14sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/weight"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginStart="12dp"
+            android:background="@drawable/edit_text_bg">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp"
+                android:text="体重"
+                android:textColor="#777777"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/weight_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp"
+                android:text="45kg"
+                android:textColor="#777777"
+                android:textSize="14sp" />
+        </RelativeLayout>
 
     </LinearLayout>
 </ScrollView>
