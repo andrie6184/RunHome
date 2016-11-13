@@ -1,6 +1,8 @@
 package com.runnerfun;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -27,6 +29,8 @@ public class UserSettingActivity extends Activity {
     ImageView vibrate;
     @BindView(R.id.count_down_text)
     TextView countDown;
+
+    private AlertDialog countDownDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +81,23 @@ public class UserSettingActivity extends Activity {
 
     @OnClick(R.id.count_down)
     void countDownClicked(View view) {
-
+        if (countDownDialog == null) {
+            final String[] array = {"3秒", "5秒"};
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("请选择倒数时间");
+            builder.setItems(array, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    countDown.setText(array[which]);
+                    // TODO
+                }
+            });
+            countDownDialog = builder.create();
+        }
+        if (countDownDialog.isShowing()) {
+            countDownDialog.dismiss();
+        }
+        countDownDialog.show();
     }
 
     @OnClick(R.id.user_protocol)

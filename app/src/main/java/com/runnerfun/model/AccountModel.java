@@ -160,6 +160,24 @@ public class AccountModel {
         return false;
     }
 
+    public String getUserName() {
+        return RunApplication.getAppContex().sharedPreferences.getString("SP_KEY_USER_NAME", "");
+    }
+
+    // should only call by network thread after call getUserInfo()
+    public void setUserName(String name) {
+        RunApplication.getAppContex().sharedPreferences.edit().putString("SP_KEY_USER_NAME", name).apply();
+    }
+
+    public String getUserSignature() {
+        return RunApplication.getAppContex().sharedPreferences.getString("SP_KEY_USER_SIGNATURE", "");
+    }
+
+    // should only call by network thread after call getUserInfo()
+    public void setUserSignature(String signature) {
+        RunApplication.getAppContex().sharedPreferences.edit().putString("SP_KEY_USER_SIGNATURE", signature).apply();
+    }
+
     private <T> void rxRequest(Observable<ResponseBean<T>> response, Subscriber<T> callback) {
         response.subscribeOn(Schedulers.io())
                 .map(new Func1<ResponseBean<T>, T>() {
