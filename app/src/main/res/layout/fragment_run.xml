@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
+    android:background="#000"
     android:layout_height="match_parent">
 
     <RelativeLayout
@@ -93,7 +94,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:background="@drawable/run_back"
+        android:background="@drawable/back"
         android:layout_height="0dp"
         android:layout_weight="40"
         android:orientation="vertical"

@@ -75,10 +75,24 @@
             android:name=".UserInfoActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+        <activity android:name=".run.RunConfigActivity" />
+
+        <service android:name="com.amap.api.location.APSService" />
+
         <activity
-            android:name=".run.RunConfigActivity"
-            android:screenOrientation="portrait"
+            android:name=".MapActivity"
+            android:label="@string/title_activity_map"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+
+        <service
+            android:name=".RecordService"
+            android:exported="false" />
+
+        <provider
+            android:name=".RecordProvider"
+            android:authorities="com.runnerfun.record"
+            android:enabled="true"
+            android:exported="false"/>
         <activity
             android:name=".CoinDetailActivity"
             android:screenOrientation="portrait"

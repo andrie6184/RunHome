@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
         installTabs();
     }
 
@@ -100,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
             super(fm);
             mFragmentList = new ArrayList<Fragment>();
             mFragmentList.add(new ShopFragment());
-            mFragmentList.add(new MainFragment());
+            mFragmentList.add(new RunFragment());
             mFragmentList.add(new UserFragment());
         }
 

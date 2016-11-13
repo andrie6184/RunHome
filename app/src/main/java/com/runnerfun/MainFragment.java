@@ -31,6 +31,7 @@ public class MainFragment extends Fragment {
 
     public void switchToMap(){
         switchFragment(mMapFragment);
+
     }
 
     public void switchToData(){
