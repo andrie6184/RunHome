@@ -70,7 +70,12 @@ public class SplashActivity extends AppCompatActivity {
         _subscription = Observable.timer(2972, TimeUnit.MILLISECONDS).subscribe(new Action1<Long>() {
             @Override
             public void call(Long aLong) {
-                startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                if (!RunApplication.getAppContex().sharedPreferences.getBoolean("startGuide", false)) {
+                    RunApplication.getAppContex().sharedPreferences.edit().putBoolean("startGuide", true).apply();
+                    startActivity(new Intent(SplashActivity.this, GuideActivity.class));
+                } else {
+                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                }
                 finish();
             }
         }, new Action1<Throwable>() {

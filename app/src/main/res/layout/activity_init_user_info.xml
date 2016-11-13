@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_init_user_info"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/init_uif_bg"
+    tools:context="com.runnerfun.InitUserInfoActivity">
+
+    <ImageView
+        android:id="@+id/skip_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="40dp"
+        android:src="@drawable/skip_btn"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/skip_btn" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="60dp"
+        android:layout_marginLeft="60dp"
+        android:layout_marginRight="60dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="100dp"
+        android:lineSpacingExtra="10dp"
+        android:text="请认真填写资料,有利于我们精确计算数据"
+        android:textColor="#FFFFFF"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/text_nan"
+        android:layout_width="115dp"
+        android:layout_height="42dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="35dp"
+        android:gravity="center"
+        android:text="男"
+        android:textColor="#FFF"
+        android:textSize="16sp"
+        app:layout_constraintHorizontal_bias="0.01"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <TextView
+        android:id="@+id/text_nv"
+        android:layout_width="115dp"
+        android:layout_height="42dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginStart="20dp"
+        android:gravity="center"
+        android:text="女"
+        android:textColor="#FFF"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/text_nan"
+        app:layout_constraintHorizontal_bias="0.99"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/text_nan" />
+
+    <EditText
+        android:id="@+id/height"
+        style="@style/UserInfoEditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="42dp"
+        android:layout_marginEnd="43dp"
+        android:layout_marginLeft="43dp"
+        android:layout_marginRight="43dp"
+        android:layout_marginStart="43dp"
+        android:layout_marginTop="35dp"
+        android:hint="身高"
+        android:inputType="numberDecimal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_nan" />
+
+    <EditText
+        android:id="@+id/weight"
+        style="@style/UserInfoEditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="42dp"
+        android:layout_marginEnd="43dp"
+        android:layout_marginLeft="43dp"
+        android:layout_marginRight="43dp"
+        android:layout_marginStart="43dp"
+        android:layout_marginTop="35dp"
+        android:hint="体重"
+        android:inputType="numberDecimal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/height" />
+
+    <EditText
+        android:id="@+id/age"
+        style="@style/UserInfoEditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="42dp"
+        android:layout_marginEnd="43dp"
+        android:layout_marginLeft="43dp"
+        android:layout_marginRight="43dp"
+        android:layout_marginStart="43dp"
+        android:layout_marginTop="35dp"
+        android:hint="年龄"
+        android:inputType="number"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/weight" />
+
+    <TextView
+        android:id="@+id/next_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="60dp"
+        android:layout_marginLeft="60dp"
+        android:layout_marginRight="60dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="30dp"
+        android:text="下一步"
+        android:textColor="#FFFFFF"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/age" />
+
+</android.support.constraint.ConstraintLayout>

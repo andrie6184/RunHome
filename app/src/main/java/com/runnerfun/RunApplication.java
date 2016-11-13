@@ -1,6 +1,8 @@
 package com.runnerfun;
 
+import android.app.Activity;
 import android.app.Application;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
@@ -25,6 +27,7 @@ public class RunApplication extends Application {
         return _instance;
     }
 
+    public SharedPreferences sharedPreferences;
     public Picasso picasso;
 
     @Override
@@ -32,6 +35,8 @@ public class RunApplication extends Application {
         super.onCreate();
 
         _instance = this;
+
+        sharedPreferences = getSharedPreferences("RunApplication", Activity.MODE_PRIVATE);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             CookieSyncManager.createInstance(this);

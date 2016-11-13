@@ -191,15 +191,6 @@ public class WeekRecordFragment extends Fragment {
                 viewHolder.recordTime.setText(item.getDate());
             }
             return convertView;
-//            ImageView imageView = null;
-//            if (convertView == null) {
-//                imageView = new ImageView(mContext);
-//            } else {
-//                imageView = (ImageView) convertView;
-//            }
-//            imageView.setTag(position);
-//            imageView.setImageResource(R.drawable.icon_avatar);
-//            return imageView;
         }
 
         private class ViewHolder {
