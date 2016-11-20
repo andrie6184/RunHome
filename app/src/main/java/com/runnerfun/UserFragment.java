@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.lzy.imagepicker.ui.ImageGridActivity;
+//import com.lzy.imagepicker.ui.ImageGridActivity;
 import com.runnerfun.beans.UploadResult;
 import com.runnerfun.model.AccountModel;
 
@@ -93,8 +93,8 @@ public class UserFragment extends Fragment {
 
     @OnClick(R.id.user_avatar)
     void onClickAvatar() {
-        Intent intent = new Intent(getActivity(), ImageGridActivity.class);
-        getActivity().startActivityForResult(intent, MainActivity.REQUEST_CODE_IMAGE_PICKER);
+//        Intent intent = new Intent(getActivity(), ImageGridActivity.class);
+//        getActivity().startActivityForResult(intent, MainActivity.REQUEST_CODE_IMAGE_PICKER);
     }
 
     protected void uploadAvatar(byte[] buffer) {

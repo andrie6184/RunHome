@@ -11,8 +11,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
-import com.lzy.imagepicker.ImagePicker;
-import com.lzy.imagepicker.bean.ImageItem;
+//import com.lzy.imagepicker.ImagePicker;
+//import com.lzy.imagepicker.bean.ImageItem;
 import com.runnerfun.model.AccountModel;
 
 import java.io.Serializable;
@@ -77,19 +77,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == ImagePicker.RESULT_CODE_ITEMS) {
-            if (data != null && requestCode == REQUEST_CODE_IMAGE_PICKER) {
-                Serializable serials = data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
-                if (serials != null && serials instanceof ArrayList) {
-                    ArrayList<ImageItem> images = (ArrayList<ImageItem>) serials;
-                    if (images.size() > 0) {
-                        Intent intent = new Intent(SELECTED_USER_AVATAR_ACTION);
-                        intent.putExtra(INTENT_PARAMS_USER_AVATAR_PATH, images.get(0).path);
-                        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-                    }
-                }
-            }
-        }
+//        if (resultCode == ImagePicker.RESULT_CODE_ITEMS) {
+//            if (data != null && requestCode == REQUEST_CODE_IMAGE_PICKER) {
+//                Serializable serials = data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
+//                if (serials != null && serials instanceof ArrayList) {
+//                    ArrayList<ImageItem> images = (ArrayList<ImageItem>) serials;
+//                    if (images.size() > 0) {
+//                        Intent intent = new Intent(SELECTED_USER_AVATAR_ACTION);
+//                        intent.putExtra(INTENT_PARAMS_USER_AVATAR_PATH, images.get(0).path);
+//                        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+//                    }
+//                }
+//            }
+//        }
     }
 
     class ContentFragmentAdapter extends FragmentPagerAdapter {

@@ -17,8 +17,7 @@
         android:layout_marginTop="40dp"
         android:src="@drawable/skip_btn"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/skip_btn" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView"
@@ -40,6 +39,7 @@
 
     <TextView
         android:id="@+id/text_nan"
+        style="@style/UserInfoEditTextStyle"
         android:layout_width="115dp"
         android:layout_height="42dp"
         android:layout_marginEnd="20dp"
@@ -47,10 +47,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginStart="40dp"
         android:layout_marginTop="35dp"
-        android:gravity="center"
         android:text="男"
-        android:textColor="#FFF"
-        android:textSize="16sp"
         app:layout_constraintHorizontal_bias="0.01"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -58,23 +55,21 @@
 
     <TextView
         android:id="@+id/text_nv"
+        style="@style/UserInfoEditTextStyle"
         android:layout_width="115dp"
         android:layout_height="42dp"
         android:layout_marginEnd="40dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="40dp"
         android:layout_marginStart="20dp"
-        android:gravity="center"
         android:text="女"
-        android:textColor="#FFF"
-        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@+id/text_nan"
         app:layout_constraintHorizontal_bias="0.99"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/text_nan" />
 
-    <EditText
+    <TextView
         android:id="@+id/height"
         style="@style/UserInfoEditTextStyle"
         android:layout_width="0dp"
@@ -84,13 +79,12 @@
         android:layout_marginRight="43dp"
         android:layout_marginStart="43dp"
         android:layout_marginTop="35dp"
-        android:hint="身高"
-        android:inputType="numberDecimal"
+        android:text="身高"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_nan" />
 
-    <EditText
+    <TextView
         android:id="@+id/weight"
         style="@style/UserInfoEditTextStyle"
         android:layout_width="0dp"
@@ -100,13 +94,12 @@
         android:layout_marginRight="43dp"
         android:layout_marginStart="43dp"
         android:layout_marginTop="35dp"
-        android:hint="体重"
-        android:inputType="numberDecimal"
+        android:text="体重"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/height" />
 
-    <EditText
+    <TextView
         android:id="@+id/age"
         style="@style/UserInfoEditTextStyle"
         android:layout_width="0dp"
@@ -116,8 +109,7 @@
         android:layout_marginRight="43dp"
         android:layout_marginStart="43dp"
         android:layout_marginTop="35dp"
-        android:hint="年龄"
-        android:inputType="number"
+        android:text="年龄"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/weight" />

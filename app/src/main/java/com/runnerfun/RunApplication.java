@@ -13,9 +13,9 @@ import android.webkit.CookieSyncManager;
 
 import com.avos.avoscloud.AVAnalytics;
 import com.avos.avoscloud.AVOSCloud;
-import com.lzy.imagepicker.ImagePicker;
-import com.lzy.imagepicker.view.CropImageView;
-import com.runnerfun.tools.PicassoImageLoader;
+//import com.lzy.imagepicker.ImagePicker;
+//import com.lzy.imagepicker.view.CropImageView;
+//import com.runnerfun.tools.PicassoImageLoader;
 import com.squareup.picasso.Picasso;
 import com.xiaomi.channel.commonutils.logger.LoggerInterface;
 import com.xiaomi.mipush.sdk.Logger;
@@ -34,9 +34,9 @@ public class RunApplication extends Application {
 
     // for MI-push--------start-----------------
     // user your appid the key.
-    // TODO private static final String APP_ID = "2882303761517522582";
+    // TODO private static final String MI_APP_ID = "2882303761517525173";
     // user your appid the key.
-    // TODO private static final String APP_KEY = "5321752268582";
+    // TODO private static final String MI_APP_KEY = "5701752515173";
     public static final String TAG = "com.runnerfun.android";
 
     private static RunApplication _instance;
@@ -67,17 +67,17 @@ public class RunApplication extends Application {
         Timber.plant(new Timber.DebugTree());
 
         // init photo picker
-        ImagePicker imagePicker = ImagePicker.getInstance();
-        imagePicker.setImageLoader(new PicassoImageLoader());   //设置图片加载器
-        imagePicker.setShowCamera(true);
-        imagePicker.setCrop(true);
-        imagePicker.setSaveRectangle(false);
-        imagePicker.setMultiMode(false);
-        imagePicker.setStyle(CropImageView.Style.CIRCLE);
-        imagePicker.setFocusWidth(800);
-        imagePicker.setFocusHeight(800);
-        imagePicker.setOutPutX(800);
-        imagePicker.setOutPutY(800);
+//        ImagePicker imagePicker = ImagePicker.getInstance();
+//        imagePicker.setImageLoader(new PicassoImageLoader());   //设置图片加载器
+//        imagePicker.setShowCamera(true);
+//        imagePicker.setCrop(true);
+//        imagePicker.setSaveRectangle(false);
+//        imagePicker.setMultiMode(false);
+//        imagePicker.setStyle(CropImageView.Style.CIRCLE);
+//        imagePicker.setFocusWidth(800);
+//        imagePicker.setFocusHeight(800);
+//        imagePicker.setOutPutX(800);
+//        imagePicker.setOutPutY(800);
 
         // init Picasso
         picasso = Picasso.with(this);
@@ -88,7 +88,7 @@ public class RunApplication extends Application {
 
         // for MI-push
         /* if (shouldInit()) {
-            MiPushClient.registerPush(this, APP_ID, APP_KEY);
+            MiPushClient.registerPush(this, MI_APP_ID, MI_APP_KEY);
             String account = "a" + getIMEI();
             MiPushClient.setAlias(this, account, "ANDROID_USER");
         }

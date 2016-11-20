@@ -44,8 +44,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:contentDescription="@null"
-                android:src="@drawable/tab_selected"
-                app:srcCompat="@drawable/tab_selected" />
+                android:src="@drawable/tab_selected" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -71,8 +70,7 @@
                 android:layout_centerHorizontal="true"
                 android:contentDescription="@null"
                 android:src="@drawable/tab_selected"
-                android:visibility="gone"
-                app:srcCompat="@drawable/tab_selected" />
+                android:visibility="gone" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -98,8 +96,7 @@
                 android:layout_centerHorizontal="true"
                 android:contentDescription="@null"
                 android:src="@drawable/tab_selected"
-                android:visibility="gone"
-                app:srcCompat="@drawable/tab_selected" />
+                android:visibility="gone" />
         </RelativeLayout>
 
     </LinearLayout>
@@ -118,8 +115,7 @@
         android:src="@drawable/icon_back"
         app:layout_constraintBottom_toBottomOf="@+id/record_value_content"
         app:layout_constraintLeft_toLeftOf="@+id/record_value_content"
-        app:layout_constraintTop_toTopOf="@+id/record_value_content"
-        app:srcCompat="@drawable/icon_back" />
+        app:layout_constraintTop_toTopOf="@+id/record_value_content" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/record_fragment_pager"
