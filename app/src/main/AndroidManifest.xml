@@ -29,7 +29,6 @@
     <uses-permission android:name="com.runnerfun.permission.MIPUSH_RECEIVE" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
-
     <application
         android:name=".RunApplication"
         android:allowBackup="true"
@@ -40,9 +39,11 @@
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="fbb5a4e30136b705b73412f24d06b1de" />
-        <!--<meta-data
+        <!--
+            <meta-data
             android:name="leancloud"
-            android:value="${channel_id}" />-->
+            android:value="${channel_id}" />
+        -->
 
         <activity
             android:name=".SplashActivity"
@@ -85,7 +86,8 @@
             android:name=".RecordProvider"
             android:authorities="com.runnerfun.record"
             android:enabled="true"
-            android:exported="false"/>
+            android:exported="false" />
+
         <activity
             android:name=".CoinDetailActivity"
             android:screenOrientation="portrait" />
@@ -104,6 +106,59 @@
         <activity
             android:name=".UserInfoEditActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".model.thirdpart.AliPayActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".model.thirdpart.AliPayH5Activity"
+            android:screenOrientation="portrait" />
+
+        <!-- 腾讯SSO授权的Activity注册 -->
+        <activity
+            android:name="com.tencent.tauth.AuthActivity"
+            android:launchMode="singleTask"
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="tencent1105728053" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.tencent.connect.common.AssistActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <!-- for weixin login and pay -->
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name=".wxapi.WXPayEntryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <!-- for alipay -->
+        <activity
+            android:name="com.alipay.sdk.app.H5PayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind" />
+        <activity
+            android:name="com.alipay.sdk.auth.AuthActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind" />
+        <!-- for alipay end -->
+
 
         <!-- for Mi push -->
         <service
@@ -142,6 +197,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>

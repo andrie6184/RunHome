@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
+import com.runnerfun.tools.ApplicationUtils;
 import com.runnerfun.widget.RecyclingPagerAdapter;
 import com.runnerfun.widget.TransformViewPager;
 
@@ -57,7 +58,7 @@ public class GuideActivity extends Activity {
 
     @OnClick(R.id.start_btn)
     void onStartClick(View view) {
-        startActivity(new Intent(this, MainActivity.class));
+        ApplicationUtils.navigationActivityWithCheckLogin(this, new Intent(this, MainActivity.class));
         finish();
     }
 

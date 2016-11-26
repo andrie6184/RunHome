@@ -94,6 +94,18 @@ public class AccountModel {
         rxRequest(request.login(tel, toMD5(pwd), code), callback);
     }
 
+    public void loginWithThird(String bid, String type, String name, String headimg, Subscriber<LoginBean> callback) {
+        String code = toMD5(KEY + bid + type);
+        ThirdLoginRequest request = retrofitApi.create(ThirdLoginRequest.class);
+        rxRequest(request.loginWithThird(bid, type, name, headimg, code), callback);
+    }
+
+    public Observable<ResponseBean<LoginBean>> loginWithThird(String bid, String type, String name, String headimg) {
+        String code = toMD5(KEY + bid + type);
+        ThirdLoginRequest request = retrofitApi.create(ThirdLoginRequest.class);
+        return request.loginWithThird(bid, type, name, headimg, code);
+    }
+
     public void logout(Subscriber<String> callback) {
         LogoutRequest request = retrofitApi.create(LogoutRequest.class);
         rxRequest(request.logout(), callback);

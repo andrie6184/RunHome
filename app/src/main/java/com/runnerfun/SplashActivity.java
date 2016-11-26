@@ -10,6 +10,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
+import com.runnerfun.tools.ApplicationUtils;
 import com.runnerfun.tools.RxUtils;
 
 import java.util.concurrent.TimeUnit;
@@ -74,7 +75,8 @@ public class SplashActivity extends AppCompatActivity {
                     RunApplication.getAppContex().sharedPreferences.edit().putBoolean("startGuide", true).apply();
                     startActivity(new Intent(SplashActivity.this, GuideActivity.class));
                 } else {
-                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                    ApplicationUtils.navigationActivityWithCheckLogin(SplashActivity.this,
+                            new Intent(SplashActivity.this, MainActivity.class));
                 }
                 finish();
             }

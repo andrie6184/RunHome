@@ -7,4 +7,5 @@
     <string name="network_common_err">请求失败,请稍后重试</string>
     <string name="network_no_data">暂无数据</string>
     <string name="title_activity_user_info_edit">UserInfoEditActivity</string>
+    <string name="title_activity_ali_pay">AliPayActivity</string>
 </resources>
