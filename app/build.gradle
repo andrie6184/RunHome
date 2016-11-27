@@ -64,4 +64,5 @@ dependencies {
     compile files('libs/weiboSDKCore_3.1.4.jar')
     // for weibo login & share
     compile files('libs/alipaySdk-20161009.jar')
+    compile 'com.larswerkman:HoloColorPicker:1.5'
 }

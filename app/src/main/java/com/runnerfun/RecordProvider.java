@@ -5,8 +5,14 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 
+import com.amap.api.maps2d.model.LatLng;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class RecordProvider extends ContentProvider {
     private final static String RECORD_INSERT = "content://com.runnerfun.record/insert";
+    private List<LatLng> mCoordinates = new ArrayList<>();
 
 
     public RecordProvider() {

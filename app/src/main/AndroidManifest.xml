@@ -29,6 +29,7 @@
     <uses-permission android:name="com.runnerfun.permission.MIPUSH_RECEIVE" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
+
     <application
         android:name=".RunApplication"
         android:allowBackup="true"
@@ -219,6 +220,16 @@
         </receiver>
 
         <service android:name="com.amap.api.location.APSService" />
+
+        <activity android:name=".MapConfigActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            />
+        <activity android:name=".ShareActivity"
+            android:theme="@style/Theme.AppCompat.DayNight"
+            />
+        <activity android:name=".ShareElemActivity"
+            android:theme="@style/Theme.AppCompat.DayNight"
+            />
 
     </application>
 
