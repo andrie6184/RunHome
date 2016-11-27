@@ -8,11 +8,13 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
+import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.CameraUpdate;
 import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.MapView;
@@ -20,7 +22,13 @@ import com.amap.api.maps2d.model.BitmapDescriptorFactory;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.amap.api.maps2d.model.PolylineOptions;
+import com.runnerfun.beans.Record;
+import com.runnerfun.model.RecordModel;
+import com.runnerfun.widget.MapBtnWidget;
 
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,6 +40,12 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
     MapView mMap;
     @BindView(R.id.data_list)
     RecyclerView mList;
+    @BindView(R.id.pause)
+    View mPauseView;
+    @BindView(R.id.stop)
+    View mStopView;
+    @BindView(R.id.panel)
+    MapBtnWidget mPanelWidget;
 
     private AMapLocationClientOption mLocationOption = null;
     private AMapLocationClient mlocationClient = null;
@@ -54,6 +68,18 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         mLocationOption.setInterval(2000);
         mlocationClient.setLocationOption(mLocationOption);
         mlocationClient.startLocation();
+
+        mPanelWidget.setOnClickListener(new MapBtnWidget.OnButtonClick() {
+            @Override
+            public void onLeftClick() {
+                pause();
+            }
+
+            @Override
+            public void onRightClick() {
+                stop();
+            }
+        });
     }
 
     @Override
@@ -61,6 +87,7 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         super.onResume();
         mMap.onResume();
         mlocationClient.startLocation();
+        drawLines(null);
     }
 
     @Override
@@ -78,6 +105,16 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
     @OnClick(R.id.back)
     void onBack(){
         finish();
+    }
+
+    private void pause(){
+        //TODO: resume
+        RecordService.pauseRecord(this);
+    }
+
+    private void stop(){
+        //TODO: start
+        RecordService.stopRecord(this);
     }
 
     @Override
@@ -111,6 +148,16 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         CameraUpdate newPos = CameraUpdateFactory.newLatLng(ll);
         mMap.getMap().animateCamera(newPos);
         mMap.getMap().moveCamera(CameraUpdateFactory.zoomTo(14.f));
+    }
+
+    private void drawLines(List<LatLng> records){
+        List<LatLng> latLngs = new ArrayList<LatLng>();
+        latLngs.add(new LatLng(39.9086611069,116.3975273161));
+        latLngs.add(new LatLng(39.9161718640,116.4148932713));
+        latLngs.add(new LatLng(39.9416926475,116.4152854934));
+        latLngs.add(new LatLng(39.9955216684,116.4164003901));
+        mMap.getMap().addPolyline(new PolylineOptions().
+                addAll(latLngs).width(10).color(Color.argb(255, 1, 1, 1)));
     }
 
 }

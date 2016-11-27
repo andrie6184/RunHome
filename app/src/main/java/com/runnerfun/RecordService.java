@@ -1,18 +1,19 @@
 package com.runnerfun;
 
 import android.app.IntentService;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.SystemClock;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps2d.model.LatLng;
+import com.runnerfun.model.RecordModel;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Subscription;
@@ -22,59 +23,58 @@ import rx.subjects.Subject;
 /**
  * Created by andrie on 02/11/2016.
  */
-
-public class RecordService extends IntentService implements AMapLocationListener {
+public class RecordService extends Service implements AMapLocationListener {
     public static final String ACTION_START_RECORD = "com.runnerfun.start";
     public static final String ACTION_STOP_RECORD = "com.runnerfun.stop";
-    public static final String ACTION_CLEAR_RECORD = "com.runnerfun.doClear";
+    public static final String ACTION_CLEAR_RECORD = "com.runnerfun.clear";
+    public static final String ACTION_PAUSE_RECORD = "com.runnerfun.pause";
+    public static final String ACTION_RESUME_RECORD = "com.runnerfun.resume";
 
-    private List<LatLng> mCoordinates = new ArrayList<>();
     private AMapLocationClientOption mLocationOption = null;
     private AMapLocationClient mlocationClient = null;
     private Subscription mUploadTimer = null;
-    private long mStartTime = 0;
 
     public static void startRecord(Context c){
         Intent i = new Intent(c, RecordService.class);
         i.setAction(ACTION_START_RECORD);
         c.startService(i);
     }
+    public static void pauseRecord(Context c){
+        Intent i = new Intent(c, RecordService.class);
+        i.setAction(ACTION_PAUSE_RECORD);
+        c.startService(i);
+    }
+    public static void stopRecord(Context c){
+        Intent i = new Intent(c, RecordService.class);
+        i.setAction(ACTION_STOP_RECORD);
+        c.startService(i);
+    }
 
-    /**
-     * Creates an IntentService.  Invoked by your subclass's constructor.
-     *
-     * @param name Used to name the worker thread, important only for debugging.
-     */
-    public RecordService(String name) {
-        super(name);
+    public static void resumeRecord(Context c){
+        Intent i = new Intent(c, RecordService.class);
+        i.setAction(ACTION_RESUME_RECORD);
+        c.startService(i);
+    }
+
+
+    public RecordService(){
+        super();
         mlocationClient = new AMapLocationClient(this);
         mLocationOption = new AMapLocationClientOption();
         mlocationClient.setLocationListener(this);
         mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
         mLocationOption.setInterval(2000);
         mlocationClient.setLocationOption(mLocationOption);
-        mlocationClient.startLocation();
-    }
-
-    public RecordService(){
-        super("");
     }
 
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
-        if(mCoordinates.size() > 1) {
-            LatLng ll = mCoordinates.get(mCoordinates.size() - 1);
-            if (Double.compare(ll.latitude, aMapLocation.getLatitude()) == 0
-                    && Double.compare(ll.longitude, aMapLocation.getLongitude()) == 0) {
-                return;
-            }
-        }
-        mCoordinates.add(new LatLng(aMapLocation.getLatitude()
+        RecordModel.instance.addRecord(new LatLng(aMapLocation.getLatitude()
                 , aMapLocation.getLongitude()));
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
+    public int onStartCommand(Intent intent, int flags, int startId) {
         switch (intent.getAction()){
             case ACTION_START_RECORD:
                 doStart();//TODO:是否需要notification?
@@ -85,9 +85,16 @@ public class RecordService extends IntentService implements AMapLocationListener
             case ACTION_CLEAR_RECORD:
                 doClear();
                 break;
+            case ACTION_PAUSE_RECORD:
+                doStop();
+                break;
+            case ACTION_RESUME_RECORD:
+                doResume();
+                break;
             default:
                 break;
         }
+        return Service.START_STICKY;
     }
 
     private void uploadData(){
@@ -99,18 +106,43 @@ public class RecordService extends IntentService implements AMapLocationListener
         if(mUploadTimer != null){
             mUploadTimer.unsubscribe();
         }
+        RecordModel.instance.stop();
         uploadData();
     }
 
     private void doStart(){
         mlocationClient.stopLocation();
-        mCoordinates.clear();
         mlocationClient.startLocation();
         if(mUploadTimer != null){
             mUploadTimer.unsubscribe();
         }
-        mStartTime = SystemClock.elapsedRealtime();//使用系统启动时间计算流逝时间,加上base时间
-        mUploadTimer = Subject.timer(60 * 1000, TimeUnit.MILLISECONDS)
+        //TODO: start upload
+        RecordModel.instance.start();
+        startTimer();
+    }
+
+    private void doClear(){
+    }
+
+    private void doResume(){
+        RecordModel.instance.resume();
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        doStop();
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    private void startTimer(){
+        mUploadTimer = Subject.interval(6 * 1000, TimeUnit.MILLISECONDS)//TODO:  改为60秒
                 .subscribe(new Action1<Long>() {
                     @Override
                     public void call(Long aLong) {
@@ -119,13 +151,4 @@ public class RecordService extends IntentService implements AMapLocationListener
                 });//TODO: 处理cancel?
     }
 
-    private void doClear(){
-        mCoordinates.clear();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        doStop();
-    }
 }

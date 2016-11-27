@@ -5,6 +5,12 @@ package com.runnerfun.model;
  */
 
 public class UserSettingModel {
+    public static final UserSettingModel mModel = new UserSettingModel();
+
+
+    public float getWeight(){
+        return 0.f;
+    }
 
 
 
