@@ -6,8 +6,8 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.runnerfun.R;
-import com.runnerfun.beans.LoginBean;
 import com.runnerfun.beans.ResponseBean;
+import com.runnerfun.beans.ThirdLoginBean;
 import com.runnerfun.model.AccountModel;
 import com.runnerfun.model.thirdpart.ThirdAccountModel;
 import com.runnerfun.tools.ThirdPartAuthManager;
@@ -67,9 +67,9 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                         }
                         return null;
                     }
-                }).flatMap(new Func1<String, Observable<ResponseBean<LoginBean>>>() {
+                }).flatMap(new Func1<String, Observable<ResponseBean<ThirdLoginBean>>>() {
                     @Override
-                    public Observable<ResponseBean<LoginBean>> call(String info) {
+                    public Observable<ResponseBean<ThirdLoginBean>> call(String info) {
                         try {
                             JSONObject userInfo = new JSONObject(info);
                             String openId = userInfo.optString("openid", "");
@@ -86,17 +86,19 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                     }
                 }).subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<ResponseBean<LoginBean>>() {
+                        .subscribe(new Action1<ResponseBean<ThirdLoginBean>>() {
                             @Override
-                            public void call(ResponseBean<LoginBean> bean) {
+                            public void call(ResponseBean<ThirdLoginBean> bean) {
                                 if (bean.getCode() == 0) {
                                     if (actionListener != null) {
-                                        actionListener.onSuccess(ACTION_TAG_LOGIN, ThirdPartAuthManager.TYPE_THIRD_QQ);
+                                        actionListener.onSuccess(ACTION_TAG_LOGIN,
+                                                ThirdPartAuthManager.TYPE_THIRD_QQ,
+                                                bean.getData().isFirstlogin());
                                     }
                                 } else {
                                     if (actionListener != null) {
-                                        actionListener.onFailed(ACTION_TAG_LOGIN, ThirdPartAuthManager.TYPE_THIRD_QQ,
-                                                bean.getMsg());
+                                        actionListener.onFailed(ACTION_TAG_LOGIN,
+                                                ThirdPartAuthManager.TYPE_THIRD_QQ, bean.getMsg());
                                     }
                                 }
                                 finish();

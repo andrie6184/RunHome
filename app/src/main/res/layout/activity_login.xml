@@ -76,7 +76,10 @@
             android:layout_marginRight="22dp"
             android:layout_marginStart="22dp"
             android:layout_weight="1"
-            android:text="注册" />
+            android:background="@drawable/register_btn_bg"
+            android:text="注册"
+            android:textColor="#000"
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/login_btn"
@@ -85,7 +88,10 @@
             android:layout_marginEnd="22dp"
             android:layout_marginRight="22dp"
             android:layout_weight="1"
-            android:text="登录" />
+            android:background="@drawable/login_btn_bg"
+            android:text="登录"
+            android:textColor="#FFF"
+            android:textSize="14sp" />
     </LinearLayout>
 
     <ImageView

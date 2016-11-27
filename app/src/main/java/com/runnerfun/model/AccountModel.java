@@ -13,6 +13,7 @@ import com.runnerfun.beans.ResponseBean;
 import com.runnerfun.beans.RunRecordBean;
 import com.runnerfun.beans.RunTotalBean;
 import com.runnerfun.beans.RunWeekBean;
+import com.runnerfun.beans.ThirdLoginBean;
 import com.runnerfun.beans.UploadResult;
 import com.runnerfun.beans.UserInfo;
 
@@ -94,13 +95,13 @@ public class AccountModel {
         rxRequest(request.login(tel, toMD5(pwd), code), callback);
     }
 
-    public void loginWithThird(String bid, String type, String name, String headimg, Subscriber<LoginBean> callback) {
+    public void loginWithThird(String bid, String type, String name, String headimg, Subscriber<ThirdLoginBean> callback) {
         String code = toMD5(KEY + bid + type);
         ThirdLoginRequest request = retrofitApi.create(ThirdLoginRequest.class);
         rxRequest(request.loginWithThird(bid, type, name, headimg, code), callback);
     }
 
-    public Observable<ResponseBean<LoginBean>> loginWithThird(String bid, String type, String name, String headimg) {
+    public Observable<ResponseBean<ThirdLoginBean>> loginWithThird(String bid, String type, String name, String headimg) {
         String code = toMD5(KEY + bid + type);
         ThirdLoginRequest request = retrofitApi.create(ThirdLoginRequest.class);
         return request.loginWithThird(bid, type, name, headimg, code);

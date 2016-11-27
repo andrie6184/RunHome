@@ -1,25 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/fragment_content"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tabs"
+        <android.support.v4.view.ViewPager
+            android:id="@+id/fragment_content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="53dp"
+            android:background="@android:color/black"
+            android:paddingTop="5dip"
+            app:tabIndicatorColor="@android:color/transparent"
+            app:tabSelectedTextColor="#979797"
+            app:tabTextColor="#FFFFFF" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/new_login_gift"
         android:layout_width="match_parent"
-        android:layout_height="53dp"
-        android:background="@android:color/black"
-        android:paddingTop="5dip"
-        app:tabIndicatorColor="@android:color/transparent"
-        app:tabSelectedTextColor="#979797"
-        app:tabTextColor="#FFFFFF" />
+        android:layout_height="match_parent"
+        android:background="@drawable/register_gift"
+        android:visibility="gone">
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/gift_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="30dp"
+            android:contentDescription="@null"
+            android:src="@drawable/gift_close_btn" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

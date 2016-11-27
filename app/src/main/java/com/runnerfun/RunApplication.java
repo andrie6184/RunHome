@@ -83,7 +83,7 @@ public class RunApplication extends Application {
         picasso = Picasso.with(this);
 
         // for lean-cloud analytic & feedback.
-        // TODO AVOSCloud.initialize(this, "r1QGocPzMUuYGjpSvulhVN6N-gzGzoHsz", "4KjO9YOWwQY9WdoTBNMyFtJg");
+        // TODO AVOSCloud.initialize(this, "OQpEDpAfPU5fxknXO4YWuV6J-gzGzoHsz", "huXzXqNd6uGPi8yI8tG2pwnj");
         // TODO AVAnalytics.enableCrashReport(this, true);
 
         // for MI-push
@@ -122,11 +122,6 @@ public class RunApplication extends Application {
             }
         }
         return false;
-    }
-
-    private String getIMEI() {
-        TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-        return tm.getDeviceId();
     }*/
 
 }

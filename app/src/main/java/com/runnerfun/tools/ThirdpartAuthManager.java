@@ -4,14 +4,12 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Message;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.alipay.sdk.app.PayTask;
 import com.runnerfun.RunApplication;
-import com.runnerfun.beans.LoginBean;
 import com.runnerfun.beans.ResponseBean;
+import com.runnerfun.beans.ThirdLoginBean;
 import com.runnerfun.model.AccountModel;
 import com.runnerfun.model.thirdpart.ThirdAccountModel;
 import com.runnerfun.wxapi.WXEntryActivity;
@@ -41,8 +39,6 @@ import com.tencent.tauth.UiError;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Map;
-
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -58,7 +54,7 @@ import timber.log.Timber;
 public class ThirdPartAuthManager {
 
     public interface ThirdPartActionListener {
-        void onSuccess(int action, int type);
+        void onSuccess(int action, int type, boolean isFirst);
 
         void onFailed(int action, int type, String result);
 
@@ -86,12 +82,18 @@ public class ThirdPartAuthManager {
     private static IWXAPI iwxapi;
     private static Tencent mTencent;
 
-    public ThirdPartAuthManager() {
+    private static ThirdPartAuthManager instance = new ThirdPartAuthManager();
+
+    private ThirdPartAuthManager() {
         mTencent = Tencent.createInstance(QQ_APP_KEY, RunApplication.getAppContex());
         iwxapi = WXAPIFactory.createWXAPI(RunApplication.getAppContex(), WEIXIN_APP_KEY);
     }
 
-    public static void startQQLogin(final Activity activity, final ThirdPartActionListener listener) {
+    public static ThirdPartAuthManager instance() {
+        return instance;
+    }
+
+    public void startQQLogin(final Activity activity, final ThirdPartActionListener listener) {
         mTencent = Tencent.createInstance(QQ_APP_KEY, activity.getApplicationContext());
         IUiListener mTencentListener = new IUiListener() {
             @Override
@@ -103,7 +105,7 @@ public class ThirdPartAuthManager {
                     public void onComplete(Object response) {
                         JSONObject info = (JSONObject) response;
                         AccountModel.instance.loginWithThird(id, "qq", info.optString("nickname", ""),
-                                info.optString("figureurl_qq_2", ""), new Subscriber<LoginBean>() {
+                                info.optString("figureurl_qq_2", ""), new Subscriber<ThirdLoginBean>() {
                                     @Override
                                     public void onCompleted() {
                                     }
@@ -111,14 +113,16 @@ public class ThirdPartAuthManager {
                                     @Override
                                     public void onError(Throwable e) {
                                         if (listener != null) {
-                                            listener.onFailed(ACTION_TAG_LOGIN, TYPE_THIRD_QQ, e.getLocalizedMessage());
+                                            listener.onFailed(ACTION_TAG_LOGIN, TYPE_THIRD_QQ,
+                                                    e.getLocalizedMessage());
                                         }
                                     }
 
                                     @Override
-                                    public void onNext(LoginBean loginBean) {
+                                    public void onNext(ThirdLoginBean loginBean) {
                                         if (listener != null) {
-                                            listener.onSuccess(ACTION_TAG_LOGIN, TYPE_THIRD_QQ);
+                                            listener.onSuccess(ACTION_TAG_LOGIN, TYPE_THIRD_QQ,
+                                                    loginBean.isFirstlogin());
                                         }
                                     }
                                 });
@@ -159,7 +163,7 @@ public class ThirdPartAuthManager {
         }
     }
 
-    public static void startQQShare(Activity context, Tencent mTencent, IUiListener mListener, String imageUrl) {
+    public void startQQShare(Activity context, Tencent mTencent, IUiListener mListener, String imageUrl) {
         Bundle params = new Bundle();
         params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_IMAGE);
         params.putString(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, imageUrl);
@@ -168,7 +172,7 @@ public class ThirdPartAuthManager {
         mTencent.shareToQQ(context, params, mListener);
     }
 
-    public static void startWeiboLogin(final Activity activity, final ThirdPartActionListener listener) {
+    public void startWeiboLogin(final Activity activity, final ThirdPartActionListener listener) {
         AuthInfo authInfo = new AuthInfo(activity, WEIBO_APP_KEY,
                 WEIBO_REDIRECT_URL, WEIBO_ACCESS_SCOPE);
         SsoHandler ssoHandler = new SsoHandler(activity, authInfo);
@@ -181,9 +185,9 @@ public class ThirdPartAuthManager {
                 if (mAccessToken.isSessionValid()) {
                     AccessTokenKeeper.writeAccessToken(activity, mAccessToken);
                     ThirdAccountModel.instance.getWeiboUserInfo(mAccessToken.getToken(),
-                            mAccessToken.getUid()).flatMap(new Func1<String, Observable<ResponseBean<LoginBean>>>() {
+                            mAccessToken.getUid()).flatMap(new Func1<String, Observable<ResponseBean<ThirdLoginBean>>>() {
                         @Override
-                        public Observable<ResponseBean<LoginBean>> call(String info) {
+                        public Observable<ResponseBean<ThirdLoginBean>> call(String info) {
                             try {
                                 JSONObject userInfo = new JSONObject(info);
                                 String name = userInfo.optString("name", "");
@@ -198,17 +202,18 @@ public class ThirdPartAuthManager {
                         }
                     }).subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Action1<ResponseBean<LoginBean>>() {
+                            .subscribe(new Action1<ResponseBean<ThirdLoginBean>>() {
                                 @Override
-                                public void call(ResponseBean<LoginBean> loginBeanResponseBean) {
-                                    if (loginBeanResponseBean.getCode() == 0) {
+                                public void call(ResponseBean<ThirdLoginBean> bean) {
+                                    if (bean.getCode() == 0) {
                                         if (listener != null) {
-                                            listener.onSuccess(ACTION_TAG_LOGIN, TYPE_THIRD_QQ);
+                                            listener.onSuccess(ACTION_TAG_LOGIN, TYPE_THIRD_QQ,
+                                                    bean.getData().isFirstlogin());
                                         }
                                     } else {
                                         if (listener != null) {
                                             listener.onFailed(ACTION_TAG_LOGIN, TYPE_THIRD_QQ,
-                                                    loginBeanResponseBean.getMsg());
+                                                    bean.getMsg());
                                         }
                                     }
                                 }
@@ -246,7 +251,7 @@ public class ThirdPartAuthManager {
         });
     }
 
-    public static void startWeiboShare(IWeiboShareAPI mWeiboShareAPI, final Activity context, Bitmap image) {
+    public void startWeiboShare(IWeiboShareAPI mWeiboShareAPI, final Activity context, Bitmap image) {
         // 获取微博客户端相关信息，如是否安装、支持 SDK 的版本
         boolean isInstalledWeibo = mWeiboShareAPI.isWeiboAppInstalled();
 
@@ -266,7 +271,7 @@ public class ThirdPartAuthManager {
         }
     }
 
-    public static void startWeixinLogin(Activity activity, ThirdPartActionListener listener) {
+    public void startWeixinLogin(Activity activity, ThirdPartActionListener listener) {
         if (!iwxapi.isWXAppInstalled()) {
             Toast.makeText(activity, "分享请先安装微信客户端", Toast.LENGTH_SHORT).show();
         } else {
@@ -279,8 +284,8 @@ public class ThirdPartAuthManager {
         }
     }
 
-    public static void startWeixinShare(Activity context, IWXAPI api, boolean isTimeLine, String imagePath) {
-        if (api.isWXAppInstalled() && api.isWXAppInstalled()) {
+    public void startWeixinShare(Activity context, boolean isTimeLine, String imagePath) {
+        if (iwxapi.isWXAppInstalled() && iwxapi.isWXAppInstalled()) {
             WXImageObject imgObj = new WXImageObject();
             imgObj.setImagePath(imagePath);
 
@@ -297,22 +302,22 @@ public class ThirdPartAuthManager {
             req.transaction = "img" + String.valueOf(System.currentTimeMillis());
             req.message = msg;
             req.scene = isTimeLine ? SendMessageToWX.Req.WXSceneTimeline : SendMessageToWX.Req.WXSceneSession;
-            api.sendReq(req);
+            iwxapi.sendReq(req);
 
-        } else if (!api.isWXAppInstalled()) {
+        } else if (!iwxapi.isWXAppInstalled()) {
             Toast.makeText(context, "微信分享需要安装微信客户端", Toast.LENGTH_LONG).show();
-        } else if (!api.isWXAppInstalled()) {
+        } else if (!iwxapi.isWXAppInstalled()) {
             Toast.makeText(context, "您的微信客户端版本过低，请升级后重试", Toast.LENGTH_LONG).show();
         }
     }
 
-    public static IWXAPI regToWxapp(Activity activity) {
+    public IWXAPI regToWxapp(Activity activity) {
         iwxapi = WXAPIFactory.createWXAPI(activity, WEIXIN_APP_KEY, true);
         iwxapi.registerApp(WEIXIN_APP_KEY);
         return iwxapi;
     }
 
-    public static boolean payByWeixin(String payBill) {
+    public boolean payByWeixin(String payBill) {
         if (TextUtils.isEmpty(payBill)) {
             return false;
         }
