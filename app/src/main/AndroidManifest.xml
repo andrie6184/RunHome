@@ -113,6 +113,13 @@
             android:name=".model.thirdpart.AliPayH5Activity"
             android:screenOrientation="portrait" />
 
+        <!-- for weibo share and login -->
+        <activity
+            android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
+            android:configChanges="keyboardHidden|orientation"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
         <!-- 腾讯SSO授权的Activity注册 -->
         <activity
             android:name="com.tencent.tauth.AuthActivity"
@@ -157,8 +164,6 @@
             android:configChanges="orientation|keyboardHidden|navigation"
             android:exported="false"
             android:screenOrientation="behind" />
-        <!-- for alipay end -->
-
 
         <!-- for Mi push -->
         <service
@@ -197,7 +202,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
@@ -209,7 +213,6 @@
                 <action android:name="com.xiaomi.push.PING_TIMER" />
             </intent-filter>
         </receiver>
-        <!-- for Mi push end -->
 
         <service android:name="com.amap.api.location.APSService" />
     </application>

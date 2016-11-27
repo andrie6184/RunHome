@@ -35,7 +35,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wx_entry);
-        ThirdPartAuthManager.regToWxapp(this);
+        ThirdPartAuthManager.instance().regToWxapp(this);
         handleIntent(getIntent());
     }
 

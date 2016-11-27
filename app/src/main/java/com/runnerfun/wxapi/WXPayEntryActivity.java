@@ -26,7 +26,7 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wx_pay_result);
 
-        api = ThirdPartAuthManager.regToWxapp(this);
+        api = ThirdPartAuthManager.instance().regToWxapp(this);
         api.handleIntent(getIntent(), this);
     }
 
