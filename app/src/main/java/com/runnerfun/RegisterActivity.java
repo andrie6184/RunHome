@@ -58,12 +58,12 @@ public class RegisterActivity extends BaseActivity {
             public void onError(Throwable e) {
                 view.setEnabled(true);
                 view.setClickable(true);
-                Toast.makeText(RegisterActivity.this, "get code fail", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onNext(String codeBean) {
-                Toast.makeText(RegisterActivity.this, "get code success" + codeBean, Toast.LENGTH_SHORT).show();
+                // Toast.makeText(RegisterActivity.this, "get code success" + codeBean, Toast.LENGTH_SHORT).show();
                 mHourGlass = 60L * 1000L;
                 _subscription = Observable.interval(1000, 1000, TimeUnit.MILLISECONDS)
                         .observeOn(AndroidSchedulers.mainThread())
@@ -111,13 +111,15 @@ public class RegisterActivity extends BaseActivity {
             public void onError(Throwable e) {
                 view.setEnabled(true);
                 view.setClickable(true);
-                Toast.makeText(RegisterActivity.this, "register fail", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onNext(RegisterInfo registerInfo) {
-                Toast.makeText(RegisterActivity.this, "register success" + registerInfo, Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(RegisterActivity.this, UserInfoActivity.class));
+                Toast.makeText(RegisterActivity.this, "注册成功, 已为您登录" + registerInfo, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(RegisterActivity.this, InitUserInfoActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
             }
         });
     }

@@ -48,7 +48,7 @@ public class UserInfoActivity extends AppCompatActivity {
         }
         int age = Integer.parseInt(mAge.getText().toString());
         int height = Integer.parseInt(mHeight.getText().toString());
-        AccountModel.instance.updateUserInfo("", age, "", "", mIsMale ? "英雄" : "美人", height, new Subscriber<String>() {
+        AccountModel.instance.updateUserInfo("", age, "", "", mIsMale ? "英雄" : "美人", height, 0, new Subscriber<Object>() {
             @Override
             public void onCompleted() {
 
@@ -60,7 +60,7 @@ public class UserInfoActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNext(String result) {
+            public void onNext(Object result) {
                 finish();
                 startActivity(new Intent(UserInfoActivity.this, MainActivity.class));
             }

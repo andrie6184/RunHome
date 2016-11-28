@@ -4,10 +4,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,21 +17,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-//import com.lzy.imagepicker.ui.ImageGridActivity;
-import com.runnerfun.beans.UploadResult;
+import com.google.gson.Gson;
+import com.runnerfun.beans.UserInfo;
 import com.runnerfun.model.AccountModel;
+import com.runnerfun.tools.RoundedTransformation;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Subscriber;
-import timber.log.Timber;
 
+//import com.lzy.imagepicker.ui.ImageGridActivity;
 
 /**
  * UserFragment
@@ -37,6 +37,9 @@ import timber.log.Timber;
  */
 
 public class UserFragment extends Fragment {
+
+    public static final String USER_INFO_CHANGED_ACTION = "USER_INFO_CHANGED_ACTION";
+    public static final String SP_KEY_USER_INFO = "SP_KEY_USER_INFO";
 
     @BindView(R.id.user_avatar)
     ImageView mUserAvatar;
@@ -58,9 +61,16 @@ public class UserFragment extends Fragment {
         ButterKnife.bind(this, v);
 
         mLocalManager = LocalBroadcastManager.getInstance(getActivity());
-        IntentFilter filter = new IntentFilter(MainActivity.SELECTED_USER_AVATAR_ACTION);
+        IntentFilter filter = new IntentFilter(USER_INFO_CHANGED_ACTION);
         mReceiver = new UserAvatarReceiver();
         mLocalManager.registerReceiver(mReceiver, filter);
+
+        Typeface typeFace = Typeface.createFromAsset(getActivity().getAssets(), "fonts/dincond.otf");
+        Typeface boldTypeFace = Typeface.createFromAsset(getActivity().getAssets(), "fonts/dincond-bold.otf");
+        mUserCoin.setTypeface(typeFace);
+        mUserLength.setTypeface(boldTypeFace);
+
+        initData();
 
         return v;
     }
@@ -69,6 +79,35 @@ public class UserFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         mLocalManager.unregisterReceiver(mReceiver);
+    }
+
+    private void initData() {
+        AccountModel.instance.getUserInfo(new Subscriber<UserInfo>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNext(UserInfo userInfo) {
+                if (!TextUtils.isEmpty(userInfo.getHeadimg())) {
+                    RunApplication.getAppContex().picasso.load(userInfo.getHeadimg())
+                            .transform(new RoundedTransformation(360, 0)).placeholder(R.drawable.icon_avatar)
+                            .error(R.drawable.icon_avatar).into(mUserAvatar);
+                }
+                mUserName.setText(userInfo.getUser_name());
+                mUserSign.setText(userInfo.getRemarks());
+                mUserCoin.setText(userInfo.getTotal_score());
+                mUserLength.setText(userInfo.getTotal_mileage() + "Km");
+
+                RunApplication.getAppContex().sharedPreferences.edit().putString(SP_KEY_USER_INFO,
+                        new Gson().toJson(userInfo)).apply();
+            }
+        });
     }
 
     @OnClick(R.id.record)
@@ -91,55 +130,10 @@ public class UserFragment extends Fragment {
         startActivity(new Intent(getActivity(), UserSettingActivity.class));
     }
 
-    @OnClick(R.id.user_avatar)
-    void onClickAvatar() {
-//        Intent intent = new Intent(getActivity(), ImageGridActivity.class);
-//        getActivity().startActivityForResult(intent, MainActivity.REQUEST_CODE_IMAGE_PICKER);
-    }
-
-    protected void uploadAvatar(byte[] buffer) {
-        AccountModel.instance.uploadAvatar(buffer, new Subscriber<UploadResult>() {
-            @Override
-            public void onCompleted() {
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                Toast.makeText(getActivity(), "头像上传失败,请稍后再试", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNext(UploadResult result) {
-                String rrr = result.getImg();
-                Toast.makeText(getActivity(), "头像上传成功", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
     private class UserAvatarReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String imagePath = intent.getStringExtra(MainActivity.INTENT_PARAMS_USER_AVATAR_PATH);
-            File file = new File(imagePath);
-            RunApplication.getAppContex().picasso.load(file).into(mUserAvatar);
-
-            byte[] buffer = null;
-            FileInputStream fis = null;
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            try {
-                fis = new FileInputStream(file);
-                byte[] b = new byte[1024];
-                int n;
-                while ((n = fis.read(b)) != -1) {
-                    bos.write(b, 0, n);
-                }
-                buffer = bos.toByteArray();
-                uploadAvatar(buffer);
-            } catch (IOException e) {
-                e.printStackTrace();
-                Timber.e(e, "upload avatar error");
-            }
+            initData();
         }
     }
 

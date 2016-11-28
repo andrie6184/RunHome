@@ -7,6 +7,11 @@ import java.io.Serializable;
  */
 
 public class ResponseBean<T> implements Serializable {
+
+    private String msg;
+    private T data;
+    private int code;
+
     public int getCode() {
         return code;
     }
@@ -31,8 +36,5 @@ public class ResponseBean<T> implements Serializable {
         this.data = data;
     }
 
-    private String msg;
-    private T data;
-    private int code;
 }
 

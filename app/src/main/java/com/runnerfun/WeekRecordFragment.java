@@ -2,6 +2,7 @@ package com.runnerfun;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -13,7 +14,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.runnerfun.beans.RunWeekBean;
+import com.runnerfun.beans.UserInfo;
 import com.runnerfun.model.AccountModel;
 import com.runnerfun.widget.RecyclingPagerAdapter;
 import com.runnerfun.widget.ScalePageTransformer;
@@ -36,6 +39,7 @@ public class WeekRecordFragment extends Fragment {
     private TextView mSelected;
     private ArrayList<RunWeekBean> mRecords;
     private RecordAdapter mPagerAdapter;
+    private Typeface boldTypeFace;
 
     @BindView(R.id.week_one)
     TextView weekOne;
@@ -55,6 +59,8 @@ public class WeekRecordFragment extends Fragment {
     @BindView(R.id.week_viewpager)
     TransformViewPager viewPager;
 
+    private UserInfo userInfo;
+
     public WeekRecordFragment() {
     }
 
@@ -66,11 +72,15 @@ public class WeekRecordFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_week_record, container, false);
         ButterKnife.bind(this, view);
+        boldTypeFace = Typeface.createFromAsset(getActivity().getAssets(), "fonts/dincond-bold.otf");
         init();
         return view;
     }
 
     private void init() {
+        userInfo = new Gson().fromJson(RunApplication.getAppContex().sharedPreferences
+                .getString(UserFragment.SP_KEY_USER_INFO, ""), UserInfo.class);
+
         mSelected = weekOne;
         final TextView[] views = {weekOne, weekTwo, weekThree, weekFour, weekFive, weekSix, weekSeven};
         final List<TextView> viewList = Arrays.asList(views);
@@ -174,6 +184,7 @@ public class WeekRecordFragment extends Fragment {
                 viewHolder.userAvatar = (ImageView) convertView.findViewById(R.id.user_avatar);
                 viewHolder.userName = (TextView) convertView.findViewById(R.id.user_name);
                 viewHolder.recordDistance = (TextView) convertView.findViewById(R.id.record_distance);
+                viewHolder.recordDistance.setTypeface(boldTypeFace);
                 viewHolder.recordEvaluate = (TextView) convertView.findViewById(R.id.record_evaluate);
                 viewHolder.recordTime = (TextView) convertView.findViewById(R.id.record_time);
 
@@ -182,10 +193,12 @@ public class WeekRecordFragment extends Fragment {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
 
+            RunApplication.getAppContex().picasso.load(userInfo.getHeadimg()).placeholder(R.drawable.icon_avatar)
+                    .error(R.drawable.icon_avatar).into(viewHolder.userAvatar);
+            viewHolder.userName.setText(userInfo.getUser_name());
+
             final RunWeekBean item = getItem(position);
             if (item != null) {
-                // RunApplication.getAppContex().picasso.load(item).into(viewHolder.userAvatar);
-                // viewHolder.userName.setText(item.getNum());
                 viewHolder.recordDistance.setText(item.getDistance());
                 // ?? TODO viewHolder.recordEvaluate.setText(item.getThe_time());
                 viewHolder.recordTime.setText(item.getDate());

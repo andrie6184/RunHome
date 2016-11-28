@@ -7,6 +7,10 @@ import java.io.Serializable;
  */
 
 public class RegisterInfo implements Serializable {
+
+    private String uid;
+    private String token;
+
     public String getToken() {
         return token;
     }
@@ -23,6 +27,4 @@ public class RegisterInfo implements Serializable {
         this.uid = uid;
     }
 
-    private String token;
-    private String uid;
 }

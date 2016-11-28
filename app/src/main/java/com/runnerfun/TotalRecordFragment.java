@@ -1,5 +1,6 @@
 package com.runnerfun;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -41,6 +42,13 @@ public class TotalRecordFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_total_record, container, false);
         ButterKnife.bind(this, view);
+        Typeface boldTypeFace = Typeface.createFromAsset(getActivity().getAssets(), "fonts/dincond-bold.otf");
+        totalHour.setTypeface(boldTypeFace);
+        totalDistance.setTypeface(boldTypeFace);
+        totalHot.setTypeface(boldTypeFace);
+        averageSpeed.setTypeface(boldTypeFace);
+        averageSecSpeed.setTypeface(boldTypeFace);
+        maxSpeed.setTypeface(boldTypeFace);
         return view;
     }
 

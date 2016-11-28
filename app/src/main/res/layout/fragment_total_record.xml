@@ -18,11 +18,12 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_marginEnd="15dp"
                 android:layout_marginLeft="24dp"
+                android:layout_marginRight="15dp"
                 android:layout_marginStart="24dp"
-                android:layout_weight="3"
                 android:gravity="center_vertical"
                 android:text="总用时: 小时"
                 android:textColor="#333333"
@@ -30,11 +31,15 @@
 
             <TextView
                 android:id="@+id/total_hour"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="20dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginRight="25dp"
                 android:layout_marginTop="20dp"
-                android:layout_weight="1"
+                android:ellipsize="end"
+                android:gravity="end"
+                android:maxLines="1"
                 android:text="300"
                 android:textColor="#E60012"
                 android:textSize="32sp" />
@@ -49,11 +54,12 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_marginEnd="15dp"
                 android:layout_marginLeft="24dp"
+                android:layout_marginRight="15dp"
                 android:layout_marginStart="24dp"
-                android:layout_weight="3"
                 android:gravity="center_vertical"
                 android:text="总距离: 公里"
                 android:textColor="#333333"
@@ -61,11 +67,13 @@
 
             <TextView
                 android:id="@+id/total_distance"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="20dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginRight="25dp"
                 android:layout_marginTop="20dp"
-                android:layout_weight="1"
+                android:gravity="end"
                 android:text="300"
                 android:textColor="#E60012"
                 android:textSize="32sp" />
@@ -80,11 +88,12 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_marginEnd="15dp"
                 android:layout_marginLeft="24dp"
+                android:layout_marginRight="15dp"
                 android:layout_marginStart="24dp"
-                android:layout_weight="3"
                 android:gravity="center_vertical"
                 android:text="总消耗: 千卡"
                 android:textColor="#333333"
@@ -92,11 +101,15 @@
 
             <TextView
                 android:id="@+id/total_hot"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="20dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginRight="25dp"
                 android:layout_marginTop="20dp"
-                android:layout_weight="1"
+                android:ellipsize="end"
+                android:gravity="end"
+                android:maxLines="1"
                 android:text="300"
                 android:textColor="#E60012"
                 android:textSize="32sp" />
@@ -111,11 +124,12 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_marginEnd="15dp"
                 android:layout_marginLeft="24dp"
+                android:layout_marginRight="15dp"
                 android:layout_marginStart="24dp"
-                android:layout_weight="3"
                 android:gravity="center_vertical"
                 android:text="平均时速: 公里/小时"
                 android:textColor="#333333"
@@ -123,11 +137,15 @@
 
             <TextView
                 android:id="@+id/average_speed"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="20dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginRight="25dp"
                 android:layout_marginTop="20dp"
-                android:layout_weight="1"
+                android:ellipsize="end"
+                android:gravity="end"
+                android:maxLines="1"
                 android:text="300"
                 android:textColor="#E60012"
                 android:textSize="32sp" />
@@ -142,11 +160,12 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_marginEnd="15dp"
                 android:layout_marginLeft="24dp"
+                android:layout_marginRight="15dp"
                 android:layout_marginStart="24dp"
-                android:layout_weight="3"
                 android:gravity="center_vertical"
                 android:text="平均配速: 公里/分钟"
                 android:textColor="#333333"
@@ -154,11 +173,15 @@
 
             <TextView
                 android:id="@+id/average_sec_speed"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="20dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginRight="25dp"
                 android:layout_marginTop="20dp"
-                android:layout_weight="1"
+                android:ellipsize="end"
+                android:gravity="end"
+                android:maxLines="1"
                 android:text="300"
                 android:textColor="#E60012"
                 android:textSize="32sp" />
@@ -173,11 +196,12 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_marginEnd="15dp"
                 android:layout_marginLeft="24dp"
+                android:layout_marginRight="15dp"
                 android:layout_marginStart="24dp"
-                android:layout_weight="3"
                 android:gravity="center_vertical"
                 android:text="最高时速: 公里/小时"
                 android:textColor="#333333"
@@ -185,11 +209,15 @@
 
             <TextView
                 android:id="@+id/max_speed"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="20dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginRight="25dp"
                 android:layout_marginTop="20dp"
-                android:layout_weight="1"
+                android:ellipsize="end"
+                android:gravity="end"
+                android:maxLines="1"
                 android:text="300"
                 android:textColor="#E60012"
                 android:textSize="32sp" />

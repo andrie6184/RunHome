@@ -28,7 +28,6 @@ import okhttp3.Cookie;
 import okhttp3.FormBody;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
-import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -123,9 +122,10 @@ public class AccountModel {
         rxRequest(request.sendCode(tel, type, code), callback);
     }
 
-    public void updateUserInfo(String name, int age, String headimg, String remarks, String sexy, int height, Subscriber<String> callback) {
+    public void updateUserInfo(String name, int age, String headimg, String remarks, String sexy,
+                               int height, int weight, Subscriber<Object> callback) {
         UserEditRequest request = retrofitApi.create(UserEditRequest.class);
-        rxRequest(request.editUserInfo(name, age, headimg, remarks, height, sexy), callback);
+        rxRequest(request.editUserInfo(name, age, headimg, remarks, height, sexy, weight), callback);
     }
 
     public void getUserInfo(Subscriber<UserInfo> callback) {
@@ -138,10 +138,9 @@ public class AccountModel {
         rxRequest(request.list(type, page, COMMON_PAGE_SIZE), callback);
     }
 
-    public void uploadAvatar(byte[] file, Subscriber<UploadResult> callback) {
+    public void uploadAvatar(String description, RequestBody file, Subscriber<UploadResult> callback) {
         UploadAvatarRequest request = retrofitApi.create(UploadAvatarRequest.class);
-        RequestBody pic = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        rxRequest(request.uploadAvatar(pic), callback);
+        rxRequest(request.uploadAvatar(description, file), callback);
     }
 
     public void getUserPRecordList(int page, Subscriber<ArrayList<RunRecordBean>> callback) {
@@ -173,22 +172,18 @@ public class AccountModel {
         return false;
     }
 
-    public String getUserName() {
-        return RunApplication.getAppContex().sharedPreferences.getString("SP_KEY_USER_NAME", "");
-    }
+    public String getUserSid() {
+        List<Cookie> cookies = mClient.cookieJar().loadForRequest(HttpUrl.parse("http://api.paobuzhijia.com/"));
+        // List<Cookie> cookies = new SharedPrefsCookiePersistor(RunApplication.getAppContex()).loadAll();
 
-    // should only call by network thread after call getUserInfo()
-    public void setUserName(String name) {
-        RunApplication.getAppContex().sharedPreferences.edit().putString("SP_KEY_USER_NAME", name).apply();
-    }
-
-    public String getUserSignature() {
-        return RunApplication.getAppContex().sharedPreferences.getString("SP_KEY_USER_SIGNATURE", "");
-    }
-
-    // should only call by network thread after call getUserInfo()
-    public void setUserSignature(String signature) {
-        RunApplication.getAppContex().sharedPreferences.edit().putString("SP_KEY_USER_SIGNATURE", signature).apply();
+        if (cookies.size() > 0) {
+            for (Cookie c : cookies) {
+                if (c.name().equals("sid")) {
+                    return c.value();
+                }
+            }
+        }
+        return "-1";
     }
 
     private <T> void rxRequest(Observable<ResponseBean<T>> response, Subscriber<T> callback) {

@@ -8,6 +8,10 @@ import java.io.Serializable;
  */
 
 public class LoginBean implements Serializable {
+
+    private String sid;
+    private String nick;
+
     public String getSid() {
         return sid;
     }
@@ -24,6 +28,4 @@ public class LoginBean implements Serializable {
         this.nick = nick;
     }
 
-    private String sid;
-    private String nick;
 }

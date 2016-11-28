@@ -9,6 +9,10 @@ import java.io.Serializable;
 
 public class ThirdLoginBean implements Serializable {
 
+    private String sid;
+    private String nick;
+    private boolean firstlogin;
+
     public String getSid() {
         return sid;
     }
@@ -32,9 +36,5 @@ public class ThirdLoginBean implements Serializable {
     public void setFirstlogin(boolean firstlogin) {
         this.firstlogin = firstlogin;
     }
-
-    private String sid;
-    private String nick;
-    private boolean firstlogin;
 
 }

@@ -1,5 +1,6 @@
 package com.runnerfun;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -35,6 +36,7 @@ public class CoinDetailFragment extends Fragment implements SwipeRefreshLayout.O
     private CoinSummary mSummary;
 
     private boolean isLoading = false;
+    private Typeface boldTypeFace;
 
     @BindView(R.id.coin_total)
     TextView mCoinTotal;
@@ -73,6 +75,7 @@ public class CoinDetailFragment extends Fragment implements SwipeRefreshLayout.O
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_coin_detail, container, false);
         ButterKnife.bind(this, view);
+        boldTypeFace = Typeface.createFromAsset(getActivity().getAssets(), "fonts/dincond-bold.otf");
         init();
         return view;
     }
@@ -84,6 +87,10 @@ public class CoinDetailFragment extends Fragment implements SwipeRefreshLayout.O
     }
 
     private void init() {
+        mCoinTotal.setTypeface(boldTypeFace);
+        mCoinGift.setTypeface(boldTypeFace);
+        mCoinOut.setTypeface(boldTypeFace);
+
         mPtrLayout.setOnRefreshListener(this);
         mAdapter = new CoinListAdapter();
         mCoinList.setAdapter(mAdapter);
@@ -195,6 +202,7 @@ public class CoinDetailFragment extends Fragment implements SwipeRefreshLayout.O
                 convertView = mInflater.inflate(R.layout.layout_coin_list_item, null);
 
                 viewHolder.coinValue = (TextView) convertView.findViewById(R.id.coin_value);
+                viewHolder.coinValue.setTypeface(boldTypeFace);
                 viewHolder.coinDetail = (TextView) convertView.findViewById(R.id.coin_detail);
                 viewHolder.coinTime = (TextView) convertView.findViewById(R.id.coin_time);
                 viewHolder.imageLocation = (ImageView) convertView.findViewById(R.id.image_location);

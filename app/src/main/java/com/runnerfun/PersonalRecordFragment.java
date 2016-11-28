@@ -1,5 +1,6 @@
 package com.runnerfun;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -27,6 +28,7 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
 
     private ArrayList<RunRecordBean> mRecords;
     private boolean isLoading = false;
+    private Typeface boldTypeFace;
 
     @BindView(R.id.precord_list_ptr_frame)
     SwipeRefreshLayout mPtrLayout;
@@ -46,6 +48,7 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_personal_record, container, false);
         ButterKnife.bind(this, view);
+        boldTypeFace = Typeface.createFromAsset(getActivity().getAssets(), "fonts/dincond-bold.otf");
         init();
         return view;
     }
@@ -154,6 +157,7 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
                 convertView = mInflater.inflate(R.layout.layout_precord_list_item, null);
 
                 viewHolder.lengthValue = (TextView) convertView.findViewById(R.id.record_distance);
+                viewHolder.lengthValue.setTypeface(boldTypeFace);
                 viewHolder.recordDate = (TextView) convertView.findViewById(R.id.record_time);
                 viewHolder.recordAddress = (TextView) convertView.findViewById(R.id.record_location);
 
