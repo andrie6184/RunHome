@@ -10,12 +10,19 @@ import android.view.View;
 
 public class ScalePageTransformer implements ViewPager.PageTransformer {
 
-    public static final float MAX_SCALE = 0.9f;
-    public static final float MIN_SCALE = 0.8f;
+    private float MAX_SCALE = 0.9f;
+    private float MIN_SCALE = 0.8f;
+
+    public ScalePageTransformer() {
+    }
+
+    public ScalePageTransformer(float maxScale, float minScale) {
+        MAX_SCALE = maxScale;
+        MIN_SCALE = minScale;
+    }
 
     @Override
     public void transformPage(View page, float position) {
-
         if (position < -1) {
             position = -1;
         } else if (position > 1) {

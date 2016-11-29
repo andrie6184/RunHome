@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_run_record"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.runnerfun.RunRecordActivity">
+
+    <com.amap.api.maps2d.MapView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <RelativeLayout
+        android:id="@+id/viewpager_container"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="#EDEDED"
+        android:clipChildren="false"
+        android:gravity="center_horizontal">
+
+        <com.runnerfun.widget.TransformViewPager
+            android:id="@+id/info_viewpager"
+            android:layout_width="160dp"
+            android:layout_height="100dp"
+            android:clipChildren="false"
+            android:overScrollMode="never" />
+    </RelativeLayout>
+
+</LinearLayout>
