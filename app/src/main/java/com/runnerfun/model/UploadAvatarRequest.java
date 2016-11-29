@@ -15,8 +15,9 @@ import rx.Observable;
  */
 
 public interface UploadAvatarRequest {
+
     @Multipart
     @POST("/upimg")
     Observable<ResponseBean<UploadResult>> uploadAvatar(@Part("fileName") String description,
-                                                        @Part("file\"; filename=\"image.png\"") RequestBody imgs);
+                                                        @Part("img\"; filename=\"avatar.png") RequestBody imgs);
 }

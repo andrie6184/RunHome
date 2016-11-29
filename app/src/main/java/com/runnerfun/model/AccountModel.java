@@ -138,9 +138,9 @@ public class AccountModel {
         rxRequest(request.list(type, page, COMMON_PAGE_SIZE), callback);
     }
 
-    public void uploadAvatar(String description, RequestBody file, Subscriber<UploadResult> callback) {
+    public void uploadAvatar(String description, RequestBody imgs, Subscriber<UploadResult> callback) {
         UploadAvatarRequest request = retrofitApi.create(UploadAvatarRequest.class);
-        rxRequest(request.uploadAvatar(description, file), callback);
+        rxRequest(request.uploadAvatar(description, imgs), callback);
     }
 
     public void getUserPRecordList(int page, Subscriber<ArrayList<RunRecordBean>> callback) {

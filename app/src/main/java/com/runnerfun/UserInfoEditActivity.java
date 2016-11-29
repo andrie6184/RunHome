@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -25,6 +26,7 @@ import com.runnerfun.beans.UserInfo;
 import com.runnerfun.model.AccountModel;
 import com.runnerfun.tools.FileUtils;
 import com.runnerfun.tools.RoundedTransformation;
+import com.runnerfun.tools.UITools;
 import com.runnerfun.widget.ImagePickerPopWindow;
 import com.runnerfun.widget.WheelView;
 
@@ -128,29 +130,26 @@ public class UserInfoEditActivity extends Activity {
                     .transform(new RoundedTransformation(360, 0)).placeholder(R.drawable.icon_avatar)
                     .error(R.drawable.icon_avatar).into(avatar);
 
-            MediaType MEDIA_TYPE_PNG = MediaType.parse("multipart/form-data");
-            RequestBody requestBody = RequestBody.create(MEDIA_TYPE_PNG, new File(path));
-
-//            File file = new File(path);
-//            RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-//            MultipartBody.Part body = MultipartBody.Part.createFormData("img", file.getName(), requestFile);
-//            String descriptionString = "user Avatar";
-//            RequestBody description = RequestBody.create(MediaType.parse("multipart/form-data"), descriptionString);
+            byte[] file = UITools.bmpToByteArray(BitmapFactory.decodeFile(path), true);
+            RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
 
             AccountModel.instance.uploadAvatar("img", requestBody, new Subscriber<UploadResult>() {
                 @Override
                 public void onCompleted() {
-
+                    findViewById(R.id.user_avatar).setEnabled(true);
+                    findViewById(R.id.user_avatar).setClickable(true);
                 }
 
                 @Override
                 public void onError(Throwable e) {
+                    findViewById(R.id.user_avatar).setEnabled(true);
+                    findViewById(R.id.user_avatar).setClickable(true);
                     Toast.makeText(UserInfoEditActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onNext(UploadResult uploadResult) {
-                    String image = uploadResult.getImg();
+                    userInfo.setHeadimg(uploadResult.getImg());
                 }
             });
         }
@@ -180,6 +179,8 @@ public class UserInfoEditActivity extends Activity {
 
     @OnClick(R.id.user_avatar)
     void avatarClicked(View view) {
+        view.setEnabled(false);
+        view.setClickable(false);
         if (menuWindow == null) {
             menuWindow = new ImagePickerPopWindow(this, new View.OnClickListener() {
                 @Override
@@ -189,7 +190,8 @@ public class UserInfoEditActivity extends Activity {
                         case R.id.takePhotoBtn:
                             Intent takeIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                             takeIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                                    Uri.fromFile(new File(Environment.getExternalStorageDirectory(), IMAGE_FILE_NAME)));
+                                    Uri.fromFile(new File(Environment.getExternalStorageDirectory(),
+                                            IMAGE_FILE_NAME)));
                             startActivityForResult(takeIntent, REQUESTCODE_TAKE);
                             break;
                         case R.id.pickPhotoBtn:

@@ -13,9 +13,6 @@ import android.webkit.CookieSyncManager;
 
 import com.avos.avoscloud.AVAnalytics;
 import com.avos.avoscloud.AVOSCloud;
-//import com.lzy.imagepicker.ImagePicker;
-//import com.lzy.imagepicker.view.CropImageView;
-//import com.runnerfun.tools.PicassoImageLoader;
 import com.squareup.picasso.Picasso;
 import com.xiaomi.channel.commonutils.logger.LoggerInterface;
 import com.xiaomi.mipush.sdk.Logger;
@@ -65,19 +62,6 @@ public class RunApplication extends Application {
         CookieManager.getInstance().setAcceptCookie(true);
         // magic starts here
         Timber.plant(new Timber.DebugTree());
-
-        // init photo picker
-//        ImagePicker imagePicker = ImagePicker.getInstance();
-//        imagePicker.setImageLoader(new PicassoImageLoader());   //设置图片加载器
-//        imagePicker.setShowCamera(true);
-//        imagePicker.setCrop(true);
-//        imagePicker.setSaveRectangle(false);
-//        imagePicker.setMultiMode(false);
-//        imagePicker.setStyle(CropImageView.Style.CIRCLE);
-//        imagePicker.setFocusWidth(800);
-//        imagePicker.setFocusHeight(800);
-//        imagePicker.setOutPutX(800);
-//        imagePicker.setOutPutY(800);
 
         // init Picasso
         picasso = Picasso.with(this);
