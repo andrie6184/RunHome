@@ -5,16 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.util.Pair;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.SparseIntArray;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,6 +25,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.runnerfun.tools.Triple;
+import com.runnerfun.widget.ColorPickerDialog;
 import com.runnerfun.widget.FeatureItemHolder;
 
 import java.io.FileNotFoundException;
@@ -46,18 +50,12 @@ public class ShareElemActivity extends AppCompatActivity {
         return i;
     }
 
-    private Uri mImageUri = null;
-    private static final List<Pair<Integer, String>> mFeatures = new ArrayList<>();
-    {
-        mFeatures.clear();
-        mFeatures.add(new Pair<>(R.drawable.speed_selector, "配速"));
-        mFeatures.add(new Pair<>(R.drawable.location_selector, "定位"));
-        mFeatures.add(new Pair<>(R.drawable.time_selector, "时间"));
-        mFeatures.add(new Pair<>(R.drawable.cal_selector, "卡路里"));
-        mFeatures.add(new Pair<>(R.drawable.distance_selector, "里程"));
-        mFeatures.add(new Pair<>(R.drawable.color_selector, "颜色设置"));
-        mFeatures.add(new Pair<>(R.drawable.text_selector, "文字位置"));
+    public static interface OnStatusChanged{
+        public void onShow(boolean enable);
     }
+
+    private Uri mImageUri = null;
+    private static final List<Triple<Integer, String, OnStatusChanged>> mFeatures = new ArrayList<>();
 
     @BindView(R.id.background_image)
     ImageView mBackgroundImageView;
@@ -75,6 +73,7 @@ public class ShareElemActivity extends AppCompatActivity {
     TextView mContentTextView;
     @BindView(R.id.features)
     RecyclerView mRecycleView;
+    private List<TextView> mTextViews = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +98,73 @@ public class ShareElemActivity extends AppCompatActivity {
         if (getIntent().getExtras().containsKey(TEXT_PARAM)) {
             mContentTextView.setText(getIntent().getStringExtra(TEXT_PARAM));
         }
+
+        Typeface boldTypeFace = Typeface.createFromAsset(getAssets(),"fonts/dincond-bold.otf");
+        mSpeedView.setTypeface(boldTypeFace);
+        mHourView.setTypeface(boldTypeFace);
+        mDistanceView.setTypeface(boldTypeFace);
+
         //TODO:init other view
+        initActionList();
+        initActionBar();
+        initFeatures();
+    }
+
+    private void initActionList(){
+        mFeatures.clear();
+        mFeatures.add(new Triple<Integer, String, OnStatusChanged>(R.drawable.speed_selector, "配速", new OnStatusChanged(){
+            @Override
+            public void onShow(boolean enable) {
+                enableView(mSpeedView, enable);
+            }
+        }));
+        mFeatures.add(new Triple<Integer, String, OnStatusChanged>(R.drawable.location_selector, "定位", new OnStatusChanged(){
+
+            @Override
+            public void onShow(boolean enable) {
+                enableView(mLocationText, enable);
+            }
+        }));
+        mFeatures.add(new Triple<Integer, String, OnStatusChanged>(R.drawable.time_selector, "时间", new OnStatusChanged(){
+            @Override
+            public void onShow(boolean enable) {
+                enableView(mHourView, enable);
+            }
+        }));
+        mFeatures.add(new Triple<Integer, String, OnStatusChanged>(R.drawable.cal_selector, "卡路里", new OnStatusChanged() {
+            @Override
+            public void onShow(boolean enable) {
+               //TODO 哪有卡路里
+            }
+        }));
+        mFeatures.add(new Triple<Integer, String, OnStatusChanged>(R.drawable.distance_selector, "里程", new OnStatusChanged() {
+            @Override
+            public void onShow(boolean enable) {
+                enableView(mDistanceView, enable);
+            }
+        }));
+        mFeatures.add(new Triple<Integer, String, OnStatusChanged>(R.drawable.color_unchecked, "颜色设置", new OnStatusChanged(){
+
+            @Override
+            public void onShow(boolean enable) {
+                selectColor();
+            }
+        }));
+        mFeatures.add(new Triple<Integer, String, OnStatusChanged>(R.drawable.text_selector, "文字位置", new OnStatusChanged() {
+            @Override
+            public void onShow(boolean enable) {
+                //TODO://文字怎么换?
+            }
+        }));
+    }
+
+    private void initActionBar(){
+        ActionBar action = getSupportActionBar();
+        action.setTitle("水印照片");
+        action.setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void initFeatures(){
         mRecycleView.setLayoutManager(new GridLayoutManager(this, 4));
         mRecycleView.setAdapter(new RecyclerView.Adapter<FeatureItemHolder>(){
 
@@ -112,9 +177,10 @@ public class ShareElemActivity extends AppCompatActivity {
             @Override
             public void onBindViewHolder(FeatureItemHolder holder, int position) {
                 Log.d("BIND_VIEW", "on bind " + position + " holder = " + holder);
-                Pair<Integer, String> item = mFeatures.get(position);
+                Triple<Integer, String, OnStatusChanged> item = mFeatures.get(position);
                 holder.setIcon(item.first);
                 holder.setTitle(item.second);
+                holder.setOnStatus(item.third);
             }
 
             @Override
@@ -149,10 +215,31 @@ public class ShareElemActivity extends AppCompatActivity {
             //TODO:
             return true;
         }
+        else if(item.getItemId() == android.R.id.home){
+            finish();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
     private void selectColor(){
+        ColorPickerDialog dialog = new ColorPickerDialog();
+        dialog.show(getSupportFragmentManager(), "color_picked");
+        dialog.setColorListener(new ColorPickerDialog.ColorPickerListener() {
+            @Override
+            public void onSelect(int color) {
+                mContentTextView.setTextColor(color);
+                mHourView.setTextColor(color);
+                mDistanceView.setTextColor(color);
+                mSpeedView.setTextColor(color);
+                mLocationText.setTextColor(color);
+            }
+        });
+        dialog.setCancelable(true);
+    }
+
+    private void enableView(View v, boolean enable){
+        v.setVisibility(enable ? View.VISIBLE : View.INVISIBLE);
     }
 
 }

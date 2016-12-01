@@ -81,29 +81,35 @@
             >
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="4/h"
                 android:id="@+id/speed"
                 android:layout_weight="1"
+                android:textSize="25sp"
+                android:gravity="center_horizontal"
                 android:textColor="#fff"
                 />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="4/h"
                 android:id="@+id/hour"
                 android:layout_weight="1"
+                android:textSize="25sp"
+                android:gravity="center_horizontal"
                 android:textColor="#fff"
                 />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="4/h"
                 android:id="@+id/distance"
                 android:layout_weight="1"
+                android:textSize="25sp"
+                android:gravity="center_horizontal"
                 android:textColor="#fff"
                 />
 
