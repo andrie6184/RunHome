@@ -4,10 +4,13 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -20,6 +23,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnItemLongClick;
 import rx.Subscriber;
 
 import static com.runnerfun.model.AccountModel.COMMON_PAGE_SIZE;
@@ -29,6 +33,9 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
     private ArrayList<RunRecordBean> mRecords;
     private boolean isLoading = false;
     private Typeface boldTypeFace;
+
+    private RunRecordBean mDeleteBean;
+    private boolean mIsDeleting;
 
     @BindView(R.id.precord_list_ptr_frame)
     SwipeRefreshLayout mPtrLayout;
@@ -77,11 +84,56 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
             public void onScroll(AbsListView absListView, int i, int i1, int i2) {
             }
         });
+
+        mRecordList.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+            @Override
+            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+                menu.add(0, 1, 0, "删除");
+            }
+        });
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        if (item.getItemId() == 1) {
+            AccountModel.instance.deleteRunRecord(mDeleteBean.getRid(), new Subscriber<String>() {
+                @Override
+                public void onCompleted() {
+                    mIsDeleting = false;
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    mIsDeleting = false;
+                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onNext(String s) {
+                    Toast.makeText(getActivity(), "删除成功", Toast.LENGTH_SHORT).show();
+                    mRecords.remove(mDeleteBean);
+                    mAdapter.notifyDataSetChanged();
+                }
+            });
+            return true;
+        }
+        return super.onContextItemSelected(item);
     }
 
     @Override
     public void onRefresh() {
         requestCoinInfo(false);
+    }
+
+    @OnItemLongClick(R.id.precord_list_view)
+    boolean onRecordItemLongClicked(AdapterView<?> parent, View view, int position, long id) {
+        if (!mIsDeleting) {
+            mIsDeleting = true;
+            mDeleteBean = mRecords.get(position);
+            mRecordList.showContextMenu();
+            return true;
+        }
+        return false;
     }
 
     private void requestCoinInfo(final boolean requestMore) {

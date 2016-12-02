@@ -158,6 +158,11 @@ public class AccountModel {
         rxRequest(request.getTotal(), callback);
     }
 
+    public void deleteRunRecord(String id, Subscriber<String> callback) {
+        RecordDeleteRequest request = retrofitApi.create(RecordDeleteRequest.class);
+        rxRequest(request.delete(id), callback);
+    }
+
     public boolean hasLoginInfo() {
         List<Cookie> cookies = mClient.cookieJar().loadForRequest(HttpUrl.parse("http://api.paobuzhijia.com/"));
         // List<Cookie> cookies = new SharedPrefsCookiePersistor(RunApplication.getAppContex()).loadAll();
