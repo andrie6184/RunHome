@@ -16,6 +16,10 @@ public abstract class RecordStatus {
     protected long mTimeOffset = 0;
     protected List<LatLng> mCache = null;
 
+
+
+    protected long mRecordId = -1; // 本地ID
+
     public RecordStatus(RecordStatus from){
         if(from == null){
             mCache = new ArrayList<>();
@@ -23,6 +27,7 @@ public abstract class RecordStatus {
         else{
             mStartTime = from.mStartTime;
             mTimeOffset = from.mTimeOffset;
+            mRecordId = from.mRecordId;
             mCache = new ArrayList<>();
             if(from.mCache != null){
                 Collections.copy(mCache, from.mCache);
@@ -55,5 +60,11 @@ public abstract class RecordStatus {
         return Collections.unmodifiableList(mCache);
     }
 
+    public long getmRecordId() {
+        return mRecordId;
+    }
 
+    public void setmRecordId(long mRecordId) {
+        this.mRecordId = mRecordId;
+    }
 }

@@ -1,5 +1,7 @@
 package com.runnerfun;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -35,6 +37,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MapActivity extends AppCompatActivity implements AMapLocationListener {
+    public static final String DISPLAY_MODE = "display_mode";
 
     @BindView(R.id.map)
     MapView mMap;
@@ -49,6 +52,12 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
 
     private AMapLocationClientOption mLocationOption = null;
     private AMapLocationClient mlocationClient = null;
+
+    public static void startWithDisplayMode(Context c){
+        Intent i = new Intent();
+        i.putExtra(DISPLAY_MODE, true);
+        c.startActivity(i);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,8 +95,15 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
     protected void onResume() {
         super.onResume();
         mMap.onResume();
-        mlocationClient.startLocation();
-        drawLines(null);
+        boolean displayMode = getIntent().getBooleanExtra(DISPLAY_MODE, false);
+        if(displayMode){
+            mPanelWidget.setVisibility(View.GONE);
+        }
+        else{
+            mlocationClient.startLocation();
+            //TODO:RecordModel
+        }
+//        initCycleList();
     }
 
     @Override
