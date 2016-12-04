@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -230,11 +231,14 @@ public class RunFragment extends Fragment {
     }
 
     private void setMoney() {
-        UserInfo userInfo = new Gson().fromJson(RunApplication.getAppContex().sharedPreferences
-                .getString(UserFragment.SP_KEY_USER_INFO, ""), UserInfo.class);
-        mMoney.setText(userInfo.getTotal_score());
+        String info = RunApplication.getAppContex().sharedPreferences.getString(
+                UserFragment.SP_KEY_USER_INFO, "");
+        if (!TextUtils.isEmpty(info)) {
+            UserInfo userInfo = new Gson().fromJson(info, UserInfo.class);
+            mMoney.setText(userInfo.getTotal_score());
+        }
     }
-
+    
     private class UserMoneyReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {

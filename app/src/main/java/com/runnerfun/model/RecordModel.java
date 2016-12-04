@@ -1,5 +1,7 @@
 package com.runnerfun.model;
 
+import android.text.TextUtils;
+
 import com.amap.api.maps2d.model.LatLng;
 import com.google.gson.Gson;
 import com.runnerfun.RunApplication;
@@ -59,9 +61,14 @@ public class RecordModel {
     }
 
     public float getCal() {
-        UserInfo userInfo = new Gson().fromJson(RunApplication.getAppContex().sharedPreferences
-                .getString(UserFragment.SP_KEY_USER_INFO, ""), UserInfo.class);
-        return Float.valueOf(userInfo.getWeight()) * getDistance() * 1.036f;
+        String info = RunApplication.getAppContex().sharedPreferences.getString(
+                UserFragment.SP_KEY_USER_INFO, "");
+        if (!TextUtils.isEmpty(info)) {
+            UserInfo userInfo = new Gson().fromJson(info, UserInfo.class);
+            return Float.valueOf(userInfo.getWeight()) * getDistance() * 1.036f;
+        } else {
+            return 0f;
+        }
     }
 
     public boolean isRecording() {
