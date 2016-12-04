@@ -10,7 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.runnerfun.beans.RunTotalBean;
-import com.runnerfun.model.AccountModel;
+import com.runnerfun.network.NetworkManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,7 +59,7 @@ public class TotalRecordFragment extends Fragment {
     }
 
     private void requestData() {
-        AccountModel.instance.getUserTRecordList(new Subscriber<RunTotalBean>() {
+        NetworkManager.instance.getUserTRecordList(new Subscriber<RunTotalBean>() {
             @Override
             public void onCompleted() {
             }

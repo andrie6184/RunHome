@@ -19,10 +19,8 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.runnerfun.beans.UserInfo;
-import com.runnerfun.model.AccountModel;
+import com.runnerfun.network.NetworkManager;
 import com.runnerfun.tools.RoundedTransformation;
-
-import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -83,7 +81,7 @@ public class UserFragment extends Fragment {
     }
 
     private void initData() {
-        AccountModel.instance.getUserInfo(new Subscriber<UserInfo>() {
+        NetworkManager.instance.getUserInfo(new Subscriber<UserInfo>() {
             @Override
             public void onCompleted() {
             }

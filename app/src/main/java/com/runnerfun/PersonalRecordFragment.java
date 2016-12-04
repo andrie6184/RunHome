@@ -17,7 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.runnerfun.beans.RunRecordBean;
-import com.runnerfun.model.AccountModel;
+import com.runnerfun.network.NetworkManager;
 
 import java.util.ArrayList;
 
@@ -26,7 +26,7 @@ import butterknife.ButterKnife;
 import butterknife.OnItemLongClick;
 import rx.Subscriber;
 
-import static com.runnerfun.model.AccountModel.COMMON_PAGE_SIZE;
+import static com.runnerfun.network.NetworkManager.COMMON_PAGE_SIZE;
 
 public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -96,7 +96,7 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getItemId() == 1) {
-            AccountModel.instance.deleteRunRecord(mDeleteBean.getRid(), new Subscriber<String>() {
+            NetworkManager.instance.deleteRunRecord(mDeleteBean.getRid(), new Subscriber<String>() {
                 @Override
                 public void onCompleted() {
                     mIsDeleting = false;
@@ -142,7 +142,7 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
         if (requestMore && mRecords != null && mRecords.size() >= COMMON_PAGE_SIZE) {
             page = mRecords.size() / COMMON_PAGE_SIZE;
         }
-        AccountModel.instance.getUserPRecordList(page, new Subscriber<ArrayList<RunRecordBean>>() {
+        NetworkManager.instance.getUserPRecordList(page, new Subscriber<ArrayList<RunRecordBean>>() {
             @Override
             public void onCompleted() {
                 isLoading = false;

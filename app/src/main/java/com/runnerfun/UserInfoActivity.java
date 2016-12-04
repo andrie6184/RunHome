@@ -7,7 +7,7 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import com.runnerfun.model.AccountModel;
+import com.runnerfun.network.NetworkManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,7 +48,7 @@ public class UserInfoActivity extends AppCompatActivity {
         }
         int age = Integer.parseInt(mAge.getText().toString());
         int height = Integer.parseInt(mHeight.getText().toString());
-        AccountModel.instance.updateUserInfo("", age, "", "", mIsMale ? "英雄" : "美人", height, 0, new Subscriber<Object>() {
+        NetworkManager.instance.updateUserInfo("", age, "", "", mIsMale ? "英雄" : "美人", height, 0, new Subscriber<Object>() {
             @Override
             public void onCompleted() {
 

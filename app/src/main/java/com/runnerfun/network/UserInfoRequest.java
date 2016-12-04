@@ -1,4 +1,4 @@
-package com.runnerfun.model;
+package com.runnerfun.network;
 
 import com.runnerfun.beans.ResponseBean;
 import com.runnerfun.beans.UserInfo;

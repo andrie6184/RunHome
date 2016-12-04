@@ -2,14 +2,15 @@ apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 24
+    buildToolsVersion "24.0.1"
     defaultConfig {
         applicationId "com.runnerfun"
         minSdkVersion 14
-        targetSdkVersion 22
+        targetSdkVersion 24
         versionCode 1
         versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -17,23 +18,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    sourceSets {
-        main {
-            jniLibs.srcDirs = ['libs']
-            manifest.srcFile 'src/main/AndroidManifest.xml'
-        }
-    }
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.android.support', module: 'supporert-annotations'
     })
-    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile 'com.android.support:support-v4:22.2.1'
-    compile 'com.android.support:recyclerview-v7:22.2.1'
+    compile 'com.android.support:support-v4:24.2.1'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.okhttp3:okhttp:3.4.1'
     compile 'com.google.code.gson:gson:2.7'
@@ -41,28 +35,79 @@ dependencies {
     compile 'io.reactivex:rxandroid:1.1.0'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta3'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9+'
     compile 'com.jakewharton:butterknife:8.4.0'
-    compile 'com.android.support:design:22.2.1'
+    compile 'com.android.support:design:24.2.1'
     compile 'com.jakewharton.timber:timber:2.4.2'
     compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
     compile 'com.squareup.okhttp3:okhttp-urlconnection:3.2.0'
     compile 'com.github.franmontiel:PersistentCookieJar:v1.0.0'
-    // compile 'com.lzy.widget:imagepicker:0.3.2+'
+    compile 'com.lzy.widget:imagepicker:0.3.2+'
     compile 'com.squareup.picasso:picasso:2.5.2'
     testCompile 'junit:junit:4.12'
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
-    compile files('libs/MiPush_SDK_Client_3_1_2.jar')
-    compile files('libs/avoscloud-sdk-v3.13.15.jar')
-    compile files('libs/avoscloud-statistics-v3.13.15.jar')
-    compile files('libs/libammsdk.jar')
-    // for weixin login & share
-    compile files('libs/mta-sdk-1.6.2.jar')
-    // for qq login & share
-    compile files('libs/open_sdk_r5756.jar')
-    // for qq login & share
-    compile files('libs/weiboSDKCore_3.1.4.jar')
-    // for weibo login & share
-    compile files('libs/alipaySdk-20161009.jar')
-    compile 'com.larswerkman:HoloColorPicker:1.5'
+
+    apply plugin: 'com.android.application'
+    apply plugin: 'android-apt'
+
+    android {
+        compileSdkVersion 24
+        buildToolsVersion "24.0.1"
+        defaultConfig {
+            applicationId "com.runnerfun"
+            minSdkVersion 14
+            targetSdkVersion 24
+            versionCode 1
+            versionName "1.0"
+            testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        }
+        buildTypes {
+            release {
+                minifyEnabled false
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            }
+        }
+    }
+
+    dependencies {
+        compile fileTree(dir: 'libs', include: ['*.jar'])
+        androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+            exclude group: 'com.android.support', module: 'support-annotations'
+        })
+        compile 'com.android.support:appcompat-v7:24.2.1'
+        compile 'com.github.bumptech.glide:glide:3.7.0'
+        compile 'com.android.support:support-v4:24.2.1'
+        compile 'com.squareup.retrofit2:retrofit:2.1.0'
+        compile 'com.squareup.okhttp3:okhttp:3.4.1'
+        compile 'com.google.code.gson:gson:2.7'
+        compile 'io.reactivex:rxjava:1.1.0'
+        compile 'io.reactivex:rxandroid:1.1.0'
+        compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+        compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+        compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9+'
+        compile 'com.jakewharton:butterknife:8.4.0'
+        compile 'com.android.support:design:24.2.1'
+        compile 'com.jakewharton.timber:timber:2.4.2'
+        compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
+        compile 'com.squareup.okhttp3:okhttp-urlconnection:3.2.0'
+        compile 'com.github.franmontiel:PersistentCookieJar:v1.0.0'
+        compile 'com.lzy.widget:imagepicker:0.3.2+'
+        compile 'com.squareup.picasso:picasso:2.5.2'
+        testCompile 'junit:junit:4.12'
+        apt 'com.jakewharton:butterknife-compiler:8.4.0'
+        compile files('libs/MiPush_SDK_Client_3_1_2.jar')
+        compile files('libs/avoscloud-sdk-v3.13.15.jar')
+        compile files('libs/avoscloud-statistics-v3.13.15.jar')
+        compile files('libs/libammsdk.jar')
+        // for weixin login & share
+        compile files('libs/mta-sdk-1.6.2.jar')
+        // for qq login & share
+        compile files('libs/open_sdk_r5756.jar')
+        // for qq login & share
+        compile files('libs/weiboSDKCore_3.1.4.jar')
+        // for weibo login & share
+        compile files('libs/alipaySdk-20161009.jar')
+        compile 'com.larswerkman:HoloColorPicker:1.5'
+    }
+
 }

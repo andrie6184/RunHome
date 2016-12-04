@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.runnerfun.beans.RunWeekBean;
 import com.runnerfun.beans.UserInfo;
-import com.runnerfun.model.AccountModel;
+import com.runnerfun.network.NetworkManager;
 import com.runnerfun.widget.RecyclingPagerAdapter;
 import com.runnerfun.widget.ScalePageTransformer;
 import com.runnerfun.widget.TransformViewPager;
@@ -129,7 +129,7 @@ public class WeekRecordFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        AccountModel.instance.getUserWRecordList(new Subscriber<ArrayList<RunWeekBean>>() {
+        NetworkManager.instance.getUserWRecordList(new Subscriber<ArrayList<RunWeekBean>>() {
             @Override
             public void onCompleted() {
             }

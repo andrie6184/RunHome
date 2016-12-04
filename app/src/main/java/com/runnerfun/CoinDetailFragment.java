@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.runnerfun.beans.Coin;
 import com.runnerfun.beans.CoinBean;
 import com.runnerfun.beans.CoinSummary;
-import com.runnerfun.model.AccountModel;
+import com.runnerfun.network.NetworkManager;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Subscriber;
 
-import static com.runnerfun.model.AccountModel.COMMON_PAGE_SIZE;
+import static com.runnerfun.network.NetworkManager.COMMON_PAGE_SIZE;
 
 public class CoinDetailFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -125,7 +125,7 @@ public class CoinDetailFragment extends Fragment implements SwipeRefreshLayout.O
         if (requestMore && mCoins != null && mCoins.size() >= COMMON_PAGE_SIZE) {
             page = mCoins.size() / COMMON_PAGE_SIZE;
         }
-        AccountModel.instance.getUserCoins(type, page, new Subscriber<CoinBean>() {
+        NetworkManager.instance.getUserCoins(type, page, new Subscriber<CoinBean>() {
             @Override
             public void onCompleted() {
                 isLoading = false;

@@ -9,7 +9,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.runnerfun.beans.RegisterInfo;
-import com.runnerfun.model.AccountModel;
+import com.runnerfun.network.NetworkManager;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -49,7 +49,7 @@ public class RegisterActivity extends BaseActivity {
 
         view.setEnabled(false);
         view.setClickable(false);
-        AccountModel.instance.sendCode(tel, 1, new Subscriber<String>() {
+        NetworkManager.instance.sendCode(tel, 1, new Subscriber<String>() {
             @Override
             public void onCompleted() {
             }
@@ -100,7 +100,7 @@ public class RegisterActivity extends BaseActivity {
 
         view.setEnabled(false);
         view.setClickable(false);
-        AccountModel.instance.register(tel, pwd, code, new Subscriber<RegisterInfo>() {
+        NetworkManager.instance.register(tel, pwd, code, new Subscriber<RegisterInfo>() {
             @Override
             public void onCompleted() {
                 view.setEnabled(true);

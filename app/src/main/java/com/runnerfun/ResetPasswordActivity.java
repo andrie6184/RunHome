@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.runnerfun.beans.RegisterInfo;
-import com.runnerfun.model.AccountModel;
+import com.runnerfun.network.NetworkManager;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -57,7 +57,7 @@ public class ResetPasswordActivity extends BaseActivity {
 
         view.setEnabled(false);
         view.setClickable(false);
-        AccountModel.instance.sendCode(tel, 2, new Subscriber<String>() {
+        NetworkManager.instance.sendCode(tel, 2, new Subscriber<String>() {
             @Override
             public void onCompleted() {
             }
@@ -114,7 +114,7 @@ public class ResetPasswordActivity extends BaseActivity {
 
         view.setEnabled(false);
         view.setClickable(false);
-        AccountModel.instance.register(tel, password, code, new Subscriber<RegisterInfo>() {
+        NetworkManager.instance.register(tel, password, code, new Subscriber<RegisterInfo>() {
             @Override
             public void onCompleted() {
                 view.setEnabled(true);

@@ -23,7 +23,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.runnerfun.beans.UploadResult;
 import com.runnerfun.beans.UserInfo;
-import com.runnerfun.model.AccountModel;
+import com.runnerfun.network.NetworkManager;
 import com.runnerfun.tools.FileUtils;
 import com.runnerfun.tools.RoundedTransformation;
 import com.runnerfun.tools.UITools;
@@ -133,7 +133,7 @@ public class UserInfoEditActivity extends Activity {
             byte[] file = UITools.bmpToByteArray(BitmapFactory.decodeFile(path), true);
             RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
 
-            AccountModel.instance.uploadAvatar("img", requestBody, new Subscriber<UploadResult>() {
+            NetworkManager.instance.uploadAvatar("img", requestBody, new Subscriber<UploadResult>() {
                 @Override
                 public void onCompleted() {
                     findViewById(R.id.user_avatar).setEnabled(true);
@@ -354,7 +354,7 @@ public class UserInfoEditActivity extends Activity {
         view.setEnabled(false);
         view.setClickable(false);
         Toast.makeText(UserInfoEditActivity.this, "提交修改中...", Toast.LENGTH_SHORT).show();
-        AccountModel.instance.updateUserInfo(userInfo.getUser_name(), Integer.parseInt(userInfo.getAge()),
+        NetworkManager.instance.updateUserInfo(userInfo.getUser_name(), Integer.parseInt(userInfo.getAge()),
                 userInfo.getHeadimg(), userInfo.getRemarks(), userInfo.getSex(),
                 Integer.parseInt(userInfo.getHeight()), Integer.parseInt(userInfo.getWeight()),
                 new Subscriber<Object>() {

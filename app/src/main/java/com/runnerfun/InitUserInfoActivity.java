@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.runnerfun.model.AccountModel;
+import com.runnerfun.network.NetworkManager;
 import com.runnerfun.widget.WheelView;
 
 import java.util.ArrayList;
@@ -67,7 +67,7 @@ public class InitUserInfoActivity extends Activity {
                 50 + heightList.indexOf(height.getText().toString());
         int weightValue = weightList.indexOf(weight.getText().toString()) == -1 ? 0 :
                 30 + weightList.indexOf(weight.getText().toString());
-        AccountModel.instance.updateUserInfo("name", ageValue, "", "", gender, heightValue, weightValue,
+        NetworkManager.instance.updateUserInfo("name", ageValue, "", "", gender, heightValue, weightValue,
                 new Subscriber<Object>() {
                     @Override
                     public void onCompleted() {

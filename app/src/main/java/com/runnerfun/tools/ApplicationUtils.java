@@ -7,7 +7,7 @@ import android.content.pm.PackageManager;
 
 import com.runnerfun.LoginActivity;
 import com.runnerfun.RunApplication;
-import com.runnerfun.model.AccountModel;
+import com.runnerfun.network.NetworkManager;
 
 /**
  * ApplicationUtils
@@ -17,7 +17,7 @@ import com.runnerfun.model.AccountModel;
 public class ApplicationUtils {
 
     public static void navigationActivityWithCheckLogin(Context context, Intent navigate) {
-        if (AccountModel.instance.hasLoginInfo()) {
+        if (NetworkManager.instance.hasLoginInfo()) {
             context.startActivity(navigate);
         } else {
             context.startActivity(new Intent(context, LoginActivity.class));

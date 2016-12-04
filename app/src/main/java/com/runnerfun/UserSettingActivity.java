@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
-import com.runnerfun.model.AccountModel;
+import com.runnerfun.network.NetworkManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -170,7 +170,7 @@ public class UserSettingActivity extends Activity {
 
     @OnClick(R.id.logout_btn)
     void logoutBtnClicked(View view) {
-        AccountModel.instance.logout(new Subscriber<String>() {
+        NetworkManager.instance.logout(new Subscriber<String>() {
             @Override
             public void onCompleted() {
             }
@@ -192,8 +192,8 @@ public class UserSettingActivity extends Activity {
 
     public static boolean getSpeakingSetting() {
         String sid = "-1";
-        if (AccountModel.instance.hasLoginInfo()) {
-            sid = AccountModel.instance.getUserSid();
+        if (NetworkManager.instance.hasLoginInfo()) {
+            sid = NetworkManager.instance.getUserSid();
         }
         return RunApplication.getAppContex().sharedPreferences.getBoolean(sid + USER_SPEAK_SETTING, false);
     }
@@ -218,8 +218,8 @@ public class UserSettingActivity extends Activity {
 
     private static String getSettingPrefix() {
         String sid = "-1";
-        if (AccountModel.instance.hasLoginInfo()) {
-            sid = AccountModel.instance.getUserSid();
+        if (NetworkManager.instance.hasLoginInfo()) {
+            sid = NetworkManager.instance.getUserSid();
         }
         return sid;
     }

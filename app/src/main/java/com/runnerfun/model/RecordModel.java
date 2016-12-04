@@ -4,12 +4,12 @@ import android.os.SystemClock;
 
 import com.amap.api.maps2d.AMapUtils;
 import com.amap.api.maps2d.model.LatLng;
+import com.runnerfun.beans.Record;
 import com.runnerfun.model.statusmodel.RecordStatus;
 import com.runnerfun.model.statusmodel.StartStatus;
 import com.runnerfun.model.statusmodel.StopStatus;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -17,13 +17,29 @@ import java.util.List;
  */
 //转为单进程Service时需要改为 ContentProvider实现。
 public class RecordModel {
+    public static interface RecordChangeListener {
+        public void onRecordChange(LatLng ll);
+    }
+
+    private List<RecordChangeListener> listeners = new ArrayList<>();
+    public void addListener(RecordChangeListener l){
+        listeners.add(l);
+    }
+
+    public void removeListener(RecordChangeListener l){
+        listeners.remove(l);
+    }
 
     public static final RecordModel instance = new RecordModel();
     private RecordStatus mStatus = new StopStatus(null);
+    private long mID = -1;
 
-    public void start(){
+    public void start(long id){
+        mID = id;
         mStatus = new StartStatus(null);
     }
+
+    public long getID(){return mID;};
 
     public void stop(){
         mStatus = new StopStatus(mStatus);
@@ -40,6 +56,10 @@ public class RecordModel {
     public float getCal(){
 //        long cal = weight * distance * 1.036;
         return -1f;
+    }
+
+    public boolean isRecording(){
+        return mStatus instanceof StartStatus;
     }
 
     public float getSpeed(){
@@ -63,8 +83,15 @@ public class RecordModel {
         return mStatus.readCache();
     }
 
+    public LatLng firstLatLng(){
+        return mStatus.firstLatLng();
+    }
+
     public void addRecord(LatLng ll){
         mStatus.addRecord(ll);
+        for(RecordChangeListener l : listeners){
+            l.onRecordChange(ll);
+        }
     }
 
     private void uploadRecord(){

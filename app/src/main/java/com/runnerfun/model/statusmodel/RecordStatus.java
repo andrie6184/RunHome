@@ -16,30 +16,31 @@ public abstract class RecordStatus {
     protected long mTimeOffset = 0;
     protected List<LatLng> mCache = null;
 
-
-
-    protected long mRecordId = -1; // 本地ID
-
-    public RecordStatus(RecordStatus from){
+    RecordStatus(RecordStatus from){
         if(from == null){
             mCache = new ArrayList<>();
+            mStartTime = 0;
+            mTimeOffset = 0;
         }
         else{
             mStartTime = from.mStartTime;
             mTimeOffset = from.mTimeOffset;
-            mRecordId = from.mRecordId;
-            mCache = new ArrayList<>();
             if(from.mCache != null){
-                Collections.copy(mCache, from.mCache);
+                mCache = new ArrayList<>(from.mCache);
+            }
+            else{
+                mCache = new ArrayList<>();
             }
         }
     }
 
     abstract public long getRecordTime();
     abstract public void addRecord(LatLng ll);
-    abstract public void clearRecord();
+    public void clearRecord(){
+        mCache.clear();
+    };
     /**
-     * km
+     * m
      * @return
      */
     public float getDistance(){
@@ -60,11 +61,7 @@ public abstract class RecordStatus {
         return Collections.unmodifiableList(mCache);
     }
 
-    public long getmRecordId() {
-        return mRecordId;
-    }
-
-    public void setmRecordId(long mRecordId) {
-        this.mRecordId = mRecordId;
+    public LatLng firstLatLng() {
+        return mCache.size() > 0 ? mCache.get(0) : null;
     }
 }

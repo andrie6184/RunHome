@@ -5,13 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.runnerfun.R;
-import com.runnerfun.tools.ThirdPartAuthManager;
+import com.runnerfun.tools.ThirdpartAuthManager;
 import com.tencent.mm.sdk.constants.ConstantsAPI;
 import com.tencent.mm.sdk.modelbase.BaseReq;
 import com.tencent.mm.sdk.modelbase.BaseResp;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 import timber.log.Timber;
 
@@ -26,7 +25,7 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wx_pay_result);
 
-        api = ThirdPartAuthManager.instance().regToWxapp(this);
+        api = ThirdpartAuthManager.instance().regToWxapp(this);
         api.handleIntent(getIntent(), this);
     }
 

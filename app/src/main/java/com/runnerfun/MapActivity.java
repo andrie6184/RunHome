@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -35,8 +36,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observer;
+import rx.Subscriber;
 
-public class MapActivity extends AppCompatActivity implements AMapLocationListener {
+public class MapActivity extends AppCompatActivity implements AMapLocationListener, RecordModel.RecordChangeListener {
     public static final String DISPLAY_MODE = "display_mode";
 
     @BindView(R.id.map)
@@ -49,6 +52,7 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
     View mStopView;
     @BindView(R.id.panel)
     MapBtnWidget mPanelWidget;
+    private TextView mPauseBtn;
 
     private AMapLocationClientOption mLocationOption = null;
     private AMapLocationClient mlocationClient = null;
@@ -67,6 +71,7 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         init();
         mMap.onCreate(savedInstanceState);
         mMap.getMap().getUiSettings().setMyLocationButtonEnabled(true);
+        mPauseBtn = (TextView)mPanelWidget.findViewById(R.id.pause);
     }
 
     private void init() {
@@ -98,12 +103,19 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         boolean displayMode = getIntent().getBooleanExtra(DISPLAY_MODE, false);
         if(displayMode){
             mPanelWidget.setVisibility(View.GONE);
+            LatLng ll = RecordModel.instance.firstLatLng();
+            if(ll != null){
+                zoomTo(ll);
+            }
+            else{
+                mlocationClient.startLocation();
+            }
         }
         else{
             mlocationClient.startLocation();
             //TODO:RecordModel
         }
-//        initCycleList();
+        RecordModel.instance.addListener(this);
     }
 
     @Override
@@ -116,6 +128,7 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
     public void onPause() {
         super.onPause();
         mMap.onPause();
+        RecordModel.instance.removeListener(this);
     }
 
     @OnClick(R.id.back)
@@ -125,20 +138,28 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
 
     private void pause(){
         //TODO: resume
-        RecordService.pauseRecord(this);
+        if(RecordModel.instance.isRecording()) {
+            RecordService.pauseRecord(this);
+            mPauseBtn.setText("继续");
+        }
+        else{
+            RecordService.resumeRecord(this);
+            mPauseBtn.setText("暂停");
+        }
     }
 
     private void stop(){
         //TODO: start
         RecordService.stopRecord(this);
+        mPanelWidget.setVisibility(View.GONE);
     }
 
     @Override
     public void onLocationChanged(AMapLocation amapLocation) {
         if (amapLocation != null) {
             if (amapLocation.getErrorCode() == 0) {
-                setLocationMark(amapLocation.getLatitude(), amapLocation.getLongitude());
                 mlocationClient.stopLocation();
+                zoomTo(new LatLng(amapLocation.getLatitude(), amapLocation.getLongitude()));
             } else {
                 //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
                 Log.e("AmapError","location Error, ErrCode:"
@@ -148,9 +169,9 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         }
     }
 
-    private void setLocationMark(double lat, double lgt){
+    private void zoomTo(LatLng ll){
         MarkerOptions mark = new MarkerOptions()
-                .position(new LatLng(lat, lgt))
+                .position(ll)
                 .title("your location");
 
         mark.icon(
@@ -158,7 +179,6 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
                         .decodeResource(getResources(),
                                 R.drawable.icon_shezhi)));
 
-        LatLng ll = new LatLng(lat, lgt);
         mMap.getMap().clear();
         mMap.getMap().addMarker(mark);
         CameraUpdate newPos = CameraUpdateFactory.newLatLng(ll);
@@ -167,13 +187,12 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
     }
 
     private void drawLines(List<LatLng> records){
-        List<LatLng> latLngs = new ArrayList<LatLng>();
-        latLngs.add(new LatLng(39.9086611069,116.3975273161));
-        latLngs.add(new LatLng(39.9161718640,116.4148932713));
-        latLngs.add(new LatLng(39.9416926475,116.4152854934));
-        latLngs.add(new LatLng(39.9955216684,116.4164003901));
         mMap.getMap().addPolyline(new PolylineOptions().
-                addAll(latLngs).width(10).color(Color.argb(255, 1, 1, 1)));
+                addAll(records).width(10).color(Color.argb(255, 1, 1, 1)));
     }
 
+    @Override
+    public void onRecordChange(LatLng ll) {
+        drawLines(RecordModel.instance.readCache());
+    }
 }

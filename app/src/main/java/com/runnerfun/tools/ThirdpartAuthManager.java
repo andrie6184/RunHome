@@ -10,7 +10,7 @@ import android.widget.Toast;
 import com.runnerfun.RunApplication;
 import com.runnerfun.beans.ResponseBean;
 import com.runnerfun.beans.ThirdLoginBean;
-import com.runnerfun.model.AccountModel;
+import com.runnerfun.network.NetworkManager;
 import com.runnerfun.model.thirdpart.ThirdAccountModel;
 import com.runnerfun.wxapi.WXEntryActivity;
 import com.sina.weibo.sdk.api.ImageObject;
@@ -51,7 +51,7 @@ import timber.log.Timber;
  * ThirdPartAuthManager
  * Created by andrie on 11.06.15.
  */
-public class ThirdPartAuthManager {
+public class ThirdpartAuthManager {
 
     public interface ThirdPartActionListener {
         void onSuccess(int action, int type, boolean isFirst);
@@ -82,14 +82,14 @@ public class ThirdPartAuthManager {
     private static IWXAPI iwxapi;
     private static Tencent mTencent;
 
-    private static ThirdPartAuthManager instance = new ThirdPartAuthManager();
+    private static ThirdpartAuthManager instance = new ThirdpartAuthManager();
 
-    private ThirdPartAuthManager() {
+    private ThirdpartAuthManager() {
         mTencent = Tencent.createInstance(QQ_APP_KEY, RunApplication.getAppContex());
         iwxapi = WXAPIFactory.createWXAPI(RunApplication.getAppContex(), WEIXIN_APP_KEY);
     }
 
-    public static ThirdPartAuthManager instance() {
+    public static ThirdpartAuthManager instance() {
         return instance;
     }
 
@@ -104,7 +104,7 @@ public class ThirdPartAuthManager {
                     @Override
                     public void onComplete(Object response) {
                         JSONObject info = (JSONObject) response;
-                        AccountModel.instance.loginWithThird(id, "qq", info.optString("nickname", ""),
+                        NetworkManager.instance.loginWithThird(id, "qq", info.optString("nickname", ""),
                                 info.optString("figureurl_qq_2", ""), new Subscriber<ThirdLoginBean>() {
                                     @Override
                                     public void onCompleted() {
@@ -192,7 +192,7 @@ public class ThirdPartAuthManager {
                                 JSONObject userInfo = new JSONObject(info);
                                 String name = userInfo.optString("name", "");
                                 String image = userInfo.optString("profile_image_url", "");
-                                return AccountModel.instance.loginWithThird(mAccessToken.getUid(), "qq", name, image);
+                                return NetworkManager.instance.loginWithThird(mAccessToken.getUid(), "qq", name, image);
                             } catch (JSONException e) {
                                 if (listener != null) {
                                     listener.onFailed(ACTION_TAG_LOGIN, TYPE_THIRD_QQ, "数据解析失败");

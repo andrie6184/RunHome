@@ -9,15 +9,15 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.runnerfun.beans.LoginBean;
-import com.runnerfun.model.AccountModel;
-import com.runnerfun.tools.ThirdPartAuthManager;
+import com.runnerfun.network.NetworkManager;
+import com.runnerfun.tools.ThirdpartAuthManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Subscriber;
 
-public class LoginActivity extends AppCompatActivity implements ThirdPartAuthManager.ThirdPartActionListener {
+public class LoginActivity extends AppCompatActivity implements ThirdpartAuthManager.ThirdPartActionListener {
     @BindView(R.id.tel)
     EditText mTel;
     @BindView(R.id.password)
@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity implements ThirdPartAuthMan
 
         view.setEnabled(false);
         view.setClickable(false);
-        AccountModel.instance.login(tel, pwd, new Subscriber<LoginBean>() {
+        NetworkManager.instance.login(tel, pwd, new Subscriber<LoginBean>() {
             @Override
             public void onCompleted() {
                 loading.setVisibility(View.GONE);
@@ -79,25 +79,25 @@ public class LoginActivity extends AppCompatActivity implements ThirdPartAuthMan
     @OnClick(R.id.login_weixin)
     void weixinLogin() {
         loading.setVisibility(View.VISIBLE);
-        ThirdPartAuthManager.instance().startWeixinLogin(this, this);
+        ThirdpartAuthManager.instance().startWeixinLogin(this, this);
     }
 
     @OnClick(R.id.login_qq)
     void qqLogin() {
         loading.setVisibility(View.VISIBLE);
-        ThirdPartAuthManager.instance().startQQLogin(this, this);
+        ThirdpartAuthManager.instance().startQQLogin(this, this);
     }
 
     @OnClick(R.id.login_weibo)
     void weiboLogin() {
         loading.setVisibility(View.VISIBLE);
-        ThirdPartAuthManager.instance().startWeiboLogin(this, this);
+        ThirdpartAuthManager.instance().startWeiboLogin(this, this);
     }
 
     @Override
     public void onSuccess(int action, int type, boolean isFirst) {
         loading.setVisibility(View.GONE);
-        if (action == ThirdPartAuthManager.ACTION_TAG_LOGIN) {
+        if (action == ThirdpartAuthManager.ACTION_TAG_LOGIN) {
             Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra("isFirstLogin", isFirst);
@@ -109,7 +109,7 @@ public class LoginActivity extends AppCompatActivity implements ThirdPartAuthMan
     @Override
     public void onFailed(int action, int type, String result) {
         loading.setVisibility(View.GONE);
-        if (action == ThirdPartAuthManager.ACTION_TAG_LOGIN) {
+        if (action == ThirdpartAuthManager.ACTION_TAG_LOGIN) {
             Toast.makeText(this, "第三方登录失败,请稍后重试", Toast.LENGTH_SHORT).show();
         }
     }
@@ -117,7 +117,7 @@ public class LoginActivity extends AppCompatActivity implements ThirdPartAuthMan
     @Override
     public void onCanceled(int action, int type) {
         loading.setVisibility(View.GONE);
-        if (action == ThirdPartAuthManager.ACTION_TAG_LOGIN) {
+        if (action == ThirdpartAuthManager.ACTION_TAG_LOGIN) {
             Toast.makeText(this, "取消第三方登录", Toast.LENGTH_SHORT).show();
         }
     }

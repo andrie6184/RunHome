@@ -25,7 +25,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:scaleType="fitXY"
-        app:srcCompat="@drawable/copy"
+        android:src="@drawable/copy"
         android:id="@+id/choose_image"
         app:layout_constraintLeft_toLeftOf="@+id/content"
         android:layout_marginTop="56dp"

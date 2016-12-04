@@ -1,4 +1,4 @@
-package com.runnerfun.model;
+package com.runnerfun.network;
 
 
 import com.franmontiel.persistentcookiejar.ClearableCookieJar;
@@ -10,6 +10,7 @@ import com.runnerfun.beans.CoinBean;
 import com.runnerfun.beans.LoginBean;
 import com.runnerfun.beans.RegisterInfo;
 import com.runnerfun.beans.ResponseBean;
+import com.runnerfun.beans.RunIdBean;
 import com.runnerfun.beans.RunRecordBean;
 import com.runnerfun.beans.RunTotalBean;
 import com.runnerfun.beans.RunWeekBean;
@@ -44,13 +45,13 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
- * AccountModel
+ * NetworkManager
  * Created by andrie on 12/10/2016.
  */
 
-public class AccountModel {
+public class NetworkManager {
 
-    public static final AccountModel instance = new AccountModel();
+    public static final NetworkManager instance = new NetworkManager();
 
     private Retrofit retrofitApi = null;
     private Retrofit retrofitIP = null;
@@ -60,7 +61,7 @@ public class AccountModel {
 
     private static final String KEY = "Paobuzhijia@163$";
 
-    private AccountModel() {
+    private NetworkManager() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -161,6 +162,11 @@ public class AccountModel {
     public void deleteRunRecord(String id, Subscriber<String> callback) {
         RecordDeleteRequest request = retrofitApi.create(RecordDeleteRequest.class);
         rxRequest(request.delete(id), callback);
+    }
+
+    public void getRecordId(Subscriber<RunIdBean> callback){
+        RunRecordIdRequest request = retrofitApi.create(RunRecordIdRequest.class);
+        rxRequest(request.getRecordId(getUserSid()), callback);
     }
 
     public boolean hasLoginInfo() {

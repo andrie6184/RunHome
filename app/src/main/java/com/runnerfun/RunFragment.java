@@ -12,15 +12,23 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.runnerfun.beans.RunIdBean;
+import com.runnerfun.model.ConfigModel;
+import com.runnerfun.network.NetworkManager;
 import com.runnerfun.model.RecordModel;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -44,6 +52,10 @@ public class RunFragment extends Fragment {
     private Subscription mCounter = null;
     private Animation mScaleAnimation = new ScaleAnimation(1.f, 0.f, 1.f, 0.f
             , Animation.RELATIVE_TO_SELF,0.5f,Animation.RELATIVE_TO_SELF,0.5f);
+    private SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+    {
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+    }
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_run, container, false);
@@ -58,7 +70,7 @@ public class RunFragment extends Fragment {
         Typeface boldTypeFace = Typeface.createFromAsset(getActivity().getAssets(),"fonts/dincond-bold.otf");
         mClockView.setTypeface(boldTypeFace);
         mMoney.setTypeface(typeFace);
-        mMoney.setText("700");
+        mMoney.setText("0");
 
         View km = view.findViewById(R.id.km);
         View speed = view.findViewById(R.id.speed);
@@ -89,35 +101,67 @@ public class RunFragment extends Fragment {
         startActivity(new Intent(getActivity(), MapActivity.class));
     }
 
-    @OnClick(R.id.btn_run)
+   //TODO: @OnClick(R.id.btn_run)
     void start(){
+        NetworkManager.instance.getRecordId(new Subscriber<RunIdBean>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNext(RunIdBean runIdBean) {
+                doStart(runIdBean.getId());
+            }
+        });
+    }
+
+    @OnClick(R.id.btn_run)
+    void test(){
+        if(RecordModel.instance.isRecording()) {
+            RecordService.stopRecord(getActivity());
+        }
+        else{
+            doStart(-1);
+        }
+    }
+
+    private void doStart(final long id){
         mCountDownView.setText("");
         mCountDownView.setVisibility(View.VISIBLE);
         //TODO:3,2,1 动画
         if(mCounter != null){
             mCounter.unsubscribe();
         }
-        mCounter = Observable.interval(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Long>() {
-                    @Override
-                    public void call(Long aLong) {
-                        if(aLong >= 3){
-                            mCounter.unsubscribe();
-                            mCountDownView.setVisibility(View.GONE);
-                            doStart();
+
+        if(ConfigModel.instance.useCountdown()) {
+            final long s = ConfigModel.instance.getmCountDownSecond();
+            showCountDown(s);
+            mCounter = Observable.interval(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<Long>() {
+                        @Override
+                        public void call(Long aLong) {
+                            if (aLong >= s - 1) {
+                                mCounter.unsubscribe();
+                                mCountDownView.setVisibility(View.GONE);
+                                RecordService.startRecord(getActivity(), id);
+                            } else {
+                                showCountDown(s - aLong - 1);
+                            }
                         }
-                        else{
-                            mCountDownView.setText(String.valueOf(3 - aLong));
-                            mCountDownView.clearAnimation();
-                            mCountDownView.startAnimation(mScaleAnimation);
-                        }
-                    }
-                });
-       // startActivity(new Intent(getActivity(), MapActivity.class));
+                    });
+        }
     }
 
-    private void doStart(){
-        RecordService.startRecord(getActivity());
+    private void showCountDown(long second){
+        mCountDownView.setText(String.valueOf(second));
+        mCountDownView.clearAnimation();
+        mCountDownView.startAnimation(mScaleAnimation);
     }
 
     @Override
@@ -143,18 +187,15 @@ public class RunFragment extends Fragment {
 
     private void refreshResult(){
         mClockView.setText(msToString(RecordModel.instance.getRecordTime()));
-        mKmValue.setText(String.valueOf((int)RecordModel.instance.getDistance()));
+        mKmValue.setText(String.valueOf((int)RecordModel.instance.getDistance() / 1000));
         mKaclValue.setText(String.valueOf((int)RecordModel.instance.getCal()));
         mSpeedValue.setText(String.valueOf((int)RecordModel.instance.getSpeed()));
     }
 
     private String msToString(long ms){
-        long hour = ms / 3600;
-        long minute = (ms % 3600) / 60;
-        long second = (ms % 3600 % 60);
-
-        Log.d("TIMER", "current time = " + ms / 1000);
-        return String.valueOf(ms / 1000);
+        String t =  format.format(new Date(ms));
+        Log.d("TIMER", "current time = " + t);
+        return  t;
     }
 
     @OnClick(R.id.config)
