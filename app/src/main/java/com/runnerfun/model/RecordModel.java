@@ -1,10 +1,10 @@
 package com.runnerfun.model;
 
-import android.os.SystemClock;
-
-import com.amap.api.maps2d.AMapUtils;
 import com.amap.api.maps2d.model.LatLng;
-import com.runnerfun.beans.Record;
+import com.google.gson.Gson;
+import com.runnerfun.RunApplication;
+import com.runnerfun.UserFragment;
+import com.runnerfun.beans.UserInfo;
 import com.runnerfun.model.statusmodel.RecordStatus;
 import com.runnerfun.model.statusmodel.StartStatus;
 import com.runnerfun.model.statusmodel.StopStatus;
@@ -22,11 +22,12 @@ public class RecordModel {
     }
 
     private List<RecordChangeListener> listeners = new ArrayList<>();
-    public void addListener(RecordChangeListener l){
+
+    public void addListener(RecordChangeListener l) {
         listeners.add(l);
     }
 
-    public void removeListener(RecordChangeListener l){
+    public void removeListener(RecordChangeListener l) {
         listeners.remove(l);
     }
 
@@ -34,67 +35,73 @@ public class RecordModel {
     private RecordStatus mStatus = new StopStatus(null);
     private long mID = -1;
 
-    public void start(long id){
+    public void start(long id) {
         mID = id;
         mStatus = new StartStatus(null);
     }
 
-    public long getID(){return mID;};
+    public long getID() {
+        return mID;
+    }
 
-    public void stop(){
+    ;
+
+    public void stop() {
         mStatus = new StopStatus(mStatus);
     }
 
-    public void pause(){
+    public void pause() {
         mStatus = new StopStatus(mStatus);
     }
 
-    public void resume(){
+    public void resume() {
         mStatus = new StartStatus(mStatus);
     }
 
-    public float getCal(){
-//        long cal = weight * distance * 1.036;
-        return -1f;
+    public float getCal() {
+        UserInfo userInfo = new Gson().fromJson(RunApplication.getAppContex().sharedPreferences
+                .getString(UserFragment.SP_KEY_USER_INFO, ""), UserInfo.class);
+        return Float.valueOf(userInfo.getWeight()) * getDistance() * 1.036f;
     }
 
-    public boolean isRecording(){
+    public boolean isRecording() {
         return mStatus instanceof StartStatus;
     }
 
-    public float getSpeed(){
+    public float getSpeed() {
         long time = mStatus.getRecordTime();
         return time == 0 ? 0 : mStatus.getDistance() / mStatus.getRecordTime();// km/s = m/ms
     }
 
-    public long getRecordTime(){
+    public long getRecordTime() {
         return mStatus.getRecordTime();
     }
 
     /**
      * km
+     *
      * @return
      */
-    public float getDistance(){
+    public float getDistance() {
         return mStatus.getDistance();
     }
 
-    public List<LatLng> readCache(){
+    public List<LatLng> readCache() {
         return mStatus.readCache();
     }
 
-    public LatLng firstLatLng(){
+    public LatLng firstLatLng() {
         return mStatus.firstLatLng();
     }
 
-    public void addRecord(LatLng ll){
+    public void addRecord(LatLng ll) {
         mStatus.addRecord(ll);
-        for(RecordChangeListener l : listeners){
+        for (RecordChangeListener l : listeners) {
             l.onRecordChange(ll);
         }
     }
 
-    private void uploadRecord(){
+    private void uploadRecord() {
         //TODO:upload
     }
 }
