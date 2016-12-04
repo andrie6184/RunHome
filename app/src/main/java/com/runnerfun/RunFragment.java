@@ -200,8 +200,8 @@ public class RunFragment extends Fragment {
 
     @OnClick(R.id.config)
     void mapConfig(){
-        startActivity(new Intent(getActivity(), ShareActivity.class));
-        //TODO:startActivity(new Intent(getActivity(), MapConfigActivity.class));
+//        startActivity(new Intent(getActivity(), ShareActivity.class));
+        startActivity(new Intent(getActivity(), MapConfigActivity.class));
     }
 
 

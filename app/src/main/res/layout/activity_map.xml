@@ -3,15 +3,22 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="wrap_content"
-        android:layout_height="100dp"
-        android:layout_alignParentBottom="true"
+    <RelativeLayout
         android:id="@+id/data_list"
-        android:numColumns="100"
-        android:columnWidth="50dp"
-        android:background="#0f0"
-        />
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="#EDEDED"
+        android:layout_alignParentBottom="true"
+        android:clipChildren="false"
+        android:gravity="center_horizontal">
+
+        <com.runnerfun.widget.TransformViewPager
+            android:id="@+id/info_viewpager"
+            android:layout_width="160dp"
+            android:layout_height="100dp"
+            android:clipChildren="false"
+            android:overScrollMode="never" />
+    </RelativeLayout>
 
 
     <com.runnerfun.widget.MapBtnWidget
@@ -61,9 +68,18 @@
         android:layout_height="80dp"
         android:id="@+id/back"
         android:src="@drawable/map_back_btn"
-        android:layout_marginLeft="20dp"
+        android:layout_margin="10dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/share"
+        android:src="@drawable/map_back_btn"
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp"
+        android:visibility="gone"
+        />
 
 </RelativeLayout>

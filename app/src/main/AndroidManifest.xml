@@ -226,13 +226,13 @@
         <service android:name="com.amap.api.location.APSService" />
 
         <activity android:name=".MapConfigActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            android:screenOrientation="portrait"
             />
         <activity android:name=".ShareActivity"
-            android:theme="@style/Theme.AppCompat.DayNight"
+            android:screenOrientation="portrait"
             />
         <activity android:name=".ShareElemActivity"
-            android:theme="@style/Theme.AppCompat.DayNight"
+            android:screenOrientation="portrait"
             />
 
     </application>

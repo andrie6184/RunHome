@@ -25,15 +25,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.runnerfun.beans.Record;
+import com.runnerfun.model.RecordModel;
 import com.runnerfun.tools.Triple;
 import com.runnerfun.widget.ColorPickerDialog;
 import com.runnerfun.widget.FeatureItemHolder;
 
 import java.io.FileNotFoundException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -103,6 +107,14 @@ public class ShareElemActivity extends AppCompatActivity {
         mSpeedView.setTypeface(boldTypeFace);
         mHourView.setTypeface(boldTypeFace);
         mDistanceView.setTypeface(boldTypeFace);
+
+        String speed = new DecimalFormat("###.##").format(RecordModel.instance.getSpeed());
+        mSpeedView.setText(speed + "/h");
+        mDistanceView.setText(String.valueOf(RecordModel.instance.getDistance()/1000) + "km");
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+        mHourView.setText( format.format(new Date(RecordModel.instance.getRecordTime())));
+
 
         //TODO:init other view
         initActionList();
