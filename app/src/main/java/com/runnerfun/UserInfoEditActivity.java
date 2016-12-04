@@ -156,25 +156,28 @@ public class UserInfoEditActivity extends Activity {
     }
 
     private void init() {
-        userInfo = new Gson().fromJson(RunApplication.getAppContex().sharedPreferences
-                .getString(UserFragment.SP_KEY_USER_INFO, ""), UserInfo.class);
+        String info = RunApplication.getAppContex().sharedPreferences.getString(
+                UserFragment.SP_KEY_USER_INFO, "");
+        if (!TextUtils.isEmpty(info)) {
+            userInfo = new Gson().fromJson(info, UserInfo.class);
 
-        if (!TextUtils.isEmpty(userInfo.getHeadimg())) {
-            RunApplication.getAppContex().picasso.load(userInfo.getHeadimg())
-                    .transform(new RoundedTransformation(360, 0)).placeholder(R.drawable.icon_avatar)
-                    .error(R.drawable.icon_avatar).into(avatar);
+            if (!TextUtils.isEmpty(userInfo.getHeadimg())) {
+                RunApplication.getAppContex().picasso.load(userInfo.getHeadimg())
+                        .transform(new RoundedTransformation(360, 0)).placeholder(R.drawable.icon_avatar)
+                        .error(R.drawable.icon_avatar).into(avatar);
+            }
+            nickName.setText(userInfo.getUser_name());
+            signature.setText(userInfo.getRemarks());
+            gender.setText(userInfo.getSex());
+            age.setText(userInfo.getAge() + " 岁");
+            height.setText(userInfo.getHeight() + "厘米");
+            weight.setText(userInfo.getWeight() + "公斤");
+
+            mDialogLayout = View.inflate(this, R.layout.layout_edittext_dialog, null);
+            ((EditText) mDialogLayout.findViewById(R.id.dialog_input)).setText(userInfo.getUser_name());
+            mDialogLayout1 = View.inflate(this, R.layout.layout_edittext_dialog, null);
+            ((EditText) mDialogLayout1.findViewById(R.id.dialog_input)).setText(userInfo.getRemarks());
         }
-        nickName.setText(userInfo.getUser_name());
-        signature.setText(userInfo.getRemarks());
-        gender.setText(userInfo.getSex());
-        age.setText(userInfo.getAge() + " 岁");
-        height.setText(userInfo.getHeight() + "厘米");
-        weight.setText(userInfo.getWeight() + "公斤");
-
-        mDialogLayout = View.inflate(this, R.layout.layout_edittext_dialog, null);
-        ((EditText) mDialogLayout.findViewById(R.id.dialog_input)).setText(userInfo.getUser_name());
-        mDialogLayout1 = View.inflate(this, R.layout.layout_edittext_dialog, null);
-        ((EditText) mDialogLayout1.findViewById(R.id.dialog_input)).setText(userInfo.getRemarks());
     }
 
     @OnClick(R.id.user_avatar)
