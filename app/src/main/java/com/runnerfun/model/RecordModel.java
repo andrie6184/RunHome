@@ -61,7 +61,8 @@ public class RecordModel {
     public float getCal() {
         UserInfo userInfo = new Gson().fromJson(RunApplication.getAppContex().sharedPreferences
                 .getString(UserFragment.SP_KEY_USER_INFO, ""), UserInfo.class);
-        return Float.valueOf(userInfo.getWeight()) * getDistance() * 1.036f;
+//        return Float.valueOf(userInfo.getWeight()) * getDistance() * 1.036f;
+        return -1;
     }
 
     public boolean isRecording() {

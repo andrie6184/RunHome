@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.runnerfun.beans.Record;
 import com.runnerfun.beans.RunIdBean;
 import com.runnerfun.beans.UserInfo;
 import com.runnerfun.model.ConfigModel;
@@ -129,6 +130,10 @@ public class RunFragment extends Fragment {
 
     //TODO: @OnClick(R.id.btn_run)
     void start() {
+        if(RecordModel.instance.isRecording()){
+            Toast.makeText(getActivity(), "跑步已经开始", Toast.LENGTH_SHORT).show();
+            return;
+        }
         NetworkManager.instance.getRecordId(new Subscriber<RunIdBean>() {
             @Override
             public void onCompleted() {
@@ -149,6 +154,10 @@ public class RunFragment extends Fragment {
 
     @OnClick(R.id.btn_run)
     void test() {
+        if(RecordModel.instance.isRecording()){
+            Toast.makeText(getActivity(), "跑步已经开始", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (RecordModel.instance.isRecording()) {
             RecordService.stopRecord(getActivity());
         } else {
@@ -157,6 +166,10 @@ public class RunFragment extends Fragment {
     }
 
     private void doStart(final long id) {
+        if(ConfigModel.instance.getmCountDownSecond() <= 0){
+            RecordService.startRecord(getActivity(), id);
+            return;
+        }
         mCountDownView.setText("");
         mCountDownView.setVisibility(View.VISIBLE);
         //TODO:3,2,1 动画
@@ -226,13 +239,13 @@ public class RunFragment extends Fragment {
     @OnClick(R.id.config)
     void mapConfig() {
 //        startActivity(new Intent(getActivity(), ShareActivity.class));
-        startActivity(new Intent(getActivity(), MapConfigActivity.class));
+        startActivity(new Intent(getActivity(), RunConfigActivity.class));
     }
 
     private void setMoney() {
         UserInfo userInfo = new Gson().fromJson(RunApplication.getAppContex().sharedPreferences
                 .getString(UserFragment.SP_KEY_USER_INFO, ""), UserInfo.class);
-        mMoney.setText(userInfo.getTotal_score());
+//        mMoney.setText(userInfo.getTotal_score());
     }
 
     private class UserMoneyReceiver extends BroadcastReceiver {
