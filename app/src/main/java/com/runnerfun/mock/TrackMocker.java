@@ -24,10 +24,10 @@ public class TrackMocker {
             new LatLng(39.9955216684,116.4164003901)
     };
 
-    public void startMock(){}
-    public void startMock(int i){
-        Observable.interval(2000, TimeUnit.MILLISECONDS).
-                subscribeOn(AndroidSchedulers.mainThread())
+    public void startMock2(){}
+    public void startMock(){
+        Observable.interval(2000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Long>() {
             @Override
             public void call(Long aLong) {

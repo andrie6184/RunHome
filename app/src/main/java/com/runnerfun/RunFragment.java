@@ -155,7 +155,7 @@ public class RunFragment extends Fragment {
 
     @OnClick(R.id.btn_run)
     void test() {
-        if(RecordModel.instance.isRecording()){
+        if(RecordModel.instance.isRecording() || RecordModel.instance.isPause()){
             Toast.makeText(getActivity(), "跑步已经开始", Toast.LENGTH_SHORT).show();
             return;
         }

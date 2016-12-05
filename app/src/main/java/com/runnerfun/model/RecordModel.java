@@ -7,12 +7,16 @@ import com.google.gson.Gson;
 import com.runnerfun.RunApplication;
 import com.runnerfun.UserFragment;
 import com.runnerfun.beans.UserInfo;
+import com.runnerfun.model.statusmodel.PauseStatus;
 import com.runnerfun.model.statusmodel.RecordStatus;
+import com.runnerfun.model.statusmodel.ResumeStatus;
 import com.runnerfun.model.statusmodel.StartStatus;
 import com.runnerfun.model.statusmodel.StopStatus;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import rx.Observable;
 
 /**
  * Created by lixiaoyang on 18/11/2016.
@@ -46,18 +50,16 @@ public class RecordModel {
         return mID;
     }
 
-    ;
-
     public void stop() {
         mStatus = new StopStatus(mStatus);
     }
 
     public void pause() {
-        mStatus = new StopStatus(mStatus);
+        mStatus = new PauseStatus(mStatus);
     }
 
     public void resume() {
-        mStatus = new StartStatus(mStatus);
+        mStatus = new ResumeStatus(mStatus);
     }
 
     public float getCal() {
@@ -72,7 +74,11 @@ public class RecordModel {
     }
 
     public boolean isRecording() {
-        return mStatus instanceof StartStatus;
+        return mStatus instanceof StartStatus || mStatus instanceof ResumeStatus;
+    }
+
+    public boolean isPause(){
+        return mStatus instanceof PauseStatus;
     }
 
     public float getSpeed() {

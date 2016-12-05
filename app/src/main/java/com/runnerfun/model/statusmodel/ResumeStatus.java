@@ -5,14 +5,13 @@ import android.os.SystemClock;
 import com.amap.api.maps2d.model.LatLng;
 
 /**
- * Created by lixiaoyang on 22/11/2016.
+ * Created by lixiaoyang on 06/12/2016.
  */
 
-public class StartStatus extends RecordStatus {
+public class ResumeStatus extends RecordStatus {
 
-    public StartStatus(RecordStatus from) {
-        super(null);
-        mTimeOffset = 0;
+    public ResumeStatus(RecordStatus from) {
+        super(from);
         mStartTime = SystemClock.elapsedRealtime();
     }
 

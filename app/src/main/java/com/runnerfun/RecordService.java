@@ -76,6 +76,9 @@ public class RecordService extends Service implements AMapLocationListener {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if(intent == null){
+            return START_NOT_STICKY;
+        }
         switch (intent.getAction()){
             case ACTION_START_RECORD:
                 long id = intent.getLongExtra(ID_ARGS, 0);
@@ -88,7 +91,7 @@ public class RecordService extends Service implements AMapLocationListener {
                 doClear();
                 break;
             case ACTION_PAUSE_RECORD:
-                doStop();
+                doPause();
                 break;
             case ACTION_RESUME_RECORD:
                 doResume();
@@ -96,11 +99,19 @@ public class RecordService extends Service implements AMapLocationListener {
             default:
                 break;
         }
-        return Service.START_STICKY;
+        return START_NOT_STICKY;
     }
 
     private void uploadData(){
         //TODO: 接口
+    }
+
+    private void doPause(){
+        mlocationClient.stopLocation();
+        if(mUploadTimer != null){
+            mUploadTimer.unsubscribe();
+        }
+        RecordModel.instance.pause();
     }
 
     private void doStop(){

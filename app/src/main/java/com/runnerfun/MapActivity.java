@@ -85,7 +85,6 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         mMap.getMap().getUiSettings().setMyLocationButtonEnabled(true);
 
 
-        int type = AMap.MAP_TYPE_NORMAL;
         if(ConfigModel.instance.getmMapType() != 0){
             mMap.getMap().setMapType(AMap.MAP_TYPE_SATELLITE);
         }
@@ -138,10 +137,20 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
             mShareView.setVisibility(View.VISIBLE);
         }
         else{
+            if(RecordModel.instance.isPause()) {
+                mPauseBtn.setText("继续");
+            }
+            else if(RecordModel.instance.isRecording()){
+                mPauseBtn.setText("暂停");
+            }
+            else{
+                mPanelWidget.setVisibility(View.GONE);
+            }
             mlocationClient.startLocation();
             //TODO:RecordModel
         }
         RecordModel.instance.addListener(this);
+
     }
 
     @Override

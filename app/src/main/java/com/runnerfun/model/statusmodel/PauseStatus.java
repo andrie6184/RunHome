@@ -1,5 +1,8 @@
 package com.runnerfun.model.statusmodel;
 
+
+import android.os.SystemClock;
+
 import com.amap.api.maps2d.model.LatLng;
 
 /**
@@ -8,8 +11,13 @@ import com.amap.api.maps2d.model.LatLng;
  */
 
 public class PauseStatus extends RecordStatus {
+
     public PauseStatus(RecordStatus from) {
         super(from);
+        if(from != null) {
+            mTimeOffset += SystemClock.elapsedRealtime() - mStartTime;
+        }
+        mStartTime = 0;
     }
 
     @Override
@@ -19,11 +27,11 @@ public class PauseStatus extends RecordStatus {
 
     @Override
     public void addRecord(LatLng ll) {
-        //TODO : do nothing
+
     }
 
     @Override
     public void clearRecord() {
-        //TODO: do nothing
+        mCache.clear();
     }
 }

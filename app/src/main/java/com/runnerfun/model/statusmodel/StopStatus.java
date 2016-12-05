@@ -11,7 +11,7 @@ import com.amap.api.maps2d.model.LatLng;
 public class StopStatus extends RecordStatus {
     public StopStatus(RecordStatus from) {
         super(from);
-        if(from != null) {
+        if(from != null && from.mStartTime != 0) {
             mTimeOffset += SystemClock.elapsedRealtime() - mStartTime;
         }
         mStartTime = 0;
