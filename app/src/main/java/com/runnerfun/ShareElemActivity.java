@@ -77,7 +77,6 @@ public class ShareElemActivity extends AppCompatActivity {
     TextView mContentTextView;
     @BindView(R.id.features)
     RecyclerView mRecycleView;
-    private List<TextView> mTextViews = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -13,6 +13,7 @@ import android.webkit.CookieSyncManager;
 
 import com.avos.avoscloud.AVAnalytics;
 import com.avos.avoscloud.AVOSCloud;
+import com.runnerfun.model.ConfigModel;
 import com.squareup.picasso.Picasso;
 import com.xiaomi.channel.commonutils.logger.LoggerInterface;
 import com.xiaomi.mipush.sdk.Logger;
@@ -65,6 +66,7 @@ public class RunApplication extends Application {
 
         // init Picasso
         picasso = Picasso.with(this);
+        ConfigModel.instance.load(this);
 
         // for lean-cloud analytic & feedback.
         // TODO AVOSCloud.initialize(this, "OQpEDpAfPU5fxknXO4YWuV6J-gzGzoHsz", "huXzXqNd6uGPi8yI8tG2pwnj");

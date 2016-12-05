@@ -9,7 +9,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +29,7 @@ import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.amap.api.maps2d.model.PolylineOptions;
 import com.runnerfun.beans.Record;
+import com.runnerfun.model.ConfigModel;
 import com.runnerfun.model.RecordModel;
 import com.runnerfun.widget.MapBtnWidget;
 import com.runnerfun.widget.RecyclingPagerAdapter;
@@ -83,6 +83,12 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         init();
         mMap.onCreate(savedInstanceState);
         mMap.getMap().getUiSettings().setMyLocationButtonEnabled(true);
+
+
+        int type = AMap.MAP_TYPE_NORMAL;
+        if(ConfigModel.instance.getmMapType() != 0){
+            mMap.getMap().setMapType(AMap.MAP_TYPE_SATELLITE);
+        }
         mPauseBtn = (TextView)mPanelWidget.findViewById(R.id.pause);
     }
 

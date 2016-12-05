@@ -73,7 +73,7 @@
         <activity
             android:name=".UserInfoActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".run.RunConfigActivity" />
+        <activity android:name=".RunConfigActivity" />
 
         <service android:name="com.amap.api.location.APSService" />
 
@@ -229,9 +229,11 @@
             android:screenOrientation="portrait"
             />
         <activity android:name=".ShareActivity"
+            android:theme="@style/Theme.AppCompat.Light"
             android:screenOrientation="portrait"
             />
         <activity android:name=".ShareElemActivity"
+            android:theme="@style/Theme.AppCompat.Light"
             android:screenOrientation="portrait"
             />
 
