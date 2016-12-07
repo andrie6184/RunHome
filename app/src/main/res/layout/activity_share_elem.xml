@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_share_elem"
     android:layout_width="match_parent"
@@ -9,119 +10,110 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.runnerfun.ShareElemActivity">
+
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
         android:id="@+id/share_image"
-        >
+        android:layout_width="match_parent"
+        android:layout_height="300dp">
+
         <ImageView
+            android:id="@+id/background_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/background_image"
-            android:scaleType="fitXY"
-            android:background="#0f0"
-            />
+            android:scaleType="fitXY"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/run_logo"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:scaleType="fitXY"
             android:layout_alignRight="@id/background_image"
-            />
+            android:scaleType="fitXY"
+            android:src="@drawable/run_logo"/>
 
         <TextView
+            android:id="@+id/content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#fff"
-            android:text="我刚跑了"
-            android:textSize="26sp"
+            android:layout_alignParentBottom="true"
             android:layout_marginLeft="16dp"
             android:paddingBottom="16dp"
             android:singleLine="true"
-            android:layout_alignParentBottom="true"
-            android:id="@+id/content" />
+            android:text="我刚跑了"
+            android:textColor="#fff"
+            android:textSize="26sp"/>
 
         <TextView
+            android:id="@+id/location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/location"
-            android:text="china"
-            android:textColor="#fff"
-            android:textSize="16sp"
             android:layout_above="@id/content"
             android:layout_marginLeft="16dp"
             android:paddingBottom="10dp"
-            />
+            android:text="china"
+            android:textColor="#fff"
+            android:textSize="16sp"/>
 
         <ImageView
+            android:id="@+id/path"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:scaleType="centerInside"
-            android:id="@+id/path"
-            android:background="#f00"
             android:layout_above="@id/location"
-            android:layout_marginLeft="16dp"
             android:layout_marginBottom="10dp"
-            />
+            android:layout_marginLeft="16dp"
+            android:scaleType="centerInside"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@id/location"
-            android:orientation="horizontal"
-            android:layout_toRightOf="@id/path"
             android:layout_alignBottom="@id/path"
             android:layout_alignTop="@id/path"
-            android:gravity="center_vertical"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            >
+            android:layout_toRightOf="@id/path"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="4/h"
                 android:id="@+id/speed"
-                android:layout_weight="1"
-                android:textSize="25sp"
-                android:gravity="center_horizontal"
-                android:textColor="#fff"
-                />
-
-            <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
                 android:text="4/h"
+                android:textColor="#fff"
+                android:textSize="25sp"/>
+
+            <TextView
                 android:id="@+id/hour"
-                android:layout_weight="1"
-                android:textSize="25sp"
-                android:gravity="center_horizontal"
-                android:textColor="#fff"
-                />
-
-            <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="4/h"
-                android:id="@+id/distance"
                 android:layout_weight="1"
-                android:textSize="25sp"
                 android:gravity="center_horizontal"
+                android:text="4/h"
                 android:textColor="#fff"
-                />
+                android:textSize="25sp"/>
+
+            <TextView
+                android:id="@+id/distance"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:text="4/h"
+                android:textColor="#fff"
+                android:textSize="25sp"/>
 
         </LinearLayout>
 
     </RelativeLayout>
+
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/features"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/features"
         android:layout_below="@id/share_image"
-        android:layout_marginTop="10dp"
-        />
+        android:layout_marginTop="10dp"/>
 
 </RelativeLayout>

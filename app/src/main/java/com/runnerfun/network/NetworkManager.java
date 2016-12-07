@@ -164,9 +164,9 @@ public class NetworkManager {
         rxRequest(request.delete(id), callback);
     }
 
-    public void getRecordId(Subscriber<RunIdBean> callback){
+    public void getRecordId(Subscriber<RunIdBean> callback) {
         RunRecordIdRequest request = retrofitApi.create(RunRecordIdRequest.class);
-        rxRequest(request.getRecordId(getUserSid()), callback);
+        rxRequest(request.getRecordId(getUserToken()), callback);
     }
 
     public boolean hasLoginInfo() {
@@ -190,6 +190,20 @@ public class NetworkManager {
         if (cookies.size() > 0) {
             for (Cookie c : cookies) {
                 if (c.name().equals("sid")) {
+                    return c.value();
+                }
+            }
+        }
+        return "-1";
+    }
+
+    public String getUserToken() {
+        List<Cookie> cookies = mClient.cookieJar().loadForRequest(HttpUrl.parse("http://api.paobuzhijia.com/"));
+        // List<Cookie> cookies = new SharedPrefsCookiePersistor(RunApplication.getAppContex()).loadAll();
+
+        if (cookies.size() > 0) {
+            for (Cookie c : cookies) {
+                if (c.name().equals("token")) {
                     return c.value();
                 }
             }
