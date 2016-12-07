@@ -131,7 +131,7 @@ public class RecordService extends Service implements AMapLocationListener {
         }
         //TODO: start upload
         RecordModel.instance.start(id);
-        TrackMocker.instance.startMock();
+        // TrackMocker.instance.startMock();
         startUploadTimer();
     }
 
