@@ -29,6 +29,7 @@
     <uses-permission android:name="com.runnerfun.permission.MIPUSH_RECEIVE"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
 
+
     <application
         android:name=".RunApplication"
         android:allowBackup="true"
@@ -44,6 +45,8 @@
             android:name="leancloud"
             android:value="${channel_id}" />
         -->
+
+        　　<service android:name="com.amap.api.location.APSService"></service>
 
         <activity
             android:name=".SplashActivity"

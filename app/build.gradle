@@ -26,10 +26,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets{
+        main{
+            jniLibs.srcDirs= ['libs']
+        }
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -68,4 +73,5 @@ dependencies {
     // for weibo login & share
     compile files('libs/alipaySdk-20161009.jar')
     compile 'com.larswerkman:HoloColorPicker:1.5'
+    compile files('libs/AMap_Search_V3.6.1_20161122.jar')
 }
