@@ -46,6 +46,8 @@
             android:value="${channel_id}" />
         -->
 
+        　　<service android:name="com.amap.api.location.APSService"></service>
+
         <activity
             android:name=".SplashActivity"
             android:screenOrientation="portrait">
@@ -74,8 +76,6 @@
             android:name=".UserInfoActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".RunConfigActivity" />
-
-        <service android:name="com.amap.api.location.APSService" />
 
         <activity
             android:name=".MapActivity"

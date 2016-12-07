@@ -20,15 +20,17 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
-import com.amap.api.maps2d.AMap;
-import com.amap.api.maps2d.CameraUpdate;
-import com.amap.api.maps2d.CameraUpdateFactory;
-import com.amap.api.maps2d.MapView;
-import com.amap.api.maps2d.model.BitmapDescriptorFactory;
-import com.amap.api.maps2d.model.LatLng;
-import com.amap.api.maps2d.model.MarkerOptions;
-import com.amap.api.maps2d.model.PolylineOptions;
-import com.runnerfun.beans.Record;
+import com.amap.api.maps.AMap;
+import com.amap.api.maps.AMapUtils;
+import com.amap.api.maps.CameraUpdate;
+import com.amap.api.maps.CameraUpdateFactory;
+import com.amap.api.maps.MapView;
+import com.amap.api.maps.model.BitmapDescriptorFactory;
+import com.amap.api.maps.model.CameraPosition;
+import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.MarkerOptions;
+import com.amap.api.maps.model.PolylineOptions;
+import com.amap.api.maps.model.PolylineOptions;
 import com.runnerfun.model.ConfigModel;
 import com.runnerfun.model.RecordModel;
 import com.runnerfun.widget.MapBtnWidget;
@@ -45,8 +47,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Observer;
-import rx.Subscriber;
+
 
 public class MapActivity extends AppCompatActivity implements AMapLocationListener, RecordModel.RecordChangeListener {
     public static final String DISPLAY_MODE = "display_mode";
@@ -82,12 +83,10 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         ButterKnife.bind(this);
         init();
         mMap.onCreate(savedInstanceState);
-        mMap.getMap().getUiSettings().setMyLocationButtonEnabled(true);
-
-
-        if(ConfigModel.instance.getmMapType() != 0){
-            mMap.getMap().setMapType(AMap.MAP_TYPE_SATELLITE);
-        }
+//
+//        if(ConfigModel.instance.getmMapType() != 0){
+//            mMap.getMap().setMapType(AMap.MAP_TYPE_SATELLITE);
+//        }
         mPauseBtn = (TextView)mPanelWidget.findViewById(R.id.pause);
     }
 
@@ -98,7 +97,6 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
         mLocationOption.setInterval(2000);
         mlocationClient.setLocationOption(mLocationOption);
-        mlocationClient.startLocation();
 
         mPanelWidget.setOnClickListener(new MapBtnWidget.OnButtonClick() {
             @Override
@@ -150,7 +148,6 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
             //TODO:RecordModel
         }
         RecordModel.instance.addListener(this);
-
     }
 
     @Override
@@ -200,6 +197,7 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         if (amapLocation != null) {
             if (amapLocation.getErrorCode() == 0) {
                 mlocationClient.stopLocation();
+                mMap.getMap().moveCamera(CameraUpdateFactory.zoomTo(14));
                 zoomTo(new LatLng(amapLocation.getLatitude(), amapLocation.getLongitude()));
             } else {
                 //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
@@ -220,21 +218,46 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
                         .decodeResource(getResources(),
                                 R.drawable.icon_shezhi)));
 
-        mMap.getMap().clear();
         mMap.getMap().addMarker(mark);
-        CameraUpdate newPos = CameraUpdateFactory.newLatLng(ll);
-        mMap.getMap().animateCamera(newPos);
-        mMap.getMap().moveCamera(CameraUpdateFactory.zoomTo(14.f));
+        CameraUpdate c =CameraUpdateFactory.newCameraPosition(CameraPosition.builder()
+                .target(ll).zoom( mMap.getMap().getCameraPosition().zoom).build());
+        mMap.getMap().moveCamera(c);
+//        CameraUpdate newPos = CameraUpdateFactory.newLatLng(ll);
+//        mMap.getMap().animateCamera(newPos);
+//        mMap.getMap().moveCamera(CameraUpdateFactory.zoomTo(14.f));
     }
 
     private void drawLines(List<LatLng> records){
-        mMap.getMap().addPolyline(new PolylineOptions().
-                addAll(records).width(10).color(Color.argb(255, 1, 1, 1)));
+        if(records == null || records.size() <= 0){
+            return;
+        }
+
+        LatLng start = records.get(0);
+        PolylineOptions po = new PolylineOptions();
+        List<Integer> colors = new ArrayList<>();
+        for(LatLng ll : records){
+            float distance = AMapUtils.calculateLineDistance(start, ll);
+            if(distance > 7.2f){
+                colors.add(Color.RED);
+            }
+            else{
+                colors.add(Color.GREEN);
+            }
+        }
+        po.colorValues(colors);
+        po.addAll(records);
+        po.width(10f);
+        mMap.getMap().clear();
+        mMap.getMap().addPolyline(po);
     }
 
     @Override
     public void onRecordChange(LatLng ll) {
         drawLines(RecordModel.instance.readCache());
+//        zoomTo(ll);
+        CameraUpdate c =CameraUpdateFactory.newCameraPosition(CameraPosition.builder()
+                .target(ll).zoom( mMap.getMap().getCameraPosition().zoom).build());
+        mMap.getMap().moveCamera(c);
     }
 
 

@@ -2,7 +2,7 @@ package com.runnerfun.model;
 
 import android.text.TextUtils;
 
-import com.amap.api.maps2d.model.LatLng;
+import com.amap.api.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.runnerfun.RunApplication;
 import com.runnerfun.UserFragment;
@@ -15,8 +15,6 @@ import com.runnerfun.model.statusmodel.StopStatus;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import rx.Observable;
 
 /**
  * Created by lixiaoyang on 18/11/2016.
