@@ -5,4 +5,5 @@
     <color name="colorAccent">#FF4081</color>
     <color name="table_unchecked">#fff</color>
     <color name="table_checked">#000</color>
+    <color name="transparent_background">#f0000000</color>
 </resources>

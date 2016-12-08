@@ -11,7 +11,6 @@ import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps2d.model.LatLng;
-import com.runnerfun.mock.TrackMocker;
 import com.runnerfun.model.RecordModel;
 
 import java.util.concurrent.TimeUnit;
@@ -35,30 +34,32 @@ public class RecordService extends Service implements AMapLocationListener {
     private AMapLocationClient mlocationClient = null;
     private Subscription mUploadTimer = null;
 
-    public static void startRecord(Context c, long id){
+    public static void startRecord(Context c, long id) {
         Intent i = new Intent(c, RecordService.class);
         i.setAction(ACTION_START_RECORD);
         i.putExtra(ID_ARGS, id);
         c.startService(i);
     }
-    public static void pauseRecord(Context c){
+
+    public static void pauseRecord(Context c) {
         Intent i = new Intent(c, RecordService.class);
         i.setAction(ACTION_PAUSE_RECORD);
         c.startService(i);
     }
-    public static void stopRecord(Context c){
+
+    public static void stopRecord(Context c) {
         Intent i = new Intent(c, RecordService.class);
         i.setAction(ACTION_STOP_RECORD);
         c.startService(i);
     }
 
-    public static void resumeRecord(Context c){
+    public static void resumeRecord(Context c) {
         Intent i = new Intent(c, RecordService.class);
         i.setAction(ACTION_RESUME_RECORD);
         c.startService(i);
     }
 
-    public RecordService(){
+    public RecordService() {
         super();
         mlocationClient = new AMapLocationClient(this);
         mLocationOption = new AMapLocationClientOption();
@@ -76,10 +77,10 @@ public class RecordService extends Service implements AMapLocationListener {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if(intent == null){
+        if (intent == null) {
             return START_NOT_STICKY;
         }
-        switch (intent.getAction()){
+        switch (intent.getAction()) {
             case ACTION_START_RECORD:
                 long id = intent.getLongExtra(ID_ARGS, 0);
                 doStart(id);//TODO:是否需要notification?
@@ -102,31 +103,31 @@ public class RecordService extends Service implements AMapLocationListener {
         return START_NOT_STICKY;
     }
 
-    private void uploadData(){
+    private void uploadData() {
         //TODO: 接口
     }
 
-    private void doPause(){
+    private void doPause() {
         mlocationClient.stopLocation();
-        if(mUploadTimer != null){
+        if (mUploadTimer != null) {
             mUploadTimer.unsubscribe();
         }
         RecordModel.instance.pause();
     }
 
-    private void doStop(){
+    private void doStop() {
         mlocationClient.stopLocation();
-        if(mUploadTimer != null){
+        if (mUploadTimer != null) {
             mUploadTimer.unsubscribe();
         }
         RecordModel.instance.stop();
         uploadData();
     }
 
-    private void doStart(long id){
+    private void doStart(long id) {
         mlocationClient.stopLocation();
         mlocationClient.startLocation();
-        if(mUploadTimer != null){
+        if (mUploadTimer != null) {
             mUploadTimer.unsubscribe();
         }
         //TODO: start upload
@@ -135,10 +136,10 @@ public class RecordService extends Service implements AMapLocationListener {
         startUploadTimer();
     }
 
-    private void doClear(){
+    private void doClear() {
     }
 
-    private void doResume(){
+    private void doResume() {
         RecordModel.instance.resume();
     }
 
@@ -155,7 +156,7 @@ public class RecordService extends Service implements AMapLocationListener {
         return null;
     }
 
-    private void startUploadTimer(){
+    private void startUploadTimer() {
         mUploadTimer = Subject.interval(6 * 1000, TimeUnit.MILLISECONDS)//TODO:  改为60秒
                 .subscribe(new Action1<Long>() {
                     @Override

@@ -20,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.runnerfun.beans.Record;
 import com.runnerfun.beans.RunIdBean;
 import com.runnerfun.beans.UserInfo;
 import com.runnerfun.model.ConfigModel;
@@ -131,7 +130,7 @@ public class RunFragment extends Fragment {
 
     //TODO: @OnClick(R.id.btn_run)
     void start() {
-        if(RecordModel.instance.isRecording()){
+        if (RecordModel.instance.isRecording()) {
             Toast.makeText(getActivity(), "跑步已经开始", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -155,7 +154,7 @@ public class RunFragment extends Fragment {
 
     @OnClick(R.id.btn_run)
     void test() {
-        if(RecordModel.instance.isRecording() || RecordModel.instance.isPause()){
+        if (RecordModel.instance.isRecording() || RecordModel.instance.isPause()) {
             Toast.makeText(getActivity(), "跑步已经开始", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -167,7 +166,7 @@ public class RunFragment extends Fragment {
     }
 
     private void doStart(final long id) {
-        if(ConfigModel.instance.getmCountDownSecond() <= 0){
+        if (ConfigModel.instance.getmCountDownSecond() <= 0) {
             RecordService.startRecord(getActivity(), id);
             return;
         }
@@ -240,7 +239,7 @@ public class RunFragment extends Fragment {
     @OnClick(R.id.config)
     void mapConfig() {
 //        startActivity(new Intent(getActivity(), ShareActivity.class));
-        startActivity(new Intent(getActivity(), RunConfigActivity.class));
+        getActivity().startActivity(new Intent(getActivity(), RunConfigActivity.class));
     }
 
     private void setMoney() {

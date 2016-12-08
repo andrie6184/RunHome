@@ -31,7 +31,7 @@ public class UserSettingActivity extends Activity {
     TextView countDown;
 
     private AlertDialog countDownDialog;
-    final String[] countDownArray = {"3秒", "5秒"};
+    final String[] countDownArray = {"10秒", "5秒", "3秒", "不倒数"};
 
     private String sid = "-1";
 
@@ -211,9 +211,9 @@ public class UserSettingActivity extends Activity {
     }
 
     public static int getCountDownSetting() {
-        final int[] array = {3, 5};
-        int vibrate = RunApplication.getAppContex().sharedPreferences.getInt(USER_COUNT_DOWN_SETTING, 0);
-        return array[vibrate];
+        final int[] array = {10, 5, 3, 0};
+        int countDown = RunApplication.getAppContex().sharedPreferences.getInt(USER_COUNT_DOWN_SETTING, 1);
+        return array[countDown];
     }
 
     private static String getSettingPrefix() {

@@ -1,12 +1,13 @@
 package com.runnerfun;
 
 import android.os.Bundle;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
 
-import com.runnerfun.BaseActivity;
-import com.runnerfun.R;
 import com.runnerfun.model.ConfigModel;
 
 import java.util.ArrayList;
@@ -17,29 +18,37 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class RunConfigActivity extends BaseActivity {
+
     @BindView(R.id.hide_online)
     Switch mOnlineSwitch;
     @BindView(R.id.voice_notice)
-    Switch mVoiceSwitch;
+    ImageView mVoiceSwitch;
     @BindView(R.id.countdown)
     Spinner mCountdownSpiner;
     @BindView(R.id.map_type)
     Spinner mMapType;
 
+    boolean isOpenVoice = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_run_config);
+        setTheme(R.style.Transparent);
         ButterKnife.bind(this);
 
         mOnlineSwitch.setChecked(ConfigModel.instance.ismHideOnline());
-        mVoiceSwitch.setChecked(ConfigModel.instance.ismUserVoice());
+        if (ConfigModel.instance.ismUserVoice()) {
+            mVoiceSwitch.setImageResource(R.drawable.switch_btn_on);
+        } else {
+            mVoiceSwitch.setImageResource(R.drawable.switch_btn_off);
+        }
+        isOpenVoice = ConfigModel.instance.ismUserVoice();
         List<String> countdown = new ArrayList<>();
-        countdown.add("3");
-        countdown.add("2");
-        countdown.add("1");
-        countdown.add("0");
+        countdown.add("10秒");
+        countdown.add("5秒");
+        countdown.add("3秒");
+        countdown.add("不倒数");
         mCountdownSpiner.setAdapter(new ArrayAdapter<String>(this, R.layout.dropdown_item, countdown));
         mCountdownSpiner.setSelection(3 - ConfigModel.instance.getmCountDownSecond());
 
@@ -52,12 +61,28 @@ public class RunConfigActivity extends BaseActivity {
     }
 
     @OnClick(R.id.ok)
-    void save(){
-        ConfigModel.instance.setmCountDownSecond(3 - mCountdownSpiner.getSelectedItemPosition());
+    void save() {
+        ConfigModel.instance.setmCountDownSecond(getCountDownSetting(mCountdownSpiner.getSelectedItemPosition()));
         ConfigModel.instance.setmHideOnline(mOnlineSwitch.isChecked());
-        ConfigModel.instance.setmUserVoice(mVoiceSwitch.isChecked());
+        ConfigModel.instance.setmUserVoice(isOpenVoice);
         ConfigModel.instance.setmMapType(mMapType.getSelectedItemPosition());
         ConfigModel.instance.save(this);
         finish();
     }
+
+    @OnClick(R.id.voice_notice)
+    void onVoiceClicked(View view) {
+        isOpenVoice = !isOpenVoice;
+        if (isOpenVoice) {
+            mVoiceSwitch.setImageResource(R.drawable.switch_btn_on);
+        } else {
+            mVoiceSwitch.setImageResource(R.drawable.switch_btn_off);
+        }
+    }
+
+    private int getCountDownSetting(int selection) {
+        final int[] array = {10, 5, 3, 0};
+        return array[selection];
+    }
+
 }

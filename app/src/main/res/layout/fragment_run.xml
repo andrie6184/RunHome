@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#000"
-    android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#000"
+                android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#000"
         android:layout_centerInParent="true"
+        android:background="#000"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -26,7 +25,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp"
-                android:src="@drawable/icon_shezhi" />
+                android:src="@drawable/icon_shezhi"/>
 
             <TextView
                 android:id="@+id/money"
@@ -37,7 +36,7 @@
                 android:layout_marginTop="10dp"
                 android:text="已获购物里币:"
                 android:textColor="#fff"
-                android:textSize="14sp" />
+                android:textSize="14sp"/>
 
             <TextView
                 android:id="@+id/money_value"
@@ -48,7 +47,7 @@
                 android:layout_toRightOf="@id/money"
                 android:text="700"
                 android:textColor="#fff"
-                android:textSize="18sp" />
+                android:textSize="18sp"/>
 
             <TextView
                 android:id="@+id/chronometer"
@@ -60,7 +59,7 @@
                 android:gravity="center"
                 android:text="00:00:00"
                 android:textColor="#fff"
-                android:textSize="80sp" />
+                android:textSize="80sp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -74,21 +73,21 @@
                     layout="@layout/unit_table"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"/>
 
                 <include
                     android:id="@+id/speed"
                     layout="@layout/unit_table"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"/>
 
                 <include
                     android:id="@+id/kacl"
                     layout="@layout/unit_table"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"/>
             </LinearLayout>
         </RelativeLayout>
 
@@ -110,7 +109,7 @@
                     android:layout_height="match_parent"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="18dp"
-                    android:src="@drawable/btn_map" />
+                    android:src="@drawable/btn_map"/>
             </LinearLayout>
 
 
@@ -127,20 +126,20 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="20dp"
                     android:layout_marginTop="16dp"
-                    android:src="@drawable/btn_go" />
+                    android:src="@drawable/btn_go"/>
             </LinearLayout>
 
         </LinearLayout>
     </LinearLayout>
 
     <TextView
+        android:id="@+id/counter"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/counter"
         android:layout_centerInParent="true"
-        android:textSize="240sp"
-        android:textColor="#fff"
         android:gravity="center"
+        android:textColor="#fff"
+        android:textSize="240sp"
         android:visibility="gone"
         />
 </RelativeLayout>
