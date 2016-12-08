@@ -11,10 +11,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
@@ -38,6 +40,7 @@ import com.runnerfun.beans.Record;
 import com.runnerfun.model.ConfigModel;
 import com.runnerfun.model.RecordModel;
 import com.runnerfun.tools.PathImageCreator;
+import com.runnerfun.tools.TimeStringUtils;
 import com.runnerfun.widget.MapBtnWidget;
 import com.runnerfun.widget.RecyclingPagerAdapter;
 import com.runnerfun.widget.ScalePageTransformer;
@@ -52,6 +55,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Subscription;
 
 
 public class MapActivity extends AppCompatActivity implements AMapLocationListener, RecordModel.RecordChangeListener {
@@ -270,6 +274,9 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         CameraUpdate c =CameraUpdateFactory.newCameraPosition(CameraPosition.builder()
                 .target(ll).zoom( mMap.getMap().getCameraPosition().zoom).build());
         mMap.getMap().moveCamera(c);
+
+        ((RecordAdapter)viewPager.getAdapter()).update();
+        ((RecordAdapter)viewPager.getAdapter()).notifyDataSetChanged();
     }
 
     private void setUpMap(LatLng oldData,LatLng newData) {
@@ -279,22 +286,28 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
                 .geodesic(true).color(Color.GREEN));
     }
 
-    public class RecordAdapter extends RecyclingPagerAdapter {
-        private Map<String, String> runInfo;
+    private class RecordAdapter extends RecyclingPagerAdapter {
+        private Map<String, Updater> runInfo;
         private final Context mContext;
 
-        public RecordAdapter(Context context) {
+        public void update(){
+            for(Updater u : runInfo.values()){
+                u.onUpdate();
+            }
+        }
+
+        RecordAdapter(Context context) {
             mContext = context;
 
             //// for test !!!!!!
             runInfo = new HashMap<>();
-            runInfo.put("总消耗", "45kcal");
-            runInfo.put("平均配速", "12km/s");
-            runInfo.put("总里程", "13km");
-            runInfo.put("总用时", "20:12");
+            runInfo.put("总消耗", new CalUpdater());
+            runInfo.put("平均配速", new SpeedUpdater());
+            runInfo.put("总里程", new DisUpdater());
+            runInfo.put("总用时", new TimeUpdater());
         }
 
-        public InfoValue getItem(int position) {
+        InfoValue getItem(int position) {
             int offset = position % 4;
             String[] key = new String[4];
             key = runInfo.keySet().toArray(key);
@@ -326,25 +339,74 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
             final InfoValue item = getItem(position);
             if (item != null) {
                 viewHolder.attrName.setText(item.key);
-                viewHolder.attrValue.setText(item.value);
+                viewHolder.updater = item.value;
+                viewHolder.updater.bind(viewHolder.attrValue);
+//                viewHolder.attrValue.setText(item.value);
             }
             return convertView;
         }
 
-        private class ViewHolder {
+        public  class ViewHolder {
             TextView attrName;
             TextView attrValue;
+            Updater updater;
         }
 
         private class InfoValue {
 
-            public InfoValue(String s, String v) {
+            public InfoValue(String s, Updater v) {
                 key = s;
                 value = v;
             }
 
             public String key;
-            public String value;
+            public Updater value;
+        }
+
+        public abstract class Updater {
+            private TextView v = null;
+
+            public void bind(TextView v){
+                this.v = v;
+            }
+            public void onUpdate(){
+                if(v != null) {
+                    v.setText(getValue());
+                }
+            }
+
+            abstract protected String getValue();
+        }
+
+        private class SpeedUpdater extends Updater{
+            @Override
+            protected String getValue() {
+                return RecordModel.instance.getSpeed() + "km/s";
+            }
+        }
+
+        private class CalUpdater extends Updater{
+
+            @Override
+            protected String getValue() {
+                return RecordModel.instance.getCal() + "kcal";
+            }
+        }
+
+        private class DisUpdater extends Updater{
+
+            @Override
+            protected String getValue() {
+                return RecordModel.instance.getDistance() + "km";
+            }
+        }
+
+        private class TimeUpdater extends Updater{
+
+            @Override
+            protected String getValue() {
+                return TimeStringUtils.getTime(RecordModel.instance.getRecordTime());
+            }
         }
 
     }
