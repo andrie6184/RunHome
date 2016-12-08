@@ -45,6 +45,11 @@ public class PathImageCreator {
         return l;
     }
 
+    public static LatLng getCenter(List<LatLng> ll){
+        LatLng[] l = getBounds(ll);
+        return new LatLng((l[0].latitude + l[1].latitude)/2, (l[0].longitude + l[1].longitude)/2);
+    }
+
     public Bitmap createBitmap(List<LatLng> latLngs){
         Bitmap bmp = Bitmap.createBitmap(800, 800, Bitmap.Config.RGB_565);
         if(latLngs == null || latLngs.size() <= 0){

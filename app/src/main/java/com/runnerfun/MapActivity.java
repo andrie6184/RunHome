@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -29,10 +30,12 @@ import com.amap.api.maps.CameraUpdate;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.LocationSource;
 import com.amap.api.maps.MapView;
+import com.amap.api.maps.Projection;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.LatLngBounds;
+import com.amap.api.maps.model.LatLngBoundsCreator;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.PolylineOptions;
 import com.amap.api.maps.model.PolylineOptions;
@@ -194,7 +197,47 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         RecordService.stopRecord(this);
         mPanelWidget.setVisibility(View.GONE);
         mShareView.setVisibility(View.VISIBLE);
+        List<LatLng> lls = RecordModel.instance.readCache();
+//        LatLng l = PathImageCreator.getCenter(lls);
 
+//        CameraUpdate c =CameraUpdateFactory.newCameraPosition(CameraPosition.builder()
+//                .target(l).zoom(mMap.getMap().getCameraPosition().zoom).build());
+//        mMap.getMap().moveCamera(c);
+
+        LatLngBounds.Builder llb = LatLngBounds.builder();
+        for(LatLng a : lls){
+            llb.include(a);
+        }
+        CameraUpdate c = CameraUpdateFactory.newLatLngBounds(llb.build(), 10);
+        mMap.getMap().moveCamera(c);
+    }
+
+    private void adjustCamera(LatLng centerLatLng,int range) {
+        //http://www.eoeandroid.com/blog-1107295-47621.html
+        //当前缩放级别下的比例尺
+        //"每像素代表" + scale + "米"
+        float scale = mMap.getMap().getScalePerPixel();
+        //代表range（米）的像素数量
+        int pixel = Math.round(range / scale);
+        //小范围，小缩放级别（比例尺较大），有精度损失
+        Projection projection = mMap.getMap().getProjection();
+        //将地图的中心点，转换为屏幕上的点
+        Point center = projection.toScreenLocation(centerLatLng);
+        //获取距离中心点为pixel像素的左、右两点（屏幕上的点
+        Point right = new Point(center.x + pixel, center.y);
+        Point left = new Point(center.x - pixel, center.y);
+
+        //将屏幕上的点转换为地图上的点
+        LatLng rightLatlng = projection.fromScreenLocation(right);
+        LatLng LeftLatlng = projection.fromScreenLocation(left);
+
+        LatLngBounds bounds = LatLngBounds.builder().include(rightLatlng).include(LeftLatlng).build();
+        //bounds.contains();
+
+        mMap.getMap().getMapScreenMarkers();
+
+        //调整可视范围
+        //aMap.moveCamera(CameraUpdateFactory.newLatLngBounds(LatLngBounds.builder().include(rightLatlng).include(LeftLatlng).build(), 10)); }
     }
 
     @Override
@@ -215,7 +258,7 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
                 SharedPreferences sp = getSharedPreferences("location", Context.MODE_PRIVATE);
                 sp.edit().putString("location", amapLocation.getCountry() + '·' +amapLocation.getCity()).apply();
                 mlocationClient.stopLocation();
-                mMap.getMap().moveCamera(CameraUpdateFactory.zoomTo(14));
+                mMap.getMap().moveCamera(CameraUpdateFactory.zoomTo(16f));
                 zoomTo(new LatLng(amapLocation.getLatitude(), amapLocation.getLongitude()));
             } else {
                 //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
