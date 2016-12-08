@@ -2,6 +2,7 @@ package com.runnerfun;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -24,15 +25,19 @@ import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.CameraUpdate;
 import com.amap.api.maps.CameraUpdateFactory;
+import com.amap.api.maps.LocationSource;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.PolylineOptions;
 import com.amap.api.maps.model.PolylineOptions;
+import com.runnerfun.beans.Record;
 import com.runnerfun.model.ConfigModel;
 import com.runnerfun.model.RecordModel;
+import com.runnerfun.tools.PathImageCreator;
 import com.runnerfun.widget.MapBtnWidget;
 import com.runnerfun.widget.RecyclingPagerAdapter;
 import com.runnerfun.widget.ScalePageTransformer;
@@ -185,6 +190,13 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         RecordService.stopRecord(this);
         mPanelWidget.setVisibility(View.GONE);
         mShareView.setVisibility(View.VISIBLE);
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mMap.onSaveInstanceState(outState);
     }
 
     @OnClick(R.id.share)
@@ -196,6 +208,8 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
     public void onLocationChanged(AMapLocation amapLocation) {
         if (amapLocation != null) {
             if (amapLocation.getErrorCode() == 0) {
+                SharedPreferences sp = getSharedPreferences("location", Context.MODE_PRIVATE);
+                sp.edit().putString("location", amapLocation.getCountry() + '·' +amapLocation.getCity()).apply();
                 mlocationClient.stopLocation();
                 mMap.getMap().moveCamera(CameraUpdateFactory.zoomTo(14));
                 zoomTo(new LatLng(amapLocation.getLatitude(), amapLocation.getLongitude()));
@@ -222,9 +236,6 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         CameraUpdate c =CameraUpdateFactory.newCameraPosition(CameraPosition.builder()
                 .target(ll).zoom( mMap.getMap().getCameraPosition().zoom).build());
         mMap.getMap().moveCamera(c);
-//        CameraUpdate newPos = CameraUpdateFactory.newLatLng(ll);
-//        mMap.getMap().animateCamera(newPos);
-//        mMap.getMap().moveCamera(CameraUpdateFactory.zoomTo(14.f));
     }
 
     private void drawLines(List<LatLng> records){
@@ -244,9 +255,11 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
                 colors.add(Color.GREEN);
             }
         }
+        po.useGradient(true);
         po.colorValues(colors);
         po.addAll(records);
         po.width(10f);
+        po.geodesic(true);
         mMap.getMap().clear();
         mMap.getMap().addPolyline(po);
     }
@@ -254,12 +267,17 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
     @Override
     public void onRecordChange(LatLng ll) {
         drawLines(RecordModel.instance.readCache());
-//        zoomTo(ll);
         CameraUpdate c =CameraUpdateFactory.newCameraPosition(CameraPosition.builder()
                 .target(ll).zoom( mMap.getMap().getCameraPosition().zoom).build());
         mMap.getMap().moveCamera(c);
     }
 
+    private void setUpMap(LatLng oldData,LatLng newData) {
+        // 绘制一个大地曲线
+        mMap.getMap().addPolyline((new PolylineOptions())
+                .add(oldData, newData)
+                .geodesic(true).color(Color.GREEN));
+    }
 
     public class RecordAdapter extends RecyclingPagerAdapter {
         private Map<String, String> runInfo;

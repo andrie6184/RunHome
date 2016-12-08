@@ -112,7 +112,4 @@ public class RecordModel {
         }
     }
 
-    private void uploadRecord() {
-        //TODO:upload
-    }
 }

@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
@@ -24,17 +25,23 @@ public class TrackMocker {
             new LatLng(39.9955216684,116.4164003901)
     };
 
+    private Subscription listener = null;
+
     public void startMock2(){}
     public void startMock(){
-        Observable.interval(2000, TimeUnit.MILLISECONDS)
+        listener = Observable.interval(2000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Long>() {
             @Override
             public void call(Long aLong) {
-                double lat = mSeed.nextDouble() + 39;
-                double lng = mSeed.nextDouble() + 116;
+                double lat = mSeed.nextDouble() / 100 + 39;
+                double lng = mSeed.nextDouble()  /100 + 116;
                 RecordModel.instance.addRecord(new LatLng(lat, lng));
             }
         });
+    }
+
+    public void stopMock(){
+        listener.unsubscribe();
     }
 }

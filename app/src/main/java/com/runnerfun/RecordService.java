@@ -54,7 +54,7 @@ public class RecordService extends Service implements AMapLocationListener {
         c.startService(i);
     }
 
-    public static void resumeRecord(Context c) {
+    public static void resumeRecord(Context c){
         Intent i = new Intent(c, RecordService.class);
         i.setAction(ACTION_RESUME_RECORD);
         c.startService(i);
@@ -62,12 +62,6 @@ public class RecordService extends Service implements AMapLocationListener {
 
     public RecordService() {
         super();
-        mlocationClient = new AMapLocationClient(this);
-        mLocationOption = new AMapLocationClientOption();
-        mlocationClient.setLocationListener(this);
-        mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
-        mLocationOption.setInterval(2000);
-        mlocationClient.setLocationOption(mLocationOption);
     }
 
     @Override
@@ -104,43 +98,60 @@ public class RecordService extends Service implements AMapLocationListener {
         return START_NOT_STICKY;
     }
 
-    private void uploadData() {
+    private void uploadData(){
         //TODO: 接口
+        //TODO:
+         stopSelf();
     }
 
-    private void doPause() {
+    private void doPause(){
         mlocationClient.stopLocation();
-        if (mUploadTimer != null) {
+        if(mUploadTimer != null){
             mUploadTimer.unsubscribe();
         }
         RecordModel.instance.pause();
     }
 
-    private void doStop() {
-        mlocationClient.stopLocation();
-        if (mUploadTimer != null) {
+    private void doStop(){
+        if(mUploadTimer != null){
             mUploadTimer.unsubscribe();
         }
         RecordModel.instance.stop();
         uploadData();
+        if(mlocationClient != null){
+            mlocationClient.stopLocation();
+            mlocationClient.onDestroy();
+        }
+        TrackMocker.instance.stopMock();
     }
 
-    private void doStart(long id) {
-        mlocationClient.stopLocation();
+    private void doStart(long id){
+        if(mlocationClient != null){
+            mlocationClient.onDestroy();
+        }
+        mlocationClient = new AMapLocationClient(this);
+        mlocationClient.setLocationListener(this);
+        mLocationOption = new AMapLocationClientOption();
+        mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+        mLocationOption.setOnceLocation(false);
+        mLocationOption.setGpsFirst(true);
+        mLocationOption.setMockEnable(false);
+        mLocationOption.setInterval(2000);
+        mlocationClient.setLocationOption(mLocationOption);
         mlocationClient.startLocation();
-        if (mUploadTimer != null) {
+        if(mUploadTimer != null){
             mUploadTimer.unsubscribe();
         }
         //TODO: start upload
         RecordModel.instance.start(id);
-        // TrackMocker.instance.startMock();
+        TrackMocker.instance.startMock();
         startUploadTimer();
     }
 
-    private void doClear() {
+    private void doClear(){
     }
 
-    private void doResume() {
+    private void doResume(){
         RecordModel.instance.resume();
     }
 
@@ -157,14 +168,7 @@ public class RecordService extends Service implements AMapLocationListener {
         return null;
     }
 
-    private void startUploadTimer() {
-        mUploadTimer = Subject.interval(6 * 1000, TimeUnit.MILLISECONDS)//TODO:  改为60秒
-                .subscribe(new Action1<Long>() {
-                    @Override
-                    public void call(Long aLong) {
-                        uploadData();
-                    }
-                });//TODO: 处理cancel?
+    private void startUploadTimer(){
     }
 
 }

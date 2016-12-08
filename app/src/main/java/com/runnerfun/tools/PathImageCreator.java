@@ -14,19 +14,17 @@ import java.util.List;
  */
 
 public class PathImageCreator {
-    public Bitmap createBitmap(List<LatLng> latLngs){
-        Bitmap bmp = Bitmap.createBitmap(800, 800, Bitmap.Config.RGB_565);
-        if(latLngs == null || latLngs.size() <= 0){
-            return bmp;
-        }
-        Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
-        Canvas c = new Canvas(bmp);
 
-        double left = latLngs.get(0).longitude;
-        double top = latLngs.get(0).latitude;
+    public static LatLng[] getBounds(List<LatLng> lls){
+        if(lls == null || lls.size() <= 0){
+            return null;
+        }
+
+        double left = lls.get(0).longitude;
+        double top = lls.get(0).latitude;
         double right = left;
         double bottom = top;
-        for(LatLng ll : latLngs){
+        for(LatLng ll : lls){
             if(ll.longitude < left){
                 left = ll.longitude;
             }
@@ -40,6 +38,22 @@ public class PathImageCreator {
                 bottom = ll.latitude;
             }
         }
+
+        LatLng[] l = new LatLng[2];
+        l[0] = new LatLng(bottom, left);
+        l[1] = new LatLng(top, right);
+        return l;
+    }
+
+    public Bitmap createBitmap(List<LatLng> latLngs){
+        Bitmap bmp = Bitmap.createBitmap(800, 800, Bitmap.Config.RGB_565);
+        if(latLngs == null || latLngs.size() <= 0){
+            return bmp;
+        }
+        Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+        Canvas c = new Canvas(bmp);
+
+
 
 
 
