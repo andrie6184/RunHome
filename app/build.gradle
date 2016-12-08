@@ -53,9 +53,9 @@ dependencies {
     compile files('libs/libammsdk.jar')
     // for weixin login & share
     compile files('libs/mta-sdk-1.6.2.jar')
-    // for qq login & share
+    // for icon_qq login & share
     compile files('libs/open_sdk_r5756.jar')
-    // for qq login & share
+    // for icon_qq login & share
     compile files('libs/weiboSDKCore_3.1.4.jar')
     // for weibo login & share
     compile files('libs/alipaySdk-20161009.jar')

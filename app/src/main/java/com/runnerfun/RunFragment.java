@@ -28,6 +28,7 @@ import com.runnerfun.network.NetworkManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -59,7 +60,7 @@ public class RunFragment extends Fragment {
     private Subscription mCounter = null;
     private Animation mScaleAnimation = new ScaleAnimation(1.f, 0.f, 1.f, 0.f
             , Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-    private SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+    private SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
 
     {
         format.setTimeZone(TimeZone.getTimeZone("GMT"));

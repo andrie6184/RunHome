@@ -192,7 +192,7 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
 
     @OnClick(R.id.share)
     void share(){
-        startActivity(new Intent(this, ShareActivity.class));
+        startActivity(new Intent(this, ShareTargetActivity.class));
     }
 
     @Override

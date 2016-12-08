@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_share_target"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent_background"
+    tools:context="com.runnerfun.ShareTargetActivity">
+
+    <ImageView
+        android:id="@+id/close_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
+        android:src="@drawable/icon_guan"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="分享可以获得积分噢!"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/close_btn"/>
+
+    <ImageView
+        android:id="@+id/share_shuiyin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:src="@drawable/shuiyin"
+        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView6"/>
+
+    <ImageView
+        android:id="@+id/share_pyq"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/pyq"
+        app:layout_constraintBottom_toBottomOf="@+id/share_shuiyin"
+        app:layout_constraintLeft_toRightOf="@+id/share_shuiyin"
+        app:layout_constraintRight_toLeftOf="@+id/share_weixin"
+        app:layout_constraintTop_toTopOf="@+id/share_shuiyin"/>
+
+    <ImageView
+        android:id="@+id/share_weixin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/wei"
+        app:layout_constraintBottom_toBottomOf="@+id/share_shuiyin"
+        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <ImageView
+        android:id="@+id/share_qq"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="38dp"
+        android:src="@drawable/qq"
+        app:layout_constraintLeft_toLeftOf="@+id/share_shuiyin"
+        app:layout_constraintRight_toRightOf="@+id/share_shuiyin"
+        app:layout_constraintTop_toBottomOf="@+id/share_shuiyin"/>
+
+    <ImageView
+        android:id="@+id/share_xinlang"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="38dp"
+        android:src="@drawable/xinlang"
+        app:layout_constraintLeft_toLeftOf="@+id/share_pyq"
+        app:layout_constraintRight_toRightOf="@+id/share_pyq"
+        app:layout_constraintTop_toBottomOf="@+id/share_pyq"/>
+
+</android.support.constraint.ConstraintLayout>

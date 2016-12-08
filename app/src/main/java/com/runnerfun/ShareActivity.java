@@ -5,13 +5,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,7 +17,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ShareActivity extends AppCompatActivity {
+public class ShareActivity extends BaseActivity {
     @BindView(R.id.content)
     TextView mContent;
     @BindView(R.id.choose_image)
@@ -35,7 +31,7 @@ public class ShareActivity extends AppCompatActivity {
         ButterKnife.bind(this);
     }
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.share_menu, menu);
@@ -44,17 +40,28 @@ public class ShareActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.preview){
+        if (item.getItemId() == R.id.preview) {
             //TODO:检查后再传递图片和文本
             String text = mContent.getText() == null ? "" : mContent.getText().toString();
             startActivity(ShareElemActivity.getStartIntent(this, mContent.getText().toString(), mImageUri));
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }*/
+
+    @OnClick(R.id.cancel_btn)
+    void onCancelClicked(View view) {
+        finish();
+    }
+
+    @OnClick(R.id.preview_btn)
+    void onPreviewClicked(View view) {
+        String text = mContent.getText() == null ? "" : mContent.getText().toString();
+        startActivity(ShareElemActivity.getStartIntent(this, text, mImageUri));
     }
 
     @OnClick(R.id.choose_image)
-    void onChooseImage(){
+    void onChooseImage() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -72,9 +79,10 @@ public class ShareActivity extends AppCompatActivity {
                 mImage.setImageBitmap(bitmap);
                 mImageUri = uri;
             } catch (FileNotFoundException e) {
-                Log.e("Exception", e.getMessage(),e);
+                Log.e("Exception", e.getMessage(), e);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+
 }

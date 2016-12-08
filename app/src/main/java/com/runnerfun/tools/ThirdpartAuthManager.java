@@ -104,7 +104,7 @@ public class ThirdpartAuthManager {
                     @Override
                     public void onComplete(Object response) {
                         JSONObject info = (JSONObject) response;
-                        NetworkManager.instance.loginWithThird(id, "qq", info.optString("nickname", ""),
+                        NetworkManager.instance.loginWithThird(id, "icon_qq", info.optString("nickname", ""),
                                 info.optString("figureurl_qq_2", ""), new Subscriber<ThirdLoginBean>() {
                                     @Override
                                     public void onCompleted() {
@@ -192,7 +192,7 @@ public class ThirdpartAuthManager {
                                 JSONObject userInfo = new JSONObject(info);
                                 String name = userInfo.optString("name", "");
                                 String image = userInfo.optString("profile_image_url", "");
-                                return NetworkManager.instance.loginWithThird(mAccessToken.getUid(), "qq", name, image);
+                                return NetworkManager.instance.loginWithThird(mAccessToken.getUid(), "icon_qq", name, image);
                             } catch (JSONException e) {
                                 if (listener != null) {
                                     listener.onFailed(ACTION_TAG_LOGIN, TYPE_THIRD_QQ, "数据解析失败");

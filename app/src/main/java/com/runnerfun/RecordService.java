@@ -11,6 +11,7 @@ import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps2d.model.LatLng;
+import com.runnerfun.mock.TrackMocker;
 import com.runnerfun.model.RecordModel;
 
 import java.util.concurrent.TimeUnit;
@@ -132,7 +133,7 @@ public class RecordService extends Service implements AMapLocationListener {
         }
         //TODO: start upload
         RecordModel.instance.start(id);
-        // TrackMocker.instance.startMock();
+        TrackMocker.instance.startMock();
         startUploadTimer();
     }
 

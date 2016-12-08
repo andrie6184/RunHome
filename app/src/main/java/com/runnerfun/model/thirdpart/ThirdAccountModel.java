@@ -49,7 +49,7 @@ public class ThirdAccountModel {
                 .build();
 
         retrofitApiWeixin = new Retrofit.Builder()
-                .baseUrl("https://api.weixin.qq.com/")
+                .baseUrl("https://api.weixin.icon_qq.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(mClient)

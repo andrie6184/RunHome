@@ -75,7 +75,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                             String openId = userInfo.optString("openid", "");
                             String name = userInfo.optString("nickname", "");
                             String avatar = userInfo.optString("headimgurl", "");
-                            return NetworkManager.instance.loginWithThird(openId, "qq", name, avatar);
+                            return NetworkManager.instance.loginWithThird(openId, "icon_qq", name, avatar);
                         } catch (JSONException e) {
                             if (actionListener != null) {
                                 actionListener.onFailed(ACTION_TAG_LOGIN,

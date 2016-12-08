@@ -2,7 +2,6 @@ package com.runnerfun;
 
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -50,7 +49,8 @@ public class RunConfigActivity extends BaseActivity {
         countdown.add("3秒");
         countdown.add("不倒数");
         mCountdownSpiner.setAdapter(new ArrayAdapter<String>(this, R.layout.dropdown_item, countdown));
-        mCountdownSpiner.setSelection(3 - ConfigModel.instance.getmCountDownSecond());
+        mCountdownSpiner.setSelection(countdown.indexOf(getCountDownString(
+                ConfigModel.instance.getmCountDownSecond())));
 
         List<String> mapType = new ArrayList<>();
         mapType.add("标准地图");
@@ -83,6 +83,14 @@ public class RunConfigActivity extends BaseActivity {
     private int getCountDownSetting(int selection) {
         final int[] array = {10, 5, 3, 0};
         return array[selection];
+    }
+
+    private String getCountDownString(int countSecond) {
+        if (countSecond > 0) {
+            return countSecond + "秒";
+        } else {
+            return "不倒数";
+        }
     }
 
 }

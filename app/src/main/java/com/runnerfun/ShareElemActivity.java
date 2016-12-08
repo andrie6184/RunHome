@@ -9,14 +9,9 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -37,8 +32,10 @@ import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-public class ShareElemActivity extends AppCompatActivity {
+public class ShareElemActivity extends BaseActivity {
+
     private static final String TEXT_PARAM = "text_param";
     private static final String IMAGE_PARAM = "image_param";
 
@@ -111,10 +108,9 @@ public class ShareElemActivity extends AppCompatActivity {
         format.setTimeZone(TimeZone.getTimeZone("GMT"));
         mHourView.setText(format.format(new Date(RecordModel.instance.getRecordTime())));
 
-
         //TODO:init other view
         initActionList();
-        initActionBar();
+        // initActionBar();
         initFeatures();
     }
 
@@ -166,11 +162,11 @@ public class ShareElemActivity extends AppCompatActivity {
         }));
     }
 
-    private void initActionBar() {
+    /*private void initActionBar() {
         ActionBar action = getSupportActionBar();
         action.setTitle("水印照片");
         action.setDisplayHomeAsUpEnabled(true);
-    }
+    }*/
 
     private void initFeatures() {
         mRecycleView.setLayoutManager(new GridLayoutManager(this, 4));
@@ -205,7 +201,7 @@ public class ShareElemActivity extends AppCompatActivity {
         return v.getDrawingCache();
     }
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.save_menu, menu);
@@ -227,8 +223,22 @@ public class ShareElemActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }*/
+
+    @OnClick(R.id.cancel_btn)
+    void onCancelClicked(View view) {
+        finish();
     }
-    
+
+    @OnClick(R.id.save_btn)
+    void onSaveClicked(View view) {
+        Bitmap bitmap = getScreenSnapShot();
+        SimpleDateFormat formatter = new SimpleDateFormat("跑步之家-yyyy年MM月dd日HH:mm:ss");
+        Date curDate = new Date(System.currentTimeMillis());
+        String str = formatter.format(curDate);
+        MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, str, "description");
+    }
+
     private void selectColor() {
         ColorPickerDialog dialog = new ColorPickerDialog();
         dialog.show(getSupportFragmentManager(), "color_picked");
