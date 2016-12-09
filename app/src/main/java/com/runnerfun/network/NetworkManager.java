@@ -5,6 +5,7 @@ import com.franmontiel.persistentcookiejar.ClearableCookieJar;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
+import com.google.gson.Gson;
 import com.runnerfun.RunApplication;
 import com.runnerfun.beans.CoinBean;
 import com.runnerfun.beans.LoginBean;
@@ -12,7 +13,9 @@ import com.runnerfun.beans.RegisterInfo;
 import com.runnerfun.beans.ResponseBean;
 import com.runnerfun.beans.RunIdBean;
 import com.runnerfun.beans.RunRecordBean;
+import com.runnerfun.beans.RunSaveResultBean;
 import com.runnerfun.beans.RunTotalBean;
+import com.runnerfun.beans.RunUploadBean;
 import com.runnerfun.beans.RunWeekBean;
 import com.runnerfun.beans.ThirdLoginBean;
 import com.runnerfun.beans.UploadResult;
@@ -167,6 +170,19 @@ public class NetworkManager {
     public void getRecordId(Subscriber<RunIdBean> callback) {
         RunRecordIdRequest request = retrofitApi.create(RunRecordIdRequest.class);
         rxRequest(request.getRecordId(getUserToken()), callback);
+    }
+
+    public Observable<ResponseBean<RunSaveResultBean>> getSaveRunRecordObservable(RunUploadBean bean) {
+        RunRecordSaveRequest request = retrofitApi.create(RunRecordSaveRequest.class);
+        String info = new Gson().toJson(bean);
+        String data = new String(RSAUtils.rsaEncrypt(RSAUtils.getPublicKey(RSAUtils.publicKey),
+                info.getBytes()));
+        return request.saveRecord(data);
+    }
+
+    public Observable<ResponseBean<String>> getUploadTrackObservable(String track, String id) {
+        UploadRunTrackRequest request = retrofitApi.create(UploadRunTrackRequest.class);
+        return request.uploadTrack(track, id);
     }
 
     public boolean hasLoginInfo() {

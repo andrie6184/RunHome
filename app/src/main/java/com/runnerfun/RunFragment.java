@@ -27,10 +27,6 @@ import com.runnerfun.model.RecordModel;
 import com.runnerfun.network.NetworkManager;
 import com.runnerfun.tools.TimeStringUtils;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -127,7 +123,7 @@ public class RunFragment extends Fragment {
 
     //TODO: @OnClick(R.id.btn_run)
     void start() {
-        if(RecordModel.instance.isRecording()){
+        if (RecordModel.instance.isRecording()) {
             Toast.makeText(getActivity(), "跑步已经开始", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -151,7 +147,7 @@ public class RunFragment extends Fragment {
 
     @OnClick(R.id.btn_run)
     void test() {
-        if(RecordModel.instance.isRecording() || RecordModel.instance.isPause()){
+        if (RecordModel.instance.isRecording() || RecordModel.instance.isPause()) {
             Toast.makeText(getActivity(), "跑步已经开始", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -163,7 +159,7 @@ public class RunFragment extends Fragment {
     }
 
     private void doStart(final long id) {
-        if(ConfigModel.instance.getmCountDownSecond() <= 0){
+        if (ConfigModel.instance.getmCountDownSecond() <= 0) {
             RecordService.startRecord(getActivity(), id);
             return;
         }

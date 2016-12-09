@@ -42,6 +42,8 @@ public class TrackMocker {
     }
 
     public void stopMock(){
-        listener.unsubscribe();
+        if (listener != null) {
+            listener.unsubscribe();
+        }
     }
 }

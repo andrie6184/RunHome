@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/data_list"
         android:layout_width="match_parent"
         android:layout_height="120dp"
-        android:background="#EDEDED"
         android:layout_alignParentBottom="true"
+        android:background="#EDEDED"
         android:clipChildren="false"
         android:gravity="center_horizontal">
 
@@ -17,69 +19,109 @@
             android:layout_width="160dp"
             android:layout_height="100dp"
             android:clipChildren="false"
-            android:overScrollMode="never" />
+            android:overScrollMode="never"/>
     </RelativeLayout>
 
-
     <com.runnerfun.widget.MapBtnWidget
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
         android:id="@+id/panel"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
         android:layout_above="@id/data_list"
-        android:orientation="horizontal"
-        >
+        android:orientation="horizontal">
+
         <TextView
+            android:id="@+id/pause"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
             android:text="暂停"
             android:textColor="#fff"
-            android:id="@+id/pause"
-            android:layout_gravity="center_vertical"
-            android:textSize="22sp"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            />
+            android:textSize="22sp"/>
+
         <TextView
+            android:id="@+id/stop"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/stop"
-            android:textColor="#fff"
             android:layout_gravity="center_vertical"
+            android:layout_weight="1"
             android:gravity="center_horizontal"
             android:text="结束"
-            android:textSize="22sp"
-            android:layout_weight="1"
-            />
+            android:textColor="#fff"
+            android:textSize="22sp"/>
     </com.runnerfun.widget.MapBtnWidget>
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#000"
+        android:visibility="visible">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dip"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:singleLine="false"
+            android:text="记录"
+            android:textColor="#FFF"
+            android:textSize="16sp"/>
+
+        <ImageView
+            android:id="@+id/cancel_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:contentDescription="@null"
+            android:paddingLeft="15dip"
+            android:paddingRight="15dip"
+            android:scaleType="fitCenter"
+            android:src="@drawable/return_btn"/>
+
+        <TextView
+            android:id="@+id/share_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_margin="10dip"
+            android:gravity="center"
+            android:text="分享"
+            android:textColor="#FFF"
+            android:textSize="16sp"/>
+
+    </RelativeLayout>
 
     <com.amap.api.maps.MapView
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
         android:layout_above="@id/panel"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_below="@id/relativeLayout">
 
     </com.amap.api.maps.MapView>
 
     <ImageView
+        android:id="@+id/back"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:id="@+id/back"
-        android:src="@drawable/map_back_btn"
-        android:layout_margin="10dp"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="10dp"
+        android:src="@drawable/map_back_btn"/>
+
     <ImageView
+        android:id="@+id/share"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/share"
-        android:src="@drawable/map_back_btn"
         android:layout_alignParentRight="true"
         android:layout_margin="10dp"
-        android:visibility="gone"
-        />
+        android:src="@drawable/map_back_btn"
+        android:visibility="gone"/>
 
 </RelativeLayout>

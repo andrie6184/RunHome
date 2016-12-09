@@ -3,7 +3,6 @@ package com.runnerfun;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -12,43 +11,35 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.SimpleAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
-import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.CameraUpdate;
 import com.amap.api.maps.CameraUpdateFactory;
-import com.amap.api.maps.LocationSource;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.Projection;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.LatLngBounds;
-import com.amap.api.maps.model.LatLngBoundsCreator;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.PolylineOptions;
-import com.amap.api.maps.model.PolylineOptions;
 import com.runnerfun.beans.Record;
-import com.runnerfun.model.ConfigModel;
 import com.runnerfun.model.RecordModel;
-import com.runnerfun.tools.PathImageCreator;
 import com.runnerfun.tools.TimeStringUtils;
 import com.runnerfun.widget.MapBtnWidget;
 import com.runnerfun.widget.RecyclingPagerAdapter;
 import com.runnerfun.widget.ScalePageTransformer;
 import com.runnerfun.widget.TransformViewPager;
-
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,7 +49,6 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Subscription;
 
 
 public class MapActivity extends AppCompatActivity implements AMapLocationListener, RecordModel.RecordChangeListener {
@@ -77,12 +67,17 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
     TransformViewPager viewPager;
     @BindView(R.id.share)
     ImageView mShareView;
+    @BindView(R.id.back)
+    ImageView mBackView;
+
+    @BindView(R.id.relativeLayout)
+    RelativeLayout topBar;
 
     private AMapLocationClientOption mLocationOption = null;
     private AMapLocationClient mlocationClient = null;
     private Typeface boldTypeFace;
 
-    public static void startWithDisplayMode(Context c){
+    public static void startWithDisplayMode(Context c) {
         Intent i = new Intent();
         i.putExtra(DISPLAY_MODE, true);
         c.startActivity(i);
@@ -99,7 +94,7 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
 //        if(ConfigModel.instance.getmMapType() != 0){
 //            mMap.getMap().setMapType(AMap.MAP_TYPE_SATELLITE);
 //        }
-        mPauseBtn = (TextView)mPanelWidget.findViewById(R.id.pause);
+        mPauseBtn = (TextView) mPanelWidget.findViewById(R.id.pause);
     }
 
     private void init() {
@@ -135,25 +130,23 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         super.onResume();
         mMap.onResume();
         boolean displayMode = getIntent().getBooleanExtra(DISPLAY_MODE, false);
-        if(displayMode){
+        if (displayMode) {
             mPanelWidget.setVisibility(View.GONE);
             LatLng ll = RecordModel.instance.firstLatLng();
-            if(ll != null){
+            if (ll != null) {
                 zoomTo(ll);
-            }
-            else{
+            } else {
                 mlocationClient.startLocation();
             }
-            mShareView.setVisibility(View.VISIBLE);
-        }
-        else{
-            if(RecordModel.instance.isPause()) {
+            // mShareView.setVisibility(View.VISIBLE);
+            topBar.setVisibility(View.VISIBLE);
+            mBackView.setVisibility(View.GONE);
+        } else {
+            if (RecordModel.instance.isPause()) {
                 mPauseBtn.setText("继续");
-            }
-            else if(RecordModel.instance.isRecording()){
+            } else if (RecordModel.instance.isRecording()) {
                 mPauseBtn.setText("暂停");
-            }
-            else{
+            } else {
                 mPanelWidget.setVisibility(View.GONE);
             }
             mlocationClient.startLocation();
@@ -175,28 +168,24 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         RecordModel.instance.removeListener(this);
     }
 
-    @OnClick(R.id.back)
-    void onBack(){
-        finish();
-    }
-
-    private void pause(){
+    private void pause() {
         //TODO: resume
-        if(RecordModel.instance.isRecording()) {
+        if (RecordModel.instance.isRecording()) {
             RecordService.pauseRecord(this);
             mPauseBtn.setText("继续");
-        }
-        else{
+        } else {
             RecordService.resumeRecord(this);
             mPauseBtn.setText("暂停");
         }
     }
 
-    private void stop(){
+    private void stop() {
         //TODO: start
         RecordService.stopRecord(this);
         mPanelWidget.setVisibility(View.GONE);
-        mShareView.setVisibility(View.VISIBLE);
+        // mShareView.setVisibility(View.VISIBLE);
+        topBar.setVisibility(View.VISIBLE);
+        mBackView.setVisibility(View.GONE);
         List<LatLng> lls = RecordModel.instance.readCache();
 //        LatLng l = PathImageCreator.getCenter(lls);
 
@@ -205,14 +194,14 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
 //        mMap.getMap().moveCamera(c);
 
         LatLngBounds.Builder llb = LatLngBounds.builder();
-        for(LatLng a : lls){
+        for (LatLng a : lls) {
             llb.include(a);
         }
         CameraUpdate c = CameraUpdateFactory.newLatLngBounds(llb.build(), 10);
         mMap.getMap().moveCamera(c);
     }
 
-    private void adjustCamera(LatLng centerLatLng,int range) {
+    private void adjustCamera(LatLng centerLatLng, int range) {
         //http://www.eoeandroid.com/blog-1107295-47621.html
         //当前缩放级别下的比例尺
         //"每像素代表" + scale + "米"
@@ -246,9 +235,19 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         mMap.onSaveInstanceState(outState);
     }
 
-    @OnClick(R.id.share)
-    void share(){
+    @OnClick(R.id.share_btn)
+    void share() {
         startActivity(new Intent(this, ShareTargetActivity.class));
+    }
+
+    @OnClick(R.id.cancel_btn)
+    void onCancel() {
+        finish();
+    }
+
+    @OnClick(R.id.back)
+    void onBack() {
+        finish();
     }
 
     @Override
@@ -256,20 +255,20 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         if (amapLocation != null) {
             if (amapLocation.getErrorCode() == 0) {
                 SharedPreferences sp = getSharedPreferences("location", Context.MODE_PRIVATE);
-                sp.edit().putString("location", amapLocation.getCountry() + '·' +amapLocation.getCity()).apply();
+                sp.edit().putString("location", amapLocation.getCountry() + '·' + amapLocation.getCity()).apply();
                 mlocationClient.stopLocation();
                 mMap.getMap().moveCamera(CameraUpdateFactory.zoomTo(16f));
                 zoomTo(new LatLng(amapLocation.getLatitude(), amapLocation.getLongitude()));
             } else {
                 //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
-                Log.e("AmapError","location Error, ErrCode:"
+                Log.e("AmapError", "location Error, ErrCode:"
                         + amapLocation.getErrorCode() + ", errInfo:"
                         + amapLocation.getErrorInfo());
             }
         }
     }
 
-    private void zoomTo(LatLng ll){
+    private void zoomTo(LatLng ll) {
         MarkerOptions mark = new MarkerOptions()
                 .position(ll)
                 .title("your location");
@@ -280,25 +279,24 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
                                 R.drawable.icon_shezhi)));
 
         mMap.getMap().addMarker(mark);
-        CameraUpdate c =CameraUpdateFactory.newCameraPosition(CameraPosition.builder()
-                .target(ll).zoom( mMap.getMap().getCameraPosition().zoom).build());
+        CameraUpdate c = CameraUpdateFactory.newCameraPosition(CameraPosition.builder()
+                .target(ll).zoom(mMap.getMap().getCameraPosition().zoom).build());
         mMap.getMap().moveCamera(c);
     }
 
-    private void drawLines(List<LatLng> records){
-        if(records == null || records.size() <= 0){
+    private void drawLines(List<LatLng> records) {
+        if (records == null || records.size() <= 0) {
             return;
         }
 
         LatLng start = records.get(0);
         PolylineOptions po = new PolylineOptions();
         List<Integer> colors = new ArrayList<>();
-        for(LatLng ll : records){
+        for (LatLng ll : records) {
             float distance = AMapUtils.calculateLineDistance(start, ll);
-            if(distance > 7.2f){
+            if (distance > 7.2f) {
                 colors.add(Color.RED);
-            }
-            else{
+            } else {
                 colors.add(Color.GREEN);
             }
         }
@@ -314,15 +312,15 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
     @Override
     public void onRecordChange(LatLng ll) {
         drawLines(RecordModel.instance.readCache());
-        CameraUpdate c =CameraUpdateFactory.newCameraPosition(CameraPosition.builder()
-                .target(ll).zoom( mMap.getMap().getCameraPosition().zoom).build());
+        CameraUpdate c = CameraUpdateFactory.newCameraPosition(CameraPosition.builder()
+                .target(ll).zoom(mMap.getMap().getCameraPosition().zoom).build());
         mMap.getMap().moveCamera(c);
 
-        ((RecordAdapter)viewPager.getAdapter()).update();
-        ((RecordAdapter)viewPager.getAdapter()).notifyDataSetChanged();
+        ((RecordAdapter) viewPager.getAdapter()).update();
+        ((RecordAdapter) viewPager.getAdapter()).notifyDataSetChanged();
     }
 
-    private void setUpMap(LatLng oldData,LatLng newData) {
+    private void setUpMap(LatLng oldData, LatLng newData) {
         // 绘制一个大地曲线
         mMap.getMap().addPolyline((new PolylineOptions())
                 .add(oldData, newData)
@@ -333,8 +331,8 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         private Map<String, Updater> runInfo;
         private final Context mContext;
 
-        public void update(){
-            for(Updater u : runInfo.values()){
+        public void update() {
+            for (Updater u : runInfo.values()) {
                 u.onUpdate();
             }
         }
@@ -389,7 +387,7 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
             return convertView;
         }
 
-        public  class ViewHolder {
+        public class ViewHolder {
             TextView attrName;
             TextView attrValue;
             Updater updater;
@@ -409,11 +407,12 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         public abstract class Updater {
             private TextView v = null;
 
-            public void bind(TextView v){
+            public void bind(TextView v) {
                 this.v = v;
             }
-            public void onUpdate(){
-                if(v != null) {
+
+            public void onUpdate() {
+                if (v != null) {
                     v.setText(getValue());
                 }
             }
@@ -421,14 +420,14 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
             abstract protected String getValue();
         }
 
-        private class SpeedUpdater extends Updater{
+        private class SpeedUpdater extends Updater {
             @Override
             protected String getValue() {
                 return RecordModel.instance.getSpeed() + "km/s";
             }
         }
 
-        private class CalUpdater extends Updater{
+        private class CalUpdater extends Updater {
 
             @Override
             protected String getValue() {
@@ -436,7 +435,7 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
             }
         }
 
-        private class DisUpdater extends Updater{
+        private class DisUpdater extends Updater {
 
             @Override
             protected String getValue() {
@@ -444,7 +443,7 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
             }
         }
 
-        private class TimeUpdater extends Updater{
+        private class TimeUpdater extends Updater {
 
             @Override
             protected String getValue() {
