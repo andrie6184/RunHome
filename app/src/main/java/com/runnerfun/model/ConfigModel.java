@@ -81,8 +81,8 @@ public class ConfigModel {
         mUserVoice = sp.getBoolean("use_voice", false);
         mMapType = sp.getInt("map_type", 0);
         mCountDownSecond = sp.getInt("second", 3);
-        mMapType = mMapType % 2;
-        mCountDownSecond = mCountDownSecond % 3;
+        // mMapType = mMapType % 3;
+        // mCountDownSecond = mCountDownSecond % 4;
     }
 
 }

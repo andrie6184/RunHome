@@ -158,6 +158,11 @@ public class RunFragment extends Fragment {
         }
     }
 
+    @OnClick(R.id.config)
+    void mapConfig() {
+        getActivity().startActivity(new Intent(getActivity(), RunConfigActivity.class));
+    }
+
     private void doStart(final long id) {
         if (ConfigModel.instance.getmCountDownSecond() <= 0) {
             RecordService.startRecord(getActivity(), id);
@@ -181,6 +186,7 @@ public class RunFragment extends Fragment {
                                 mCounter.unsubscribe();
                                 mCountDownView.setVisibility(View.GONE);
                                 RecordService.startRecord(getActivity(), id);
+                                startActivity(new Intent(getActivity(), MapActivity.class));
                             } else {
                                 showCountDown(s - aLong - 1);
                             }
@@ -227,12 +233,6 @@ public class RunFragment extends Fragment {
         String t = TimeStringUtils.getTime(ms);
         Log.d("TIMER", "current time = " + t);
         return t;
-    }
-
-    @OnClick(R.id.config)
-    void mapConfig() {
-        startActivity(new Intent(getActivity(), ShareActivity.class));
-//        getActivity().startActivity(new Intent(getActivity(), RunConfigActivity.class));
     }
 
     private void setMoney() {

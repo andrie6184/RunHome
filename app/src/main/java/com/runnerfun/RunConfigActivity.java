@@ -55,6 +55,7 @@ public class RunConfigActivity extends BaseActivity {
         List<String> mapType = new ArrayList<>();
         mapType.add("标准地图");
         mapType.add("卫星地图");
+        mapType.add("夜间地图");
 
         mMapType.setAdapter(new ArrayAdapter<>(this, R.layout.dropdown_item, mapType));
         mMapType.setSelection(ConfigModel.instance.getmMapType());

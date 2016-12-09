@@ -22,6 +22,7 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
+import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.CameraUpdate;
 import com.amap.api.maps.CameraUpdateFactory;
@@ -33,7 +34,7 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.PolylineOptions;
-import com.runnerfun.beans.Record;
+import com.runnerfun.model.ConfigModel;
 import com.runnerfun.model.RecordModel;
 import com.runnerfun.tools.TimeStringUtils;
 import com.runnerfun.widget.MapBtnWidget;
@@ -90,10 +91,12 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         ButterKnife.bind(this);
         init();
         mMap.onCreate(savedInstanceState);
-//
-//        if(ConfigModel.instance.getmMapType() != 0){
-//            mMap.getMap().setMapType(AMap.MAP_TYPE_SATELLITE);
-//        }
+
+        if (ConfigModel.instance.getmMapType() == 1) {
+            mMap.getMap().setMapType(AMap.MAP_TYPE_SATELLITE);
+        } else if (ConfigModel.instance.getmMapType() == 2) {
+            mMap.getMap().setMapType(AMap.MAP_TYPE_NIGHT);
+        }
         mPauseBtn = (TextView) mPanelWidget.findViewById(R.id.pause);
     }
 
@@ -249,7 +252,7 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
     void onBack() {
         finish();
     }
-
+    
     @Override
     public void onLocationChanged(AMapLocation amapLocation) {
         if (amapLocation != null) {
