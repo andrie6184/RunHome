@@ -5,22 +5,57 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/data_list"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_alignParentBottom="true"
+        android:layout_height="160dp"
         android:background="#EDEDED"
         android:clipChildren="false"
-        android:gravity="center_horizontal">
+        android:gravity="center_horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:orientation="vertical"
+        android:layout_alignParentStart="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            >
+            <include layout="@layout/layout_run_record_item"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:id="@+id/speed"
+                />
+            <include layout="@layout/layout_run_record_item"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:id="@+id/distance"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            >
 
-        <com.runnerfun.widget.TransformViewPager
-            android:id="@+id/info_viewpager"
-            android:layout_width="160dp"
-            android:layout_height="100dp"
-            android:clipChildren="false"
-            android:overScrollMode="never"/>
-    </RelativeLayout>
+        <include layout="@layout/layout_run_record_item"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:id="@+id/time"
+            />
+        <include layout="@layout/layout_run_record_item"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:id="@+id/cal"
+            />
+        </LinearLayout>
+    </LinearLayout>
 
     <com.runnerfun.widget.MapBtnWidget
         android:id="@+id/panel"

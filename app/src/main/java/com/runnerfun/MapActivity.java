@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
@@ -45,10 +46,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 
 public class MapActivity extends AppCompatActivity implements AMapLocationListener, RecordModel.RecordChangeListener {
@@ -63,8 +69,6 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
     @BindView(R.id.panel)
     MapBtnWidget mPanelWidget;
     private TextView mPauseBtn;
-    @BindView(R.id.info_viewpager)
-    TransformViewPager viewPager;
     @BindView(R.id.share)
     ImageView mShareView;
     @BindView(R.id.back)
@@ -72,10 +76,15 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
 
     @BindView(R.id.relativeLayout)
     RelativeLayout topBar;
+    private TextView mCalValue;
+    private TextView mSpeedValue;
+    private TextView mDisValue;
+    private TextView mTimeValue;
 
     private AMapLocationClientOption mLocationOption = null;
     private AMapLocationClient mlocationClient = null;
     private Typeface boldTypeFace;
+    private Subscription mTimer = null;
 
     public static void startWithDisplayMode(Context c) {
         Intent i = new Intent();
@@ -118,11 +127,19 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         });
 
         boldTypeFace = Typeface.createFromAsset(getAssets(), "fonts/dincond-bold.otf");
+        ((TextView)findViewById(R.id.cal).findViewById(R.id.attr_name)).setText("卡路里");
+        ((TextView)findViewById(R.id.speed).findViewById(R.id.attr_name)).setText("速度");
+        ((TextView)findViewById(R.id.distance).findViewById(R.id.attr_name)).setText("距离");
+        ((TextView)findViewById(R.id.time).findViewById(R.id.attr_name)).setText("时间");
+        mCalValue = (TextView)findViewById(R.id.cal).findViewById(R.id.attr_value);
+        mSpeedValue = (TextView)findViewById(R.id.speed).findViewById(R.id.attr_value);
+        mDisValue = (TextView)findViewById(R.id.distance).findViewById(R.id.attr_value);
+        mTimeValue = (TextView)findViewById(R.id.time).findViewById(R.id.attr_value);
+        mCalValue.setTypeface(boldTypeFace);
+        mSpeedValue.setTypeface(boldTypeFace);
+        mDisValue.setTypeface(boldTypeFace);
+        mTimeValue.setTypeface(boldTypeFace);
 
-        viewPager.setPageTransformer(true, new ScalePageTransformer(1.2f, 0.8f));
-        viewPager.setAdapter(new RecordAdapter(this));
-        viewPager.setOffscreenPageLimit(7);
-        viewPager.setCurrentItem(5000);
     }
 
     @Override
@@ -150,9 +167,27 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
                 mPanelWidget.setVisibility(View.GONE);
             }
             mlocationClient.startLocation();
+            if(mTimer != null){
+                mTimer.unsubscribe();
+            }
+            mTimer = Observable.interval(1000, TimeUnit.MILLISECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<Long>() {
+                        @Override
+                        public void call(Long aLong) {
+                            updateVvalue();
+                        }
+                    });
             //TODO:RecordModel
         }
         RecordModel.instance.addListener(this);
+    }
+
+    private void updateVvalue(){
+        mSpeedValue.setText(""+RecordModel.instance.getSpeed() + "km/s");
+        mDisValue.setText(""+RecordModel.instance.getDistance() + "km");
+        mTimeValue.setText(TimeStringUtils.getTime(RecordModel.instance.getRecordTime()));
+        mCalValue.setText(""+RecordModel.instance.getCal() + "cal");
     }
 
     @Override
@@ -166,6 +201,9 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         super.onPause();
         mMap.onPause();
         RecordModel.instance.removeListener(this);
+        if(mTimer != null){
+            mTimer.unsubscribe();
+        }
     }
 
     private void pause() {
@@ -199,34 +237,9 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         }
         CameraUpdate c = CameraUpdateFactory.newLatLngBounds(llb.build(), 10);
         mMap.getMap().moveCamera(c);
-    }
-
-    private void adjustCamera(LatLng centerLatLng, int range) {
-        //http://www.eoeandroid.com/blog-1107295-47621.html
-        //当前缩放级别下的比例尺
-        //"每像素代表" + scale + "米"
-        float scale = mMap.getMap().getScalePerPixel();
-        //代表range（米）的像素数量
-        int pixel = Math.round(range / scale);
-        //小范围，小缩放级别（比例尺较大），有精度损失
-        Projection projection = mMap.getMap().getProjection();
-        //将地图的中心点，转换为屏幕上的点
-        Point center = projection.toScreenLocation(centerLatLng);
-        //获取距离中心点为pixel像素的左、右两点（屏幕上的点
-        Point right = new Point(center.x + pixel, center.y);
-        Point left = new Point(center.x - pixel, center.y);
-
-        //将屏幕上的点转换为地图上的点
-        LatLng rightLatlng = projection.fromScreenLocation(right);
-        LatLng LeftLatlng = projection.fromScreenLocation(left);
-
-        LatLngBounds bounds = LatLngBounds.builder().include(rightLatlng).include(LeftLatlng).build();
-        //bounds.contains();
-
-        mMap.getMap().getMapScreenMarkers();
-
-        //调整可视范围
-        //aMap.moveCamera(CameraUpdateFactory.newLatLngBounds(LatLngBounds.builder().include(rightLatlng).include(LeftLatlng).build(), 10)); }
+        if(mTimer != null){
+            mTimer.unsubscribe();
+        }
     }
 
     @Override
@@ -299,6 +312,7 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
             } else {
                 colors.add(Color.GREEN);
             }
+            start = ll;
         }
         po.useGradient(true);
         po.colorValues(colors);
@@ -315,141 +329,6 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         CameraUpdate c = CameraUpdateFactory.newCameraPosition(CameraPosition.builder()
                 .target(ll).zoom(mMap.getMap().getCameraPosition().zoom).build());
         mMap.getMap().moveCamera(c);
-
-        ((RecordAdapter) viewPager.getAdapter()).update();
-        ((RecordAdapter) viewPager.getAdapter()).notifyDataSetChanged();
     }
 
-    private void setUpMap(LatLng oldData, LatLng newData) {
-        // 绘制一个大地曲线
-        mMap.getMap().addPolyline((new PolylineOptions())
-                .add(oldData, newData)
-                .geodesic(true).color(Color.GREEN));
-    }
-
-    private class RecordAdapter extends RecyclingPagerAdapter {
-        private Map<String, Updater> runInfo;
-        private final Context mContext;
-
-        public void update() {
-            for (Updater u : runInfo.values()) {
-                u.onUpdate();
-            }
-        }
-
-        RecordAdapter(Context context) {
-            mContext = context;
-
-            //// for test !!!!!!
-            runInfo = new HashMap<>();
-            runInfo.put("总消耗", new CalUpdater());
-            runInfo.put("平均配速", new SpeedUpdater());
-            runInfo.put("总里程", new DisUpdater());
-            runInfo.put("总用时", new TimeUpdater());
-        }
-
-        InfoValue getItem(int position) {
-            int offset = position % 4;
-            String[] key = new String[4];
-            key = runInfo.keySet().toArray(key);
-            return new InfoValue(key[offset], runInfo.get(key[offset]));
-        }
-
-        @Override
-        public int getCount() {
-            return 10001;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup container) {
-            final ViewHolder viewHolder;
-            if (null == convertView) {
-                viewHolder = new ViewHolder();
-                LayoutInflater mInflater = LayoutInflater.from(mContext);
-                convertView = mInflater.inflate(R.layout.layout_run_record_item, null);
-
-                viewHolder.attrName = (TextView) convertView.findViewById(R.id.attr_name);
-                viewHolder.attrValue = (TextView) convertView.findViewById(R.id.attr_value);
-                viewHolder.attrValue.setTypeface(boldTypeFace);
-
-                convertView.setTag(viewHolder);
-            } else {
-                viewHolder = (ViewHolder) convertView.getTag();
-            }
-
-            final InfoValue item = getItem(position);
-            if (item != null) {
-                viewHolder.attrName.setText(item.key);
-                viewHolder.updater = item.value;
-                viewHolder.updater.bind(viewHolder.attrValue);
-//                viewHolder.attrValue.setText(item.value);
-            }
-            return convertView;
-        }
-
-        public class ViewHolder {
-            TextView attrName;
-            TextView attrValue;
-            Updater updater;
-        }
-
-        private class InfoValue {
-
-            public InfoValue(String s, Updater v) {
-                key = s;
-                value = v;
-            }
-
-            public String key;
-            public Updater value;
-        }
-
-        public abstract class Updater {
-            private TextView v = null;
-
-            public void bind(TextView v) {
-                this.v = v;
-            }
-
-            public void onUpdate() {
-                if (v != null) {
-                    v.setText(getValue());
-                }
-            }
-
-            abstract protected String getValue();
-        }
-
-        private class SpeedUpdater extends Updater {
-            @Override
-            protected String getValue() {
-                return RecordModel.instance.getSpeed() + "km/s";
-            }
-        }
-
-        private class CalUpdater extends Updater {
-
-            @Override
-            protected String getValue() {
-                return RecordModel.instance.getCal() + "kcal";
-            }
-        }
-
-        private class DisUpdater extends Updater {
-
-            @Override
-            protected String getValue() {
-                return RecordModel.instance.getDistance() + "km";
-            }
-        }
-
-        private class TimeUpdater extends Updater {
-
-            @Override
-            protected String getValue() {
-                return TimeStringUtils.getTime(RecordModel.instance.getRecordTime());
-            }
-        }
-
-    }
 }
