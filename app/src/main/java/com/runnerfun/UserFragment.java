@@ -37,6 +37,7 @@ import rx.Subscriber;
 public class UserFragment extends Fragment {
 
     public static final String USER_INFO_CHANGED_ACTION = "USER_INFO_CHANGED_ACTION";
+    public static final String USER_INFO_RELOADED_ACTION = "USER_INFO_RELOADED_ACTION";
     public static final String SP_KEY_USER_INFO = "SP_KEY_USER_INFO";
 
     @BindView(R.id.user_avatar)
@@ -102,6 +103,9 @@ public class UserFragment extends Fragment {
                 mUserSign.setText(userInfo.getRemarks());
                 mUserCoin.setText(userInfo.getTotal_score());
                 mUserLength.setText(userInfo.getTotal_mileage() + "Km");
+
+                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(
+                        new Intent(UserFragment.USER_INFO_RELOADED_ACTION));
 
                 RunApplication.getAppContex().sharedPreferences.edit().putString(SP_KEY_USER_INFO,
                         new Gson().toJson(userInfo)).apply();

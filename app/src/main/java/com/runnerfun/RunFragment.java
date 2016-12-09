@@ -40,6 +40,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 /**
+ * RunFragment
  * Created by andrie on 16/10/2016.
  */
 
@@ -61,7 +62,7 @@ public class RunFragment extends Fragment {
 
     private LocalBroadcastManager mLocalManager;
     private UserMoneyReceiver mReceiver;
-    public static String USER_MONEY_CHANGED_ACTION = "USER_MONEY_CHANGED_ACTION";
+
     private DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -70,7 +71,7 @@ public class RunFragment extends Fragment {
         ButterKnife.bind(this, rootView);
 
         mLocalManager = LocalBroadcastManager.getInstance(getActivity());
-        IntentFilter filter = new IntentFilter(USER_MONEY_CHANGED_ACTION);
+        IntentFilter filter = new IntentFilter(UserFragment.USER_INFO_RELOADED_ACTION);
         mReceiver = new UserMoneyReceiver();
         mLocalManager.registerReceiver(mReceiver, filter);
 
@@ -168,6 +169,7 @@ public class RunFragment extends Fragment {
     private void doStart(final long id) {
         if (ConfigModel.instance.getmCountDownSecond() <= 0) {
             RecordService.startRecord(getActivity(), id);
+            startActivity(new Intent(getActivity(), MapActivity.class));
             return;
         }
         mCountDownView.setText("");

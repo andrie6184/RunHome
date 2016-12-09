@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -152,6 +153,8 @@ public class RecordService extends Service implements AMapLocationListener {
                         Toast.makeText(RunApplication.getAppContex(), String.format(Locale.getDefault(),
                                 "已获得%s里币", bean.getData().getCoin()), Toast.LENGTH_SHORT).show();
                         String track = getTrack(RecordModel.instance.readCache());
+                        LocalBroadcastManager.getInstance(RunApplication.getAppContex())
+                                .sendBroadcast(new Intent(UserFragment.USER_INFO_CHANGED_ACTION));
                         return NetworkManager.instance.getUploadTrackObservable(bean.getData().getId(), track)
                                 .subscribeOn(Schedulers.io());
                     }
