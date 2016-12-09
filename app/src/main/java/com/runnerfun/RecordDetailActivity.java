@@ -21,7 +21,7 @@ public class RecordDetailActivity extends FragmentActivity {
     ImageView mWeekTabSelected;
     @BindView(R.id.total_record_selected)
     ImageView mTotalTabSelected;
-
+    
     @BindView(R.id.record_fragment_pager)
     ViewPager mContentPager;
 

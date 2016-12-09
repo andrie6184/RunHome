@@ -191,7 +191,7 @@ public class RecordService extends Service implements AMapLocationListener {
             mlocationClient.stopLocation();
             mlocationClient.onDestroy();
         }
-        TrackMocker.instance.stopMock();
+        // TrackMocker.instance.stopMock();
     }
 
     private void doStart(long id) {
@@ -214,7 +214,7 @@ public class RecordService extends Service implements AMapLocationListener {
         }
         //TODO: start upload
         RecordModel.instance.start(id);
-        TrackMocker.instance.startMock();
+        // TrackMocker.instance.startMock();
         startUploadTimer();
     }
 

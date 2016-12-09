@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Typeface;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -28,6 +30,7 @@ import com.runnerfun.network.NetworkManager;
 import com.runnerfun.tools.TimeStringUtils;
 
 import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -55,6 +58,9 @@ public class RunFragment extends Fragment {
     @BindView(R.id.counter)
     TextView mCountDownView;
 
+    private SoundPool mSoundPool;
+    private HashMap<Integer, Integer> mSoundPoolMap;
+
     private Subscription mTimer = null;
     private Subscription mCounter = null;
     private Animation mScaleAnimation = new ScaleAnimation(1.f, 0.f, 1.f, 0.f
@@ -74,6 +80,20 @@ public class RunFragment extends Fragment {
         IntentFilter filter = new IntentFilter(UserFragment.USER_INFO_RELOADED_ACTION);
         mReceiver = new UserMoneyReceiver();
         mLocalManager.registerReceiver(mReceiver, filter);
+
+        mSoundPool = new SoundPool(6, AudioManager.STREAM_MUSIC, 100);
+        mSoundPoolMap = new HashMap<Integer, Integer>();
+        mSoundPoolMap.put(1, mSoundPool.load(getActivity(), R.raw.one, 1));
+        mSoundPoolMap.put(2, mSoundPool.load(getActivity(), R.raw.two, 1));
+        mSoundPoolMap.put(3, mSoundPool.load(getActivity(), R.raw.three, 1));
+        mSoundPoolMap.put(4, mSoundPool.load(getActivity(), R.raw.four, 1));
+        mSoundPoolMap.put(5, mSoundPool.load(getActivity(), R.raw.five, 1));
+        mSoundPoolMap.put(6, mSoundPool.load(getActivity(), R.raw.six, 1));
+        mSoundPoolMap.put(7, mSoundPool.load(getActivity(), R.raw.seven, 1));
+        mSoundPoolMap.put(8, mSoundPool.load(getActivity(), R.raw.eight, 1));
+        mSoundPoolMap.put(9, mSoundPool.load(getActivity(), R.raw.nine, 1));
+        mSoundPoolMap.put(10, mSoundPool.load(getActivity(), R.raw.ten, 1));
+        mSoundPoolMap.put(11, mSoundPool.load(getActivity(), R.raw.start, 1));
 
         return rootView;
     }
@@ -99,7 +119,7 @@ public class RunFragment extends Fragment {
         ((TextView) kacl.findViewById(R.id.value)).setTypeface(typeFace);
 
         ((TextView) km.findViewById(R.id.en_title)).setText("km");
-        ((TextView) speed.findViewById(R.id.en_title)).setText("km/s");
+        ((TextView) speed.findViewById(R.id.en_title)).setText("km/h");
         ((TextView) kacl.findViewById(R.id.en_title)).setText("kacl");
         ((TextView) km.findViewById(R.id.zh_title)).setText("距离");
         ((TextView) speed.findViewById(R.id.zh_title)).setText("配速");
@@ -170,11 +190,14 @@ public class RunFragment extends Fragment {
         if (ConfigModel.instance.getmCountDownSecond() <= 0) {
             RecordService.startRecord(getActivity(), id);
             startActivity(new Intent(getActivity(), MapActivity.class));
+            if (ConfigModel.instance.ismUserVoice()) {
+                playSound(11, 0);
+            }
             return;
         }
         mCountDownView.setText("");
         mCountDownView.setVisibility(View.VISIBLE);
-        //TODO:3,2,1 动画
+        // 3,2,1 动画
         if (mCounter != null) {
             mCounter.unsubscribe();
         }
@@ -182,6 +205,9 @@ public class RunFragment extends Fragment {
         if (ConfigModel.instance.useCountdown()) {
             final long s = ConfigModel.instance.getmCountDownSecond();
             showCountDown(s);
+            if (ConfigModel.instance.ismUserVoice()) {
+                playSound((int) s, 0);
+            }
             mCounter = Observable.interval(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action1<Long>() {
                         @Override
@@ -191,8 +217,14 @@ public class RunFragment extends Fragment {
                                 mCountDownView.setVisibility(View.GONE);
                                 RecordService.startRecord(getActivity(), id);
                                 startActivity(new Intent(getActivity(), MapActivity.class));
+                                if (ConfigModel.instance.ismUserVoice()) {
+                                    playSound(11, 0);
+                                }
                             } else {
                                 showCountDown(s - aLong - 1);
+                                if (ConfigModel.instance.ismUserVoice()) {
+                                    playSound((int) (s - aLong - 1), 0);
+                                }
                             }
                         }
                     });
@@ -227,11 +259,12 @@ public class RunFragment extends Fragment {
     }
 
     private void refreshResult() {
-
         mClockView.setText(msToString(RecordModel.instance.getRecordTime()));
         mKmValue.setText(decimalFormat.format(RecordModel.instance.getDistance() / 1000));
         mKaclValue.setText(String.valueOf((int) RecordModel.instance.getCal()));
         mSpeedValue.setText(decimalFormat.format(RecordModel.instance.getSpeed()));
+
+
     }
 
     private String msToString(long ms) {
@@ -247,6 +280,15 @@ public class RunFragment extends Fragment {
             UserInfo userInfo = new Gson().fromJson(info, UserInfo.class);
             mMoney.setText(userInfo.getTotal_score());
         }
+    }
+
+    public void playSound(int sound, int loop) {
+        AudioManager mgr = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
+        float streamVolumeCurrent = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
+        float streamVolumeMax = mgr.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        float volume = streamVolumeCurrent / streamVolumeMax;
+        //参数：1、Map中取值 2、当前音量 3、最大音量 4、优先级 5、重播次数 6、播放速度
+        mSoundPool.play(mSoundPoolMap.get(sound), volume, volume, 1, loop, 1f);
     }
     
     private class UserMoneyReceiver extends BroadcastReceiver {

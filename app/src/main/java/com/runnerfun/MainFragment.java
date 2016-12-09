@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
+ * MainFragment
  * Created by andrie on 16/10/2016.
  */
 
@@ -19,7 +20,8 @@ public class MainFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_main, container, false);
     }
 
@@ -29,17 +31,17 @@ public class MainFragment extends Fragment {
         switchFragment(mDataFragment);
     }
 
-    public void switchToMap(){
+    public void switchToMap() {
         switchFragment(mMapFragment);
 
     }
 
-    public void switchToData(){
+    public void switchToData() {
         switchFragment(mDataFragment);
     }
 
-    private void switchFragment(Fragment f){
-        FragmentTransaction ft =  getChildFragmentManager().beginTransaction();
+    private void switchFragment(Fragment f) {
+        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
         ft.replace(R.id.content, f);
         ft.commitAllowingStateLoss();
     }
