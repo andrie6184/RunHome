@@ -83,18 +83,21 @@ public class RecordService extends Service implements AMapLocationListener {
 
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
-        RecordModel.instance.addRecord(new LatLng(aMapLocation.getLatitude()
-                , aMapLocation.getLongitude()));
-        if (!TextUtils.isEmpty(aMapLocation.getPoiName())) {
-            lastPoi = aMapLocation.getPoiName();
-        } else if (!TextUtils.isEmpty(aMapLocation.getStreet())) {
-            lastPoi = aMapLocation.getStreet();
-        } else if (!TextUtils.isEmpty(aMapLocation.getCity())) {
-            lastPoi = aMapLocation.getCity();
-        } else if (!TextUtils.isEmpty(aMapLocation.getProvince())) {
-            lastPoi = aMapLocation.getProvince();
-        } else {
-            lastPoi = "中国";
+        if (aMapLocation != null && aMapLocation.getErrorCode() == 0) {
+            RecordModel.instance.addRecord(new LatLng(aMapLocation.getLatitude(),
+                    aMapLocation.getLongitude()));
+
+            if (!TextUtils.isEmpty(aMapLocation.getPoiName())) {
+                lastPoi = aMapLocation.getPoiName();
+            } else if (!TextUtils.isEmpty(aMapLocation.getStreet())) {
+                lastPoi = aMapLocation.getStreet();
+            } else if (!TextUtils.isEmpty(aMapLocation.getCity())) {
+                lastPoi = aMapLocation.getCity();
+            } else if (!TextUtils.isEmpty(aMapLocation.getProvince())) {
+                lastPoi = aMapLocation.getProvince();
+            } else {
+                lastPoi = "中国";
+            }
         }
     }
 
