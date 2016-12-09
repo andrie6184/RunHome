@@ -38,7 +38,7 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="b1249815ff057029f91008cb70a99a54"/>
+            android:value="fbb5a4e30136b705b73412f24d06b1de"/>
         <!--
             <meta-data
             android:name="leancloud"
