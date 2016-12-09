@@ -27,6 +27,7 @@ import com.runnerfun.model.RecordModel;
 import com.runnerfun.network.NetworkManager;
 import com.runnerfun.tools.TimeStringUtils;
 
+import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -61,6 +62,7 @@ public class RunFragment extends Fragment {
     private LocalBroadcastManager mLocalManager;
     private UserMoneyReceiver mReceiver;
     public static String USER_MONEY_CHANGED_ACTION = "USER_MONEY_CHANGED_ACTION";
+    private DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -223,10 +225,11 @@ public class RunFragment extends Fragment {
     }
 
     private void refreshResult() {
+
         mClockView.setText(msToString(RecordModel.instance.getRecordTime()));
-        mKmValue.setText(String.valueOf((int) RecordModel.instance.getDistance() / 1000));
+        mKmValue.setText(decimalFormat.format(RecordModel.instance.getDistance() / 1000));
         mKaclValue.setText(String.valueOf((int) RecordModel.instance.getCal()));
-        mSpeedValue.setText(String.valueOf((int) RecordModel.instance.getSpeed()));
+        mSpeedValue.setText(decimalFormat.format(RecordModel.instance.getSpeed()));
     }
 
     private String msToString(long ms) {

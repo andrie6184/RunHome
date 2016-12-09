@@ -53,12 +53,11 @@ public class PathImageCreator {
     }
 
     public static Bitmap createBitmap(List<LatLng> latLngs){
-        Bitmap bmp = Bitmap.createBitmap(100, 100, Bitmap.Config.RGB_565);
+        Bitmap bmp = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_4444);
         Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
         p.setStyle(Paint.Style.STROKE);
         p.setAntiAlias(true);
         Canvas c = new Canvas(bmp);
-        c.drawColor(Color.WHITE);
         if(latLngs == null || latLngs.size() <= 0){
             return bmp;
         }

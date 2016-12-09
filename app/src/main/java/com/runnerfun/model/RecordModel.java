@@ -13,6 +13,7 @@ import com.runnerfun.model.statusmodel.ResumeStatus;
 import com.runnerfun.model.statusmodel.StartStatus;
 import com.runnerfun.model.statusmodel.StopStatus;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,6 +83,8 @@ public class RecordModel {
 
     public float getSpeed() {
         long time = mStatus.getRecordTime();
+        float distance = mStatus.getDistance();
+
         return time == 0 ? 0 : mStatus.getDistance() / mStatus.getRecordTime();// km/s = m/ms
     }
 
