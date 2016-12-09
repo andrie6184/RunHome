@@ -49,14 +49,14 @@ public class RSAUtils {
      * @return
      * @throws Exception
      */
-    public static String encryptByPublicKey(String data, PublicKey publicKey)
+    public static String encryptByPublicKey(String data, RSAPublicKey publicKey)
             throws Exception {
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
         // 模长
-        // int key_len = publicKey.getModulus().bitLength() / 8;
+        int key_len = publicKey.getModulus().bitLength() / 8;
         // 加密数据长度 <= 模长-11
-        String[] datas = splitString(data, 20);
+        String[] datas = splitString(data, key_len - 11);
         String mi = "";
         //如果明文长度大于模长-11则要分组加密
         for (String s : datas) {
@@ -73,18 +73,18 @@ public class RSAUtils {
      * @return
      * @throws Exception
      */
-    public static String decryptByPrivateKey(String data, PrivateKey privateKey)
+    public static String decryptByPrivateKey(String data, RSAPrivateKey privateKey)
             throws Exception {
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
         //模长
-        // int key_len = privateKey.getModulus().bitLength() / 8;
+        int key_len = privateKey.getModulus().bitLength() / 8;
         byte[] bytes = data.getBytes();
         byte[] bcd = ASCII_To_BCD(bytes, bytes.length);
         System.err.println(bcd.length);
         //如果密文长度大于模长则要分组解密
         String ming = "";
-        byte[][] arrays = splitArray(bcd, 20);
+        byte[][] arrays = splitArray(bcd, key_len);
         for (byte[] arr : arrays) {
             ming += new String(cipher.doFinal(arr));
         }
