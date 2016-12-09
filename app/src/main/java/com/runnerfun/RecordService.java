@@ -66,8 +66,10 @@ public class RecordService extends Service implements AMapLocationListener {
 
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
-        RecordModel.instance.addRecord(new LatLng(aMapLocation.getLatitude()
-                , aMapLocation.getLongitude()));
+        if(aMapLocation != null && aMapLocation.getErrorCode() == 0) {
+            RecordModel.instance.addRecord(new LatLng(aMapLocation.getLatitude()
+                    , aMapLocation.getLongitude()));
+        }
     }
 
     @Override
