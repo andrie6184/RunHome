@@ -28,8 +28,10 @@ import java.util.Locale;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 /**
@@ -140,14 +142,18 @@ public class RecordService extends Service implements AMapLocationListener {
         bean.total_distance = RecordModel.instance.getDistance();
         bean.position = lastPoi;
         
-        NetworkManager.instance.getSaveRunRecordObservable(bean).flatMap(new Func1<ResponseBean<RunSaveResultBean>,
+        NetworkManager.instance.getSaveRunRecordObservable(bean)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .flatMap(new Func1<ResponseBean<RunSaveResultBean>,
                 Observable<?>>() {
             @Override
             public Observable<?> call(ResponseBean<RunSaveResultBean> bean) {
                 Toast.makeText(RunApplication.getAppContex(), String.format(Locale.getDefault(),
                         "已获得%s里币", bean.getData().getCoin()), Toast.LENGTH_SHORT).show();
                 String track = getTrack(RecordModel.instance.readCache());
-                return NetworkManager.instance.getUploadTrackObservable(bean.getData().getId(), track);
+                return NetworkManager.instance.getUploadTrackObservable(bean.getData().getId(), track)
+                        .subscribeOn(Schedulers.io());
             }
         }).subscribe(new Action1<Object>() {
             @Override
@@ -220,7 +226,9 @@ public class RecordService extends Service implements AMapLocationListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        doStop();
+        if(RecordModel.instance.isRecording() || RecordModel.instance.isPause()) {
+            doStop();
+        }
     }
 
     @Nullable

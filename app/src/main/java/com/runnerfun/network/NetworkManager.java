@@ -22,11 +22,15 @@ import com.runnerfun.beans.RunWeekBean;
 import com.runnerfun.beans.ThirdLoginBean;
 import com.runnerfun.beans.UploadResult;
 import com.runnerfun.beans.UserInfo;
+import com.runnerfun.tools.RSATools;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +52,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import sun.misc.BASE64Decoder;
 
 /**
  * NetworkManager
@@ -184,22 +189,11 @@ public class NetworkManager {
         String info = new Gson().toJson(bean);
         String data = "";
         try {
-            data = RSAUtils.encryptByPublicKey(info, RSAUtils.getPublicKey(RSAUtils.publicKey));
+            data = RSATools.encryptByPublic(info);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return request.saveRecord(data);
-    }
-
-    public void saveRunRecordObservable(RunUploadBean bean, Subscriber<RunSaveResultBean> callback) {
-        try {
-            RunRecordSaveRequest request = retrofitApi.create(RunRecordSaveRequest.class);
-            String info = new Gson().toJson(bean);
-            String data = RSAUtils.encryptByPublicKey(info, RSAUtils.getPublicKey(RSAUtils.publicKey));
-            rxRequest(request.saveRecord(data), callback);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public Observable<ResponseBean<String>> getUploadTrackObservable(String track, String id) {
