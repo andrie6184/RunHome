@@ -252,7 +252,7 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
     void onBack() {
         finish();
     }
-    
+
     @Override
     public void onLocationChanged(AMapLocation amapLocation) {
         if (amapLocation != null) {

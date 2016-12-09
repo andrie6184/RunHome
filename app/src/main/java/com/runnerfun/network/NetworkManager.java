@@ -15,6 +15,7 @@ import com.runnerfun.beans.RunIdBean;
 import com.runnerfun.beans.RunRecordBean;
 import com.runnerfun.beans.RunSaveResultBean;
 import com.runnerfun.beans.RunTotalBean;
+import com.runnerfun.beans.RunTrackBean;
 import com.runnerfun.beans.RunUploadBean;
 import com.runnerfun.beans.RunWeekBean;
 import com.runnerfun.beans.ThirdLoginBean;
@@ -170,6 +171,11 @@ public class NetworkManager {
     public void getRecordId(Subscriber<RunIdBean> callback) {
         RunRecordIdRequest request = retrofitApi.create(RunRecordIdRequest.class);
         rxRequest(request.getRecordId(getUserToken()), callback);
+    }
+
+    public void getRunTrack(String id, Subscriber<RunTrackBean> callback) {
+        RunTrackRequest request = retrofitApi.create(RunTrackRequest.class);
+        rxRequest(request.getTrack(id), callback);
     }
 
     public Observable<ResponseBean<RunSaveResultBean>> getSaveRunRecordObservable(RunUploadBean bean) {
