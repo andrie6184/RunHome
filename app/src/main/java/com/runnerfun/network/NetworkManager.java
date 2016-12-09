@@ -175,9 +175,24 @@ public class NetworkManager {
     public Observable<ResponseBean<RunSaveResultBean>> getSaveRunRecordObservable(RunUploadBean bean) {
         RunRecordSaveRequest request = retrofitApi.create(RunRecordSaveRequest.class);
         String info = new Gson().toJson(bean);
-        String data = new String(RSAUtils.rsaEncrypt(RSAUtils.getPublicKey(RSAUtils.publicKey),
-                info.getBytes()));
+        String data = "";
+        try {
+            data = RSAUtils.encryptByPublicKey(info, RSAUtils.getPublicKey(RSAUtils.publicKey));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return request.saveRecord(data);
+    }
+
+    public void saveRunRecordObservable(RunUploadBean bean, Subscriber<RunSaveResultBean> callback) {
+        try {
+            RunRecordSaveRequest request = retrofitApi.create(RunRecordSaveRequest.class);
+            String info = new Gson().toJson(bean);
+            String data = RSAUtils.encryptByPublicKey(info, RSAUtils.getPublicKey(RSAUtils.publicKey));
+            rxRequest(request.saveRecord(data), callback);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public Observable<ResponseBean<String>> getUploadTrackObservable(String track, String id) {

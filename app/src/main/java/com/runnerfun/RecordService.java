@@ -5,29 +5,32 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
+import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.model.LatLng;
 import com.runnerfun.beans.ResponseBean;
 import com.runnerfun.beans.RunSaveResultBean;
 import com.runnerfun.beans.RunUploadBean;
 import com.runnerfun.mock.TrackMocker;
 import com.runnerfun.model.RecordModel;
-import com.runnerfun.model.RunRecoder;
 import com.runnerfun.network.NetworkManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import timber.log.Timber;
 
 /**
  * RecordService
@@ -43,6 +46,7 @@ public class RecordService extends Service implements AMapLocationListener {
     public static final String ID_ARGS = "id";
 
     public String lastPoi;
+    public long startTime;
 
     private AMapLocationClientOption mLocationOption = null;
     private AMapLocationClient mlocationClient = null;
@@ -81,7 +85,17 @@ public class RecordService extends Service implements AMapLocationListener {
     public void onLocationChanged(AMapLocation aMapLocation) {
         RecordModel.instance.addRecord(new LatLng(aMapLocation.getLatitude()
                 , aMapLocation.getLongitude()));
-        lastPoi = aMapLocation.getAoiName();//获取当前定位点的AOI信息
+        if (!TextUtils.isEmpty(aMapLocation.getPoiName())) {
+            lastPoi = aMapLocation.getPoiName();
+        } else if (!TextUtils.isEmpty(aMapLocation.getStreet())) {
+            lastPoi = aMapLocation.getStreet();
+        } else if (!TextUtils.isEmpty(aMapLocation.getCity())) {
+            lastPoi = aMapLocation.getCity();
+        } else if (!TextUtils.isEmpty(aMapLocation.getProvince())) {
+            lastPoi = aMapLocation.getProvince();
+        } else {
+            lastPoi = "中国";
+        }
     }
 
     @Override
@@ -115,32 +129,36 @@ public class RecordService extends Service implements AMapLocationListener {
     private void uploadData() {
         RunUploadBean bean = new RunUploadBean();
         SimpleDateFormat format = new SimpleDateFormat("yy-MM-dd hh:mm:ss", Locale.getDefault());
-        bean.startTime = format.format(new Date(RecordModel.instance.getRecordTime()));
+        bean.startTime = format.format(new Date(startTime));
         bean.calorie = RecordModel.instance.getCal();
         bean.distance = RecordModel.instance.getDistance();
         bean.endTime = format.format(new Date(System.currentTimeMillis()));
-        bean.total_time = System.currentTimeMillis() - RecordModel.instance.getRecordTime();
+        bean.total_time = RecordModel.instance.getRecordTime();
         bean.total_distance = RecordModel.instance.getDistance();
-        NetworkManager.instance.getSaveRunRecordObservable(bean).flatMap(new Func1<ResponseBean<RunSaveResultBean>, Observable<?>>() {
+        bean.position = lastPoi;
+        
+        NetworkManager.instance.getSaveRunRecordObservable(bean).flatMap(new Func1<ResponseBean<RunSaveResultBean>,
+                Observable<?>>() {
             @Override
-            public Observable<ResponseBean<String>> call(ResponseBean<RunSaveResultBean> bean) {
+            public Observable<?> call(ResponseBean<RunSaveResultBean> bean) {
                 Toast.makeText(RunApplication.getAppContex(), String.format(Locale.getDefault(),
                         "已获得%s里币", bean.getData().getCoin()), Toast.LENGTH_SHORT).show();
-                String track = "";
+                String track = getTrack(RecordModel.instance.readCache());
                 return NetworkManager.instance.getUploadTrackObservable(bean.getData().getId(), track);
             }
         }).subscribe(new Action1<Object>() {
             @Override
             public void call(Object o) {
-
+                Timber.d(o.toString());
+                stopSelf();
             }
         }, new Action1<Throwable>() {
             @Override
             public void call(Throwable throwable) {
-
+                Timber.e(throwable.toString());
+                stopSelf();
             }
         });
-        stopSelf();
     }
 
     private void doPause() {
@@ -165,6 +183,7 @@ public class RecordService extends Service implements AMapLocationListener {
     }
 
     private void doStart(long id) {
+        startTime = System.currentTimeMillis();
         if (mlocationClient != null) {
             mlocationClient.onDestroy();
         }
@@ -183,7 +202,7 @@ public class RecordService extends Service implements AMapLocationListener {
         }
         //TODO: start upload
         RecordModel.instance.start(id);
-        // TrackMocker.instance.startMock();
+        TrackMocker.instance.startMock();
         startUploadTimer();
     }
 
@@ -208,6 +227,35 @@ public class RecordService extends Service implements AMapLocationListener {
     }
 
     private void startUploadTimer() {
+    }
+
+    private String getTrack(List<LatLng> records) {
+        if (records == null || records.size() == 0) {
+            return "";
+        }
+        StringBuilder result = new StringBuilder();
+        result.append("{");
+        LatLng temp = null;
+        for (int po = 0; po < records.size(); po++) {
+            LatLng item = records.get(po);
+            if (item != null) {
+                result.append("[");
+                result.append(item.longitude).append(",");
+                if (temp != null) {
+                    result.append(AMapUtils.calculateLineDistance(item, temp)).append(",");
+                } else {
+                    result.append("0").append(",");
+                }
+                result.append(item.latitude);
+                result.append("]");
+            }
+            if (po != records.size() - 1) {
+                result.append(",");
+            }
+            temp = item;
+        }
+        result.append("}");
+        return result.toString();
     }
 
 }
