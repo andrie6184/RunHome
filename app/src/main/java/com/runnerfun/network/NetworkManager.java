@@ -13,7 +13,6 @@ import com.runnerfun.beans.PersonalRecordBean;
 import com.runnerfun.beans.RegisterInfo;
 import com.runnerfun.beans.ResponseBean;
 import com.runnerfun.beans.RunIdBean;
-import com.runnerfun.beans.RunRecordBean;
 import com.runnerfun.beans.RunSaveResultBean;
 import com.runnerfun.beans.RunTotalBean;
 import com.runnerfun.beans.RunTrackBean;
@@ -22,6 +21,7 @@ import com.runnerfun.beans.RunWeekBean;
 import com.runnerfun.beans.ThirdLoginBean;
 import com.runnerfun.beans.UploadResult;
 import com.runnerfun.beans.UserInfo;
+import com.runnerfun.tools.RSATools;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -182,24 +182,24 @@ public class NetworkManager {
     public Observable<ResponseBean<RunSaveResultBean>> getSaveRunRecordObservable(RunUploadBean bean) {
         RunRecordSaveRequest request = retrofitApi.create(RunRecordSaveRequest.class);
         String info = new Gson().toJson(bean);
-//        String data = "";
-//        try {
-//            data = RSAUtils.encryptByPublicKey(info, RSAUtils.getPublicKey(RSAUtils.publicKey));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-        return request.saveRecord(info);
+        String data = "";
+        try {
+            data = RSATools.encryptByPublic(info);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return request.saveRecord(data);
     }
 
     public void saveRunRecordObservable(RunUploadBean bean, Subscriber<RunSaveResultBean> callback) {
-//        try {
+        try {
             RunRecordSaveRequest request = retrofitApi.create(RunRecordSaveRequest.class);
             String info = new Gson().toJson(bean);
-//            String data = RSAUtils.encryptByPublicKey(info, RSAUtils.getPublicKey(RSAUtils.publicKey));
-            rxRequest(request.saveRecord(info), callback);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+            String data = RSATools.encryptByPublic(info);
+            rxRequest(request.saveRecord(data), callback);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public Observable<ResponseBean<String>> getUploadTrackObservable(String track, String id) {
