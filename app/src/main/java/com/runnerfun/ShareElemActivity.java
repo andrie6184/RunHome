@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amap.api.maps.model.LatLng;
 import com.runnerfun.mock.TrackMocker;
@@ -247,6 +248,7 @@ public class ShareElemActivity extends BaseActivity {
         Date curDate = new Date(System.currentTimeMillis());
         String str = formatter.format(curDate);
         MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, str, "description");
+        Toast.makeText(this, "图片已保存", Toast.LENGTH_SHORT).show();
     }
 
     private void selectColor() {
