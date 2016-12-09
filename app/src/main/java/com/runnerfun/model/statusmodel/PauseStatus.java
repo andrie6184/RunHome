@@ -3,7 +3,7 @@ package com.runnerfun.model.statusmodel;
 
 import android.os.SystemClock;
 
-import com.amap.api.maps2d.model.LatLng;
+import com.amap.api.maps.model.LatLng;
 
 /**
  * Created by lixiaoyang on 22/11/2016.

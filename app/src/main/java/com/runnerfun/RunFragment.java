@@ -25,6 +25,7 @@ import com.runnerfun.beans.UserInfo;
 import com.runnerfun.model.ConfigModel;
 import com.runnerfun.model.RecordModel;
 import com.runnerfun.network.NetworkManager;
+import com.runnerfun.tools.TimeStringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -60,11 +61,6 @@ public class RunFragment extends Fragment {
     private Subscription mCounter = null;
     private Animation mScaleAnimation = new ScaleAnimation(1.f, 0.f, 1.f, 0.f
             , Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-    private SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
-
-    {
-        format.setTimeZone(TimeZone.getTimeZone("GMT"));
-    }
 
     private LocalBroadcastManager mLocalManager;
     private UserMoneyReceiver mReceiver;
@@ -131,7 +127,7 @@ public class RunFragment extends Fragment {
 
     //TODO: @OnClick(R.id.btn_run)
     void start() {
-        if (RecordModel.instance.isRecording()) {
+        if(RecordModel.instance.isRecording()){
             Toast.makeText(getActivity(), "跑步已经开始", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -155,7 +151,7 @@ public class RunFragment extends Fragment {
 
     @OnClick(R.id.btn_run)
     void test() {
-        if (RecordModel.instance.isRecording() || RecordModel.instance.isPause()) {
+        if(RecordModel.instance.isRecording() || RecordModel.instance.isPause()){
             Toast.makeText(getActivity(), "跑步已经开始", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -167,7 +163,7 @@ public class RunFragment extends Fragment {
     }
 
     private void doStart(final long id) {
-        if (ConfigModel.instance.getmCountDownSecond() <= 0) {
+        if(ConfigModel.instance.getmCountDownSecond() <= 0){
             RecordService.startRecord(getActivity(), id);
             return;
         }
@@ -232,7 +228,7 @@ public class RunFragment extends Fragment {
     }
 
     private String msToString(long ms) {
-        String t = format.format(new Date(ms));
+        String t = TimeStringUtils.getTime(ms);
         Log.d("TIMER", "current time = " + t);
         return t;
     }

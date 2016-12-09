@@ -3,6 +3,7 @@ package com.runnerfun;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
@@ -107,6 +108,10 @@ public class ShareElemActivity extends BaseActivity {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
         format.setTimeZone(TimeZone.getTimeZone("GMT"));
         mHourView.setText(format.format(new Date(RecordModel.instance.getRecordTime())));
+
+        SharedPreferences sp = getSharedPreferences("location", Context.MODE_PRIVATE);
+        String location = sp.getString("location", "");
+        mLocationText.setText(location);
 
         //TODO:init other view
         initActionList();

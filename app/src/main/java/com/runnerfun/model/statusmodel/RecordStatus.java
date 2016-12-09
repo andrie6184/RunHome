@@ -1,7 +1,8 @@
 package com.runnerfun.model.statusmodel;
 
-import com.amap.api.maps2d.AMapUtils;
-import com.amap.api.maps2d.model.LatLng;
+
+import com.amap.api.maps.AMapUtils;
+import com.amap.api.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.Collections;
