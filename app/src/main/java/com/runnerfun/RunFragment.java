@@ -235,8 +235,8 @@ public class RunFragment extends Fragment {
 
     @OnClick(R.id.config)
     void mapConfig() {
-//        startActivity(new Intent(getActivity(), ShareActivity.class));
-        getActivity().startActivity(new Intent(getActivity(), RunConfigActivity.class));
+        startActivity(new Intent(getActivity(), ShareActivity.class));
+//        getActivity().startActivity(new Intent(getActivity(), RunConfigActivity.class));
     }
 
     private void setMoney() {

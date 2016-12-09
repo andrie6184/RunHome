@@ -2,7 +2,9 @@ package com.runnerfun.tools;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 
 import com.amap.api.maps.model.LatLng;
 
@@ -50,18 +52,32 @@ public class PathImageCreator {
         return new LatLng((l[0].latitude + l[1].latitude)/2, (l[0].longitude + l[1].longitude)/2);
     }
 
-    public Bitmap createBitmap(List<LatLng> latLngs){
-        Bitmap bmp = Bitmap.createBitmap(800, 800, Bitmap.Config.RGB_565);
+    public static Bitmap createBitmap(List<LatLng> latLngs){
+        Bitmap bmp = Bitmap.createBitmap(100, 100, Bitmap.Config.RGB_565);
+        Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+        p.setStyle(Paint.Style.STROKE);
+        p.setAntiAlias(true);
+        Canvas c = new Canvas(bmp);
+        c.drawColor(Color.WHITE);
         if(latLngs == null || latLngs.size() <= 0){
             return bmp;
         }
-        Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
-        Canvas c = new Canvas(bmp);
+        Path path = new Path();
+        p.setColor(Color.BLACK);
+        LatLng[] ls = getBounds(latLngs);
+        double widthScale = 100 / (ls[1].longitude - ls[0].longitude);
+        double heightScale = 100 / (ls[1].latitude - ls[0].latitude);
 
+        double x1 = (latLngs.get(0).longitude - ls[0].longitude) * widthScale;
+        double y1 = (ls[1].latitude - latLngs.get(0).latitude )* heightScale;
+        path.moveTo((float) x1, (float) y1);
+        for(LatLng l : latLngs){
+            double x = (l.longitude - ls[0].longitude) * widthScale;
+            double y = (ls[1].latitude - l.latitude )* heightScale;
+            path.lineTo((float)x, (float)y);
+        }
 
-
-
-
+        c.drawPath(path, p);
 
         return bmp;
     }

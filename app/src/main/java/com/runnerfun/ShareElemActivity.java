@@ -18,7 +18,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.amap.api.maps.model.LatLng;
+import com.runnerfun.mock.TrackMocker;
 import com.runnerfun.model.RecordModel;
+import com.runnerfun.tools.PathImageCreator;
 import com.runnerfun.tools.Triple;
 import com.runnerfun.widget.ColorPickerDialog;
 import com.runnerfun.widget.FeatureItemHolder;
@@ -27,6 +30,7 @@ import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -113,6 +117,7 @@ public class ShareElemActivity extends BaseActivity {
         String location = sp.getString("location", "");
         mLocationText.setText(location);
 
+        mPathImageView.setImageBitmap(PathImageCreator.createBitmap(RecordModel.instance.readCache()));
         //TODO:init other view
         initActionList();
         // initActionBar();
