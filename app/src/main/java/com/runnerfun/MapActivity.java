@@ -42,6 +42,7 @@ import com.runnerfun.widget.RecyclingPagerAdapter;
 import com.runnerfun.widget.ScalePageTransformer;
 import com.runnerfun.widget.TransformViewPager;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -85,6 +86,7 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
     private AMapLocationClient mlocationClient = null;
     private Typeface boldTypeFace;
     private Subscription mTimer = null;
+    private DecimalFormat decimalFormat=new DecimalFormat("0.00");
 
     public static void startWithDisplayMode(Context c) {
         Intent i = new Intent();
@@ -184,8 +186,10 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
     }
 
     private void updateVvalue(){
-        mSpeedValue.setText(""+RecordModel.instance.getSpeed() + "km/s");
-        mDisValue.setText(""+RecordModel.instance.getDistance() + "km");
+        String speed = decimalFormat.format(RecordModel.instance.getSpeed());
+        mSpeedValue.setText(""+speed + "km/s");
+        String distance = decimalFormat.format(RecordModel.instance.getDistance() / 1000);
+        mDisValue.setText(""+distance + "km");
         mTimeValue.setText(TimeStringUtils.getTime(RecordModel.instance.getRecordTime()));
         mCalValue.setText(""+RecordModel.instance.getCal() + "cal");
     }
