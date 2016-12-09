@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.runnerfun.RunApplication;
 import com.runnerfun.beans.CoinBean;
 import com.runnerfun.beans.LoginBean;
+import com.runnerfun.beans.PersonalRecordBean;
 import com.runnerfun.beans.RegisterInfo;
 import com.runnerfun.beans.ResponseBean;
 import com.runnerfun.beans.RunIdBean;
@@ -148,7 +149,7 @@ public class NetworkManager {
         rxRequest(request.uploadAvatar(description, imgs), callback);
     }
 
-    public void getUserPRecordList(int page, Subscriber<ArrayList<RunRecordBean>> callback) {
+    public void getUserPRecordList(int page, Subscriber<PersonalRecordBean> callback) {
         RunListsRequest request = retrofitApi.create(RunListsRequest.class);
         rxRequest(request.getRunLists(page), callback);
     }

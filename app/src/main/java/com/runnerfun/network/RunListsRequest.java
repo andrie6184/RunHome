@@ -1,5 +1,6 @@
 package com.runnerfun.network;
 
+import com.runnerfun.beans.PersonalRecordBean;
 import com.runnerfun.beans.ResponseBean;
 import com.runnerfun.beans.RunRecordBean;
 
@@ -16,5 +17,5 @@ import rx.Observable;
 
 public interface RunListsRequest {
     @GET("/running/runningrecord")
-    Observable<ResponseBean<ArrayList<RunRecordBean>>> getRunLists(@Query(value = "currentPage") int currentPage);
+    Observable<ResponseBean<PersonalRecordBean>> getRunLists(@Query(value = "currentPage") int currentPage);
 }

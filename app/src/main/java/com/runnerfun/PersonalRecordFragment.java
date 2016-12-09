@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.runnerfun.beans.PersonalRecordBean;
 import com.runnerfun.beans.RunRecordBean;
 import com.runnerfun.network.NetworkManager;
 
@@ -142,7 +143,7 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
         if (requestMore && mRecords != null && mRecords.size() >= COMMON_PAGE_SIZE) {
             page = mRecords.size() / COMMON_PAGE_SIZE;
         }
-        NetworkManager.instance.getUserPRecordList(page, new Subscriber<ArrayList<RunRecordBean>>() {
+        NetworkManager.instance.getUserPRecordList(page, new Subscriber<PersonalRecordBean>() {
             @Override
             public void onCompleted() {
                 isLoading = false;
@@ -156,13 +157,13 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
             }
 
             @Override
-            public void onNext(ArrayList<RunRecordBean> records) {
+            public void onNext(PersonalRecordBean records) {
                 if (records != null) {
-                    if (records.size() > 0) {
+                    if (records.getList().size() > 0) {
                         if (!requestMore) {
-                            mRecords = records;
+                            mRecords = records.getList();
                         } else {
-                            mRecords.addAll(records);
+                            mRecords.addAll(records.getList());
                         }
                         mAdapter.notifyDataSetChanged();
                         return;
