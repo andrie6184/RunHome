@@ -314,7 +314,7 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         List<Integer> colors = new ArrayList<>();
         for (LatLng ll : records) {
             float distance = AMapUtils.calculateLineDistance(start, ll);
-            if (distance > 7.2f) {
+            if (distance/2 > 7.2f) {
                 colors.add(Color.RED);
             } else {
                 colors.add(Color.GREEN);
