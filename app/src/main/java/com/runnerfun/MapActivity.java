@@ -87,7 +87,7 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
     private AMapLocationClient mlocationClient = null;
     private Typeface boldTypeFace;
     private Subscription mTimer = null;
-    private DecimalFormat decimalFormat=new DecimalFormat("0.00");
+    private DecimalFormat decimalFormat=new DecimalFormat("0.000");
 
     public static void startWithDisplayMode(Context c) {
         Intent i = new Intent();
@@ -190,7 +190,7 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
 
     private void updateVvalue(){
         String speed = decimalFormat.format(RecordModel.instance.getSpeed());
-        mSpeedValue.setText(""+speed + "km/s");
+        mSpeedValue.setText(""+speed + "km/h");
         String distance = decimalFormat.format(RecordModel.instance.getDistance() / 1000);
         mDisValue.setText(""+distance + "km");
         mTimeValue.setText(TimeStringUtils.getTime(RecordModel.instance.getRecordTime()));

@@ -69,7 +69,7 @@ public class RunFragment extends Fragment {
     private LocalBroadcastManager mLocalManager;
     private UserMoneyReceiver mReceiver;
 
-    private DecimalFormat decimalFormat = new DecimalFormat("0.00");
+    private DecimalFormat decimalFormat = new DecimalFormat("0.000");
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {

@@ -67,7 +67,7 @@ public class RecordModel {
                 UserFragment.SP_KEY_USER_INFO, "");
         if (!TextUtils.isEmpty(info)) {
             UserInfo userInfo = new Gson().fromJson(info, UserInfo.class);
-            return Float.valueOf(userInfo.getWeight()) * getDistance() * 1.036f;
+            return Float.valueOf(userInfo.getWeight()) * getDistance() * 1.036f /1000;
         } else {
             return 0f;
         }
@@ -84,8 +84,7 @@ public class RecordModel {
     public float getSpeed() {
         long time = mStatus.getRecordTime();
         float distance = mStatus.getDistance();
-
-        return time == 0 ? 0 : mStatus.getDistance() / mStatus.getRecordTime();// km/s = m/ms
+        return time == 0 ? 0 : (mStatus.getDistance()/1000)/ (mStatus.getRecordTime()/3600);// km/s = m/ms
     }
 
     public long getRecordTime() {
