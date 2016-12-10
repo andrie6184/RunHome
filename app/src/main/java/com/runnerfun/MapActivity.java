@@ -325,7 +325,6 @@ public class MapActivity extends AppCompatActivity implements AMapLocationListen
         po.colorValues(colors);
         po.addAll(records);
         po.width(10f);
-        po.geodesic(true);
         mMap.getMap().clear();
         mMap.getMap().addPolyline(po);
     }
