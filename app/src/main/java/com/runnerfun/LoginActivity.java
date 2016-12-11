@@ -60,6 +60,7 @@ public class LoginActivity extends AppCompatActivity implements ThirdpartAuthMan
             @Override
             public void onNext(LoginBean loginBean) {
                 // Toast.makeText(LoginActivity.this, "login success" + loginBean.getSid(), Toast.LENGTH_SHORT).show();
+                NetworkManager.instance.setLoginInfo();
                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 finish();
             }

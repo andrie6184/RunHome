@@ -3,7 +3,6 @@ package com.runnerfun.network;
 import com.runnerfun.beans.ResponseBean;
 
 import retrofit2.http.GET;
-import retrofit2.http.POST;
 import rx.Observable;
 
 /**
@@ -12,6 +11,6 @@ import rx.Observable;
  */
 
 public interface LogoutRequest {
-    @POST("/user/logout")
+    @GET("/user/logout")
     Observable<ResponseBean<String>> logout();
 }

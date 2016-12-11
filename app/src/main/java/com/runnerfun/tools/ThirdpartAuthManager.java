@@ -120,6 +120,7 @@ public class ThirdpartAuthManager {
 
                                     @Override
                                     public void onNext(ThirdLoginBean loginBean) {
+                                        NetworkManager.instance.setLoginInfo();
                                         if (listener != null) {
                                             listener.onSuccess(ACTION_TAG_LOGIN, TYPE_THIRD_QQ,
                                                     loginBean.isFirstlogin());
@@ -206,6 +207,7 @@ public class ThirdpartAuthManager {
                                 @Override
                                 public void call(ResponseBean<ThirdLoginBean> bean) {
                                     if (bean.getCode() == 0) {
+                                        NetworkManager.instance.setLoginInfo();
                                         if (listener != null) {
                                             listener.onSuccess(ACTION_TAG_LOGIN, TYPE_THIRD_QQ,
                                                     bean.getData().isFirstlogin());

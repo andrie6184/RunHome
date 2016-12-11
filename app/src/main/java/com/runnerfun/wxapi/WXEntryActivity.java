@@ -90,6 +90,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                             @Override
                             public void call(ResponseBean<ThirdLoginBean> bean) {
                                 if (bean.getCode() == 0) {
+                                    NetworkManager.instance.setLoginInfo();
                                     if (actionListener != null) {
                                         actionListener.onSuccess(ACTION_TAG_LOGIN,
                                                 ThirdpartAuthManager.TYPE_THIRD_QQ,

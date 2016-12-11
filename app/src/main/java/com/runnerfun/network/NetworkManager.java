@@ -68,7 +68,7 @@ public class NetworkManager {
 
     private NetworkManager() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        logging.setLevel(HttpLoggingInterceptor.Level.HEADERS);
 
         ClearableCookieJar cookieJar = new PersistentCookieJar(new SetCookieCache(),
                 new SharedPrefsCookiePersistor(RunApplication.getAppContex()));
@@ -202,23 +202,32 @@ public class NetworkManager {
         }
     }
 
-    public Observable<ResponseBean<String>> getUploadTrackObservable(String track, String id) {
+    public Observable<ResponseBean<Object>> getUploadTrackObservable(String track, String id) {
         UploadRunTrackRequest request = retrofitApi.create(UploadRunTrackRequest.class);
         return request.uploadTrack(track, id);
     }
 
     public boolean hasLoginInfo() {
-        List<Cookie> cookies = mClient.cookieJar().loadForRequest(HttpUrl.parse("http://api.paobuzhijia.com/"));
-        // List<Cookie> cookies = new SharedPrefsCookiePersistor(RunApplication.getAppContex()).loadAll();
+//        List<Cookie> cookies = mClient.cookieJar().loadForRequest(HttpUrl.parse("http://api.paobuzhijia.com/"));
+//        // List<Cookie> cookies = new SharedPrefsCookiePersistor(RunApplication.getAppContex()).loadAll();
+//
+//        if (cookies.size() > 0) {
+//            for (Cookie c : cookies) {
+//                if (c.name().equals("sid")) {
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
+        return RunApplication.getAppContex().sharedPreferences.getBoolean("userhaslogin", false);
+    }
 
-        if (cookies.size() > 0) {
-            for (Cookie c : cookies) {
-                if (c.name().equals("sid")) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    public void setLoginInfo() {
+        RunApplication.getAppContex().sharedPreferences.edit().putBoolean("userhaslogin", true).apply();
+    }
+
+    public void clearLoginInfo() {
+        RunApplication.getAppContex().sharedPreferences.edit().remove("userhaslogin").apply();
     }
 
     public String getUserSid() {

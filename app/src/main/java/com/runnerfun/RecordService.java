@@ -157,8 +157,8 @@ public class RecordService extends Service implements AMapLocationListener {
                         LocalBroadcastManager.getInstance(RunApplication.getAppContex())
                                 .sendBroadcast(new Intent(UserFragment.USER_INFO_CHANGED_ACTION));
                         Log.d("hallucination", "trigger");
-                        return NetworkManager.instance.getUploadTrackObservable(bean.getData().getId(), track)
-                                .subscribeOn(Schedulers.io());
+                        return NetworkManager.instance.getUploadTrackObservable(track, bean.getData()
+                                .getId()).subscribeOn(Schedulers.io());
                     }
                 }).subscribe(new Action1<Object>() {
             @Override
@@ -193,7 +193,7 @@ public class RecordService extends Service implements AMapLocationListener {
             mlocationClient.stopLocation();
             mlocationClient.onDestroy();
         }
-//        TrackMocker.instance.stopMock();
+        TrackMocker.instance.stopMock();
     }
 
     private void doStart(long id) {
@@ -216,7 +216,7 @@ public class RecordService extends Service implements AMapLocationListener {
         }
         //TODO: start upload
         RecordModel.instance.start(id);
-//         TrackMocker.instance.startMock();
+        TrackMocker.instance.startMock();
         startUploadTimer();
     }
 
