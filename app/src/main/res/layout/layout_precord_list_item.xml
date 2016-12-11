@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#FFFFFF"
-    android:orientation="vertical"
-    android:paddingEnd="13dp"
-    android:paddingLeft="13dp"
-    android:paddingRight="13dp"
-    android:paddingStart="13dp">
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="#FFFFFF"
+              android:orientation="vertical"
+              android:paddingEnd="13dp"
+              android:paddingLeft="13dp"
+              android:paddingRight="13dp"
+              android:paddingStart="13dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -20,7 +20,17 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:textColor="#E60012"
-            android:textSize="32sp" />
+            android:textSize="32sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="12dp"
+            android:layout_toRightOf="@id/record_distance"
+            android:text="公里"
+            android:textColor="#E60012"
+            android:textSize="16sp"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -32,7 +42,7 @@
             android:layout_toRightOf="@+id/record_distance"
             android:gravity="center_horizontal"
             android:textColor="#E60012"
-            android:textSize="14sp" />
+            android:textSize="14sp"/>
 
         <TextView
             android:id="@+id/record_time"
@@ -45,7 +55,7 @@
             android:layout_marginStart="13dp"
             android:gravity="center_horizontal"
             android:textColor="#808080"
-            android:textSize="13sp" />
+            android:textSize="13sp"/>
 
     </RelativeLayout>
 
@@ -62,7 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@null"
-            android:src="@drawable/icon_location" />
+            android:src="@drawable/icon_location"/>
 
         <TextView
             android:id="@+id/record_location"
@@ -72,13 +82,13 @@
             android:layout_marginStart="13dp"
             android:gravity="center_horizontal"
             android:textColor="#333333"
-            android:textSize="14sp" />
+            android:textSize="14sp"/>
 
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="#EEEEEE" />
+        android:background="#EEEEEE"/>
 
 </LinearLayout>

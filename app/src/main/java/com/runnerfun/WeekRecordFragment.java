@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 import com.runnerfun.beans.RunWeekBean;
 import com.runnerfun.beans.UserInfo;
 import com.runnerfun.network.NetworkManager;
+import com.runnerfun.tools.RoundedTransformation;
 import com.runnerfun.widget.RecyclingPagerAdapter;
 import com.runnerfun.widget.ScalePageTransformer;
 import com.runnerfun.widget.TransformViewPager;
@@ -107,7 +108,7 @@ public class WeekRecordFragment extends Fragment {
         viewPager.setPageTransformer(true, new ScalePageTransformer());
         mPagerAdapter = new RecordAdapter(getActivity());
         viewPager.setAdapter(mPagerAdapter);
-        viewPager.setOffscreenPageLimit(7);
+        viewPager.setOffscreenPageLimit(1);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -142,8 +143,8 @@ public class WeekRecordFragment extends Fragment {
             @Override
             public void onNext(ArrayList<RunWeekBean> runWeekBeen) {
                 mRecords = runWeekBeen;
-                // // TODO: 16/11/9
                 mPagerAdapter.notifyDataSetChanged();
+                viewPager.setOffscreenPageLimit(7);
             }
         });
     }
@@ -156,6 +157,7 @@ public class WeekRecordFragment extends Fragment {
     public class RecordAdapter extends RecyclingPagerAdapter {
 
         private final Context mContext;
+        private int mChildCount = 0;
 
         public RecordAdapter(Context context) {
             mContext = context;
@@ -166,6 +168,21 @@ public class WeekRecordFragment extends Fragment {
                 return mRecords.get(position);
             }
             return null;
+        }
+
+        @Override
+        public void notifyDataSetChanged() {
+            mChildCount = getCount();
+            super.notifyDataSetChanged();
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            if (mChildCount > 0) {
+                mChildCount--;
+                return POSITION_NONE;
+            }
+            return super.getItemPosition(object);
         }
 
         @Override
@@ -193,15 +210,16 @@ public class WeekRecordFragment extends Fragment {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
 
-            RunApplication.getAppContex().picasso.load(userInfo.getHeadimg()).placeholder(R.drawable.icon_avatar)
+            RunApplication.getAppContex().picasso.load(userInfo.getHeadimg())
+                    .placeholder(R.drawable.icon_avatar).transform(new RoundedTransformation(360, 0))
                     .error(R.drawable.icon_avatar).into(viewHolder.userAvatar);
             viewHolder.userName.setText(userInfo.getUser_name());
 
             final RunWeekBean item = getItem(position);
             if (item != null) {
                 viewHolder.recordDistance.setText(item.getDistance());
-                // ?? TODO viewHolder.recordEvaluate.setText(item.getThe_time());
-                viewHolder.recordTime.setText(item.getDate());
+                viewHolder.recordTime.setText(item.getDate().split(" ")[0]);
+                viewHolder.recordEvaluate.setText(item.getTitle());
             }
             return convertView;
         }

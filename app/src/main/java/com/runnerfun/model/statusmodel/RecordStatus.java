@@ -35,6 +35,10 @@ public abstract class RecordStatus {
         }
     }
 
+    public void initCache(List<LatLng> ll){
+        mCache.clear();
+        mCache.addAll(ll);
+    }
     abstract public long getRecordTime();
     abstract public void addRecord(LatLng ll);
     public void clearRecord(){

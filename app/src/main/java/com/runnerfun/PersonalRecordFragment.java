@@ -16,14 +16,22 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amap.api.maps.model.LatLng;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.runnerfun.beans.LanLatBean;
 import com.runnerfun.beans.PersonalRecordBean;
 import com.runnerfun.beans.RunRecordBean;
+import com.runnerfun.beans.RunTrackBean;
+import com.runnerfun.model.RecordModel;
 import com.runnerfun.network.NetworkManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnItemClick;
 import butterknife.OnItemLongClick;
 import rx.Subscriber;
 
@@ -37,6 +45,7 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
 
     private RunRecordBean mDeleteBean;
     private boolean mIsDeleting;
+    private boolean mIsJumping;
 
     @BindView(R.id.precord_list_ptr_frame)
     SwipeRefreshLayout mPtrLayout;
@@ -97,7 +106,7 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getItemId() == 1) {
-            NetworkManager.instance.deleteRunRecord(mDeleteBean.getRid(), new Subscriber<String>() {
+            NetworkManager.instance.deleteRunRecord(mDeleteBean.getRid(), new Subscriber<Object>() {
                 @Override
                 public void onCompleted() {
                     mIsDeleting = false;
@@ -110,7 +119,7 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
                 }
 
                 @Override
-                public void onNext(String s) {
+                public void onNext(Object s) {
                     Toast.makeText(getActivity(), "删除成功", Toast.LENGTH_SHORT).show();
                     mRecords.remove(mDeleteBean);
                     mAdapter.notifyDataSetChanged();
@@ -126,6 +135,40 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
         requestCoinInfo(false);
     }
 
+    @OnItemClick(R.id.precord_list_view)
+    void onRecordItemClicked(AdapterView<?> parent, View view, int position, long id) {
+        if (mIsJumping) {
+            return;
+        }
+        mIsJumping = true;
+        String rid = mRecords.get(position).getRid();
+        NetworkManager.instance.getRunTrack(rid, new Subscriber<RunTrackBean>() {
+            @Override
+            public void onCompleted() {
+                mIsJumping = false;
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mIsJumping = false;
+                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNext(RunTrackBean runTrackBean) {
+                List<LanLatBean> beans = new Gson().fromJson(runTrackBean.getTrack(),
+                        new TypeToken<List<LanLatBean>>() {}.getType());
+                List<LatLng> lls = new ArrayList<LatLng>();
+                for (LanLatBean bean : beans) {
+                    LatLng item = new LatLng(bean.getValues().get(0), bean.getValues().get(2));
+                    lls.add(item);
+                }
+                RecordModel.instance.initRecord(lls);
+                MapActivity.startWithDisplayMode(getActivity());
+            }
+        });
+    }
+
     @OnItemLongClick(R.id.precord_list_view)
     boolean onRecordItemLongClicked(AdapterView<?> parent, View view, int position, long id) {
         if (!mIsDeleting) {
@@ -139,9 +182,9 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
 
     private void requestCoinInfo(final boolean requestMore) {
         isLoading = true;
-        int page = 0;
+        int page = 1;
         if (requestMore && mRecords != null && mRecords.size() >= COMMON_PAGE_SIZE) {
-            page = mRecords.size() / COMMON_PAGE_SIZE;
+            page = mRecords.size() / COMMON_PAGE_SIZE + 1;
         }
         NetworkManager.instance.getUserPRecordList(page, new Subscriber<PersonalRecordBean>() {
             @Override
@@ -222,8 +265,8 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
             final RunRecordBean item = getItem(position);
             if (item != null) {
                 viewHolder.lengthValue.setText(item.getDistance());
-                viewHolder.recordDate.setText(item.getStartTime());
-                viewHolder.recordAddress.setText(item.getLocation());
+                viewHolder.recordDate.setText(item.getStartTime().split(" ")[0]);
+                viewHolder.recordAddress.setText(item.getPosition());
             }
             return convertView;
         }

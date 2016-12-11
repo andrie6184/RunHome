@@ -199,7 +199,7 @@ public class RecordService extends Service implements AMapLocationListener {
         stopForeground(true);
         TrackMocker.instance.stopMock();
     }
-    
+
     private void doStart(long id) {
         startTime = System.currentTimeMillis();
         if (mlocationClient != null) {

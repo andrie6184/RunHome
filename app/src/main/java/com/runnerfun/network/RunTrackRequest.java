@@ -14,5 +14,5 @@ import rx.Observable;
 
 public interface RunTrackRequest {
     @GET("/running/getrunningrecord")
-    Observable<ResponseBean<RunTrackBean>> getTrack(@Query(value = "id") String id);
+    Observable<ResponseBean<RunTrackBean>> getTrack(@Query(value = "rid") String id);
 }

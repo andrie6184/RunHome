@@ -68,7 +68,7 @@ public class NetworkManager {
 
     private NetworkManager() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.HEADERS);
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         ClearableCookieJar cookieJar = new PersistentCookieJar(new SetCookieCache(),
                 new SharedPrefsCookiePersistor(RunApplication.getAppContex()));
@@ -164,7 +164,7 @@ public class NetworkManager {
         rxRequest(request.getTotal(), callback);
     }
 
-    public void deleteRunRecord(String id, Subscriber<String> callback) {
+    public void deleteRunRecord(String id, Subscriber<Object> callback) {
         RecordDeleteRequest request = retrofitApi.create(RecordDeleteRequest.class);
         rxRequest(request.delete(id), callback);
     }

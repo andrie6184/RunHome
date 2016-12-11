@@ -16,6 +16,6 @@ public interface RecordDeleteRequest {
 
     @FormUrlEncoded
     @POST("/running/deleterunningrecord")
-    Observable<ResponseBean<String>> delete(@Field("rids") String id);
+    Observable<ResponseBean<Object>> delete(@Field("rid") String id);
 
 }

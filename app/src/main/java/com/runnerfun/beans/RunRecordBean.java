@@ -15,8 +15,11 @@ public class RunRecordBean implements Serializable {
     private String distance;
     private String total_distance;
     private String highSpeed;
-    private String location;
     private String speed;
+    private String position;
+    private String ridnew;
+    private String deleted;
+    private String get_score;
 
     public String getRid() {
         return rid;
@@ -66,14 +69,6 @@ public class RunRecordBean implements Serializable {
         this.highSpeed = highSpeed;
     }
 
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
     public String getSpeed() {
         return speed;
     }
@@ -81,4 +76,37 @@ public class RunRecordBean implements Serializable {
     public void setSpeed(String speed) {
         this.speed = speed;
     }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    public String getRidnew() {
+        return ridnew;
+    }
+
+    public void setRidnew(String ridnew) {
+        this.ridnew = ridnew;
+    }
+
+    public String getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(String deleted) {
+        this.deleted = deleted;
+    }
+
+    public String getGet_score() {
+        return get_score;
+    }
+
+    public void setGet_score(String get_score) {
+        this.get_score = get_score;
+    }
+
 }

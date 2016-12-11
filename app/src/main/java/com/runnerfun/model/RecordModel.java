@@ -128,6 +128,10 @@ public class RecordModel {
         return mStatus.firstLatLng();
     }
 
+    public void initRecord(List<LatLng> ll){
+        mStatus.initCache(ll);
+    }
+
     public void addRecord(LatLng ll) {
         mStatus.addRecord(ll);
         //TODO: aaa
