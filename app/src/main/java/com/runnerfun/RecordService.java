@@ -1,11 +1,14 @@
 package com.runnerfun;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -193,9 +196,10 @@ public class RecordService extends Service implements AMapLocationListener {
             mlocationClient.stopLocation();
             mlocationClient.onDestroy();
         }
+        stopForeground(true);
         TrackMocker.instance.stopMock();
     }
-
+    
     private void doStart(long id) {
         startTime = System.currentTimeMillis();
         if (mlocationClient != null) {
@@ -218,6 +222,36 @@ public class RecordService extends Service implements AMapLocationListener {
         RecordModel.instance.start(id);
         TrackMocker.instance.startMock();
         startUploadTimer();
+        // start forground
+        useForeground("跑步中...");
+
+
+    }
+
+    public void useForeground(String currSong) {
+        Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, 0);
+    /* Method 01
+     * this method must SET SMALLICON!
+     * otherwise it can't do what we want in Android 4.4 KitKat,
+     * it can only show the application info page which contains the 'Force Close' button.*/
+        android.support.v4.app.NotificationCompat.Builder mNotifyBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setTicker("")
+                .setWhen(System.currentTimeMillis())
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText(currSong)
+                .setContentIntent(pendingIntent);
+        Notification notification = mNotifyBuilder.build();
+
+    /* Method 02
+    Notification notification = new Notification(R.drawable.ic_launcher, tickerText,
+            System.currentTimeMillis());
+    notification.setLatestEventInfo(PlayService.this, getText(R.string.app_name),
+            currSong, pendingIntent);
+    */
+
+        startForeground(1234, notification);
     }
 
     private void doClear() {
