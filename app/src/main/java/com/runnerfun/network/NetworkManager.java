@@ -80,7 +80,7 @@ public class NetworkManager {
                 .build();
 
         retrofitApi = new Retrofit.Builder()
-                .baseUrl("http://api.paobuzhijia.com/")
+                .baseUrl("https://api.paobuzhijia.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(mClient)
