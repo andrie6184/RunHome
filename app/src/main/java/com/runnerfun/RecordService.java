@@ -7,6 +7,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
@@ -137,12 +138,12 @@ public class RecordService extends Service implements AMapLocationListener {
         SimpleDateFormat format = new SimpleDateFormat("yy-MM-dd hh:mm:ss", Locale.getDefault());
         bean.startTime = format.format(new Date(startTime));
         bean.calorie = RecordModel.instance.getCal();
-        bean.distance = RecordModel.instance.getDistance();
+        bean.distance = RecordModel.instance.getRealDistance();
         bean.endTime = format.format(new Date(System.currentTimeMillis()));
         bean.total_time = RecordModel.instance.getRecordTime();
         bean.total_distance = RecordModel.instance.getDistance();
         bean.position = lastPoi;
-        
+
         NetworkManager.instance.getSaveRunRecordObservable(bean)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -155,6 +156,7 @@ public class RecordService extends Service implements AMapLocationListener {
                         String track = getTrack(RecordModel.instance.readCache());
                         LocalBroadcastManager.getInstance(RunApplication.getAppContex())
                                 .sendBroadcast(new Intent(UserFragment.USER_INFO_CHANGED_ACTION));
+                        Log.d("hallucination", "trigger");
                         return NetworkManager.instance.getUploadTrackObservable(bean.getData().getId(), track)
                                 .subscribeOn(Schedulers.io());
                     }
@@ -191,7 +193,7 @@ public class RecordService extends Service implements AMapLocationListener {
             mlocationClient.stopLocation();
             mlocationClient.onDestroy();
         }
-        // TrackMocker.instance.stopMock();
+//        TrackMocker.instance.stopMock();
     }
 
     private void doStart(long id) {
@@ -214,7 +216,7 @@ public class RecordService extends Service implements AMapLocationListener {
         }
         //TODO: start upload
         RecordModel.instance.start(id);
-        // TrackMocker.instance.startMock();
+//         TrackMocker.instance.startMock();
         startUploadTimer();
     }
 
@@ -229,9 +231,9 @@ public class RecordService extends Service implements AMapLocationListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (RecordModel.instance.isRecording() || RecordModel.instance.isPause()) {
-            doStop();
-        }
+//        if (RecordModel.instance.isRecording() || RecordModel.instance.isPause()) {
+//            doStop();
+//        }
     }
 
     @Nullable
