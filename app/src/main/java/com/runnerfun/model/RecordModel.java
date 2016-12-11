@@ -1,7 +1,9 @@
 package com.runnerfun.model;
 
+import android.support.constraint.solver.Cache;
 import android.text.TextUtils;
 
+import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.runnerfun.RunApplication;
@@ -99,6 +101,25 @@ public class RecordModel {
         return mStatus.getDistance();
     }
 
+    public float getRealDistance(){
+        List<LatLng> ll = readCache();
+        float distance = 0.f;
+        if(ll == null || ll.size() <= 0){
+            return distance;
+        }
+
+        LatLng start = ll.get(0);
+        for(LatLng l : ll){
+            float dis = AMapUtils.calculateLineDistance(start, l);
+            if(dis <= 3.6f){
+                distance += dis;
+            }
+            start = l;
+        }
+
+        return distance;
+    }
+
     public List<LatLng> readCache() {
         return mStatus.readCache();
     }
@@ -109,6 +130,7 @@ public class RecordModel {
 
     public void addRecord(LatLng ll) {
         mStatus.addRecord(ll);
+        //TODO: aaa
         for (RecordChangeListener l : listeners) {
             l.onRecordChange(ll);
         }
