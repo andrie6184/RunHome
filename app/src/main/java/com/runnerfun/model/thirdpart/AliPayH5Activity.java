@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
@@ -16,10 +15,11 @@ import android.widget.Toast;
 
 import com.alipay.sdk.app.PayTask;
 import com.alipay.sdk.util.H5PayResultModel;
+import com.runnerfun.BaseActivity;
 
 import timber.log.Timber;
 
-public class AliPayH5Activity extends AppCompatActivity {
+public class AliPayH5Activity extends BaseActivity {
 
     private WebView mWebView;
 

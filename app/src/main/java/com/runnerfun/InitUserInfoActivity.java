@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Subscriber;
 
-public class InitUserInfoActivity extends Activity {
+public class InitUserInfoActivity extends BaseActivity {
 
     private boolean mIsMale = true;
 

@@ -1,9 +1,9 @@
 package com.runnerfun.wxapi;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.runnerfun.BaseActivity;
 import com.runnerfun.R;
 import com.runnerfun.tools.ThirdpartAuthManager;
 import com.tencent.mm.sdk.constants.ConstantsAPI;
@@ -14,7 +14,7 @@ import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 
 import timber.log.Timber;
 
-public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
+public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandler {
 
     private static final String TAG = "MicroMsg.SDKSample.WXPayEntryActivity";
 

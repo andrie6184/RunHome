@@ -40,7 +40,7 @@ import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import rx.Subscriber;
 
-public class UserInfoEditActivity extends Activity {
+public class UserInfoEditActivity extends BaseActivity {
 
     private static final int REQUESTCODE_PICK = 0x1001;
     private static final int REQUESTCODE_TAKE = 0x1002;

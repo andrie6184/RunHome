@@ -18,7 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class GuideActivity extends Activity {
+public class GuideActivity extends BaseActivity {
 
     @BindView(R.id.guide_viewpager)
     TransformViewPager mViewPager;

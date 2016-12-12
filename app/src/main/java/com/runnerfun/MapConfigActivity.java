@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import butterknife.ButterKnife;
 
-public class MapConfigActivity extends AppCompatActivity {
+public class MapConfigActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -2,7 +2,6 @@ package com.runnerfun;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -14,7 +13,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Subscriber;
 
-public class UserInfoActivity extends AppCompatActivity {
+public class UserInfoActivity extends BaseActivity {
     private boolean mIsMale = true;
     @BindView(R.id.age)
     EditText mAge;

@@ -1,10 +1,10 @@
 package com.runnerfun.wxapi;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.runnerfun.BaseActivity;
 import com.runnerfun.R;
 import com.runnerfun.beans.ResponseBean;
 import com.runnerfun.beans.ThirdLoginBean;
@@ -27,7 +27,7 @@ import rx.schedulers.Schedulers;
 
 import static com.runnerfun.tools.ThirdpartAuthManager.ACTION_TAG_LOGIN;
 
-public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
+public class WXEntryActivity extends BaseActivity implements IWXAPIEventHandler {
 
     public static ThirdpartAuthManager.ThirdPartActionListener actionListener = null;
     public static int type = 0; // 0 is login, 1 is share

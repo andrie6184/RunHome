@@ -17,7 +17,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Subscriber;
 
-public class LoginActivity extends AppCompatActivity implements ThirdpartAuthManager.ThirdPartActionListener {
+public class LoginActivity extends BaseActivity implements ThirdpartAuthManager.ThirdPartActionListener {
     @BindView(R.id.tel)
     EditText mTel;
     @BindView(R.id.password)

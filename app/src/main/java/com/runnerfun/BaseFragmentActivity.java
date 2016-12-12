@@ -3,8 +3,7 @@ package com.runnerfun;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentActivity;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -14,16 +13,16 @@ import com.runnerfun.widget.SystemStatusBarManager;
 import rx.Subscription;
 
 /**
- * BaseActivity
- * Created by andrie on 18/10/2016.
+ * BaseFragmentActivity
+ * Created by andrie on 16/12/12.
  */
 
-abstract public class BaseActivity extends AppCompatActivity {
+public class BaseFragmentActivity extends FragmentActivity {
 
     protected Subscription _subscription;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

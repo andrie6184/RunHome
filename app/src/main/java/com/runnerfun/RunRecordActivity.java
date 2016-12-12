@@ -21,7 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnTouch;
 
-public class RunRecordActivity extends Activity {
+public class RunRecordActivity extends BaseActivity {
 
     @BindView(R.id.info_viewpager)
     TransformViewPager viewPager;

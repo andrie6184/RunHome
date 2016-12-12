@@ -6,18 +6,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.alipay.sdk.app.PayTask;
+import com.runnerfun.BaseActivity;
 import com.runnerfun.R;
 
 import java.util.Map;
 
 import timber.log.Timber;
 
-public class AliPayActivity extends AppCompatActivity {
+public class AliPayActivity extends BaseActivity {
 
     public static final String INTENT_PARAMS_KEY_ALIPAYINFO = "INTENT_PARAMS_KEY_ALIPAYINFO";
     private static final int SDK_PAY_FLAG = 1;

@@ -1,6 +1,5 @@
 package com.runnerfun;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -8,7 +7,7 @@ import android.view.View;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ShareTargetActivity extends Activity {
+public class ShareTargetActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

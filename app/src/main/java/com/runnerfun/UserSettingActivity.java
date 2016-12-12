@@ -20,7 +20,7 @@ import okhttp3.Cookie;
 import rx.Subscriber;
 import rx.internal.schedulers.NewThreadScheduler;
 
-public class UserSettingActivity extends Activity {
+public class UserSettingActivity extends BaseActivity {
 
     @BindView(R.id.speaking_image)
     ImageView speaking;

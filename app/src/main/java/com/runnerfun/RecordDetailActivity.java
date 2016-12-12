@@ -13,7 +13,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class RecordDetailActivity extends FragmentActivity {
+public class RecordDetailActivity extends BaseFragmentActivity {
 
     @BindView(R.id.personal_record_selected)
     ImageView mUserTabSelected;

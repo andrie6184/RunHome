@@ -6,4 +6,5 @@
     <color name="table_unchecked">#fff</color>
     <color name="table_checked">#000</color>
     <color name="transparent_background">#000000</color>
+    <color name="header_background">#000</color>
 </resources>

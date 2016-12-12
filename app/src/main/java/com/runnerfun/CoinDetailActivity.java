@@ -2,7 +2,6 @@ package com.runnerfun;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -13,7 +12,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class CoinDetailActivity extends FragmentActivity {
+public class CoinDetailActivity extends BaseFragmentActivity {
 
     @BindView(R.id.user_record_selected)
     ImageView mUserTabSelected;
