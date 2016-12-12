@@ -25,6 +25,7 @@ import com.runnerfun.beans.RunRecordBean;
 import com.runnerfun.beans.RunTrackBean;
 import com.runnerfun.model.RecordModel;
 import com.runnerfun.network.NetworkManager;
+import com.runnerfun.tools.UITools;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -157,7 +158,8 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
             @Override
             public void onNext(RunTrackBean runTrackBean) {
                 List<LanLatBean> beans = new Gson().fromJson(runTrackBean.getTrack(),
-                        new TypeToken<List<LanLatBean>>() {}.getType());
+                        new TypeToken<List<LanLatBean>>() {
+                        }.getType());
                 List<LatLng> lls = new ArrayList<LatLng>();
                 for (LanLatBean bean : beans) {
                     LatLng item = new LatLng(bean.getValues().get(0), bean.getValues().get(2));
@@ -264,7 +266,7 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
 
             final RunRecordBean item = getItem(position);
             if (item != null) {
-                viewHolder.lengthValue.setText(item.getDistance());
+                viewHolder.lengthValue.setText(UITools.numberFormat(item.getDistance()));
                 viewHolder.recordDate.setText(item.getStartTime().split(" ")[0]);
                 viewHolder.recordAddress.setText(item.getPosition());
             }

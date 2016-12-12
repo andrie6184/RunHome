@@ -3,6 +3,7 @@ package com.runnerfun.tools;
 import android.graphics.Bitmap;
 
 import java.io.ByteArrayOutputStream;
+import java.text.DecimalFormat;
 
 /**
  * UITools
@@ -27,4 +28,21 @@ public class UITools {
 
         return result;
     }
+
+    public static String numberFormat(String num) {
+        float value = Float.valueOf(num);
+        return numberFormat(value);
+    }
+
+    public static String numberFormat(float num) {
+        String value = String.valueOf(num);
+
+        DecimalFormat format = new DecimalFormat("0.00");
+        try {
+            value = format.format(num);
+        } catch (Exception e) {
+        }
+        return value;
+    }
+
 }

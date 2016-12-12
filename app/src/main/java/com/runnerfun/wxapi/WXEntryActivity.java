@@ -8,8 +8,8 @@ import android.widget.Toast;
 import com.runnerfun.R;
 import com.runnerfun.beans.ResponseBean;
 import com.runnerfun.beans.ThirdLoginBean;
-import com.runnerfun.network.NetworkManager;
 import com.runnerfun.model.thirdpart.ThirdAccountModel;
+import com.runnerfun.network.NetworkManager;
 import com.runnerfun.tools.ThirdpartAuthManager;
 import com.tencent.mm.sdk.modelbase.BaseReq;
 import com.tencent.mm.sdk.modelbase.BaseResp;
@@ -50,15 +50,17 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         if (resp.code != null) {
             if (resp.errCode == BaseResp.ErrCode.ERR_OK) {
                 ThirdAccountModel.instance.getWeixinToken(ThirdpartAuthManager.WEIXIN_APP_KEY,
-                        ThirdpartAuthManager.WEIXIN_APP_SECRET, resp.code).flatMap(new Func1<String,
-                        Observable<String>>() {
+                        ThirdpartAuthManager.WEIXIN_APP_SECRET, resp.code)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io()).flatMap(new Func1<String, Observable<String>>() {
                     @Override
                     public Observable<String> call(String tokenString) {
                         try {
                             JSONObject tokenInfo = new JSONObject(tokenString);
                             String token = tokenInfo.optString("access_token", "");
                             String openId = tokenInfo.optString("access_token", "");
-                            return ThirdAccountModel.instance.getWeixinUserInfo(token, openId);
+                            return ThirdAccountModel.instance.getWeixinUserInfo(token, openId)
+                                    .subscribeOn(Schedulers.io());
                         } catch (JSONException e) {
                             if (actionListener != null) {
                                 actionListener.onFailed(ACTION_TAG_LOGIN,
@@ -75,7 +77,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                             String openId = userInfo.optString("openid", "");
                             String name = userInfo.optString("nickname", "");
                             String avatar = userInfo.optString("headimgurl", "");
-                            return NetworkManager.instance.loginWithThird(openId, "icon_qq", name, avatar);
+                            return NetworkManager.instance.loginWithThird(openId, "icon_qq",
+                                    name, avatar).subscribeOn(Schedulers.io());
                         } catch (JSONException e) {
                             if (actionListener != null) {
                                 actionListener.onFailed(ACTION_TAG_LOGIN,
@@ -84,36 +87,34 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                         }
                         return null;
                     }
-                }).subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<ResponseBean<ThirdLoginBean>>() {
-                            @Override
-                            public void call(ResponseBean<ThirdLoginBean> bean) {
-                                if (bean.getCode() == 0) {
-                                    NetworkManager.instance.setLoginInfo();
-                                    if (actionListener != null) {
-                                        actionListener.onSuccess(ACTION_TAG_LOGIN,
-                                                ThirdpartAuthManager.TYPE_THIRD_QQ,
-                                                bean.getData().isFirstlogin());
-                                    }
-                                } else {
-                                    if (actionListener != null) {
-                                        actionListener.onFailed(ACTION_TAG_LOGIN,
-                                                ThirdpartAuthManager.TYPE_THIRD_QQ, bean.getMsg());
-                                    }
-                                }
-                                finish();
+                }).subscribe(new Action1<ResponseBean<ThirdLoginBean>>() {
+                    @Override
+                    public void call(ResponseBean<ThirdLoginBean> bean) {
+                        if (bean.getCode() == 0) {
+                            NetworkManager.instance.setLoginInfo();
+                            if (actionListener != null) {
+                                actionListener.onSuccess(ACTION_TAG_LOGIN,
+                                        ThirdpartAuthManager.TYPE_THIRD_QQ,
+                                        bean.getData().isFirstlogin());
                             }
-                        }, new Action1<Throwable>() {
-                            @Override
-                            public void call(Throwable throwable) {
-                                if (actionListener != null) {
-                                    actionListener.onFailed(ACTION_TAG_LOGIN, ThirdpartAuthManager.TYPE_THIRD_QQ,
-                                            throwable.getLocalizedMessage());
-                                    finish();
-                                }
+                        } else {
+                            if (actionListener != null) {
+                                actionListener.onFailed(ACTION_TAG_LOGIN,
+                                        ThirdpartAuthManager.TYPE_THIRD_QQ, bean.getMsg());
                             }
-                        });
+                        }
+                        finish();
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        if (actionListener != null) {
+                            actionListener.onFailed(ACTION_TAG_LOGIN, ThirdpartAuthManager.TYPE_THIRD_QQ,
+                                    throwable.getLocalizedMessage());
+                            finish();
+                        }
+                    }
+                });
 
             } else {
                 if (null != actionListener) {

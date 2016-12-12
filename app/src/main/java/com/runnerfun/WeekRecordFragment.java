@@ -33,6 +33,7 @@ import butterknife.OnTouch;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Action1;
+import rx.functions.Func2;
 import timber.log.Timber;
 
 public class WeekRecordFragment extends Fragment {
@@ -143,6 +144,19 @@ public class WeekRecordFragment extends Fragment {
             @Override
             public void onNext(ArrayList<RunWeekBean> runWeekBeen) {
                 mRecords = runWeekBeen;
+                final TextView[] views = {weekOne, weekTwo, weekThree, weekFour, weekFive, weekSix, weekSeven};
+                Observable.from(views).zipWith(Observable.from(mRecords), new Func2<TextView,
+                        RunWeekBean, TextView>() {
+                    @Override
+                    public TextView call(TextView textView, RunWeekBean runWeekBean) {
+                        textView.setText(runWeekBean.getWeekday());
+                        return textView;
+                    }
+                }).subscribe(new Action1<TextView>() {
+                    @Override
+                    public void call(TextView textView) {
+                    }
+                });
                 mPagerAdapter.notifyDataSetChanged();
                 viewPager.setOffscreenPageLimit(7);
             }

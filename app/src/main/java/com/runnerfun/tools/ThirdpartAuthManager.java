@@ -10,8 +10,8 @@ import android.widget.Toast;
 import com.runnerfun.RunApplication;
 import com.runnerfun.beans.ResponseBean;
 import com.runnerfun.beans.ThirdLoginBean;
-import com.runnerfun.network.NetworkManager;
 import com.runnerfun.model.thirdpart.ThirdAccountModel;
+import com.runnerfun.network.NetworkManager;
 import com.runnerfun.wxapi.WXEntryActivity;
 import com.sina.weibo.sdk.api.ImageObject;
 import com.sina.weibo.sdk.api.WeiboMessage;
@@ -186,14 +186,17 @@ public class ThirdpartAuthManager {
                 if (mAccessToken.isSessionValid()) {
                     AccessTokenKeeper.writeAccessToken(activity, mAccessToken);
                     ThirdAccountModel.instance.getWeiboUserInfo(mAccessToken.getToken(),
-                            mAccessToken.getUid()).flatMap(new Func1<String, Observable<ResponseBean<ThirdLoginBean>>>() {
+                            mAccessToken.getUid()).observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io()).flatMap(new Func1<String,
+                            Observable<ResponseBean<ThirdLoginBean>>>() {
                         @Override
                         public Observable<ResponseBean<ThirdLoginBean>> call(String info) {
                             try {
                                 JSONObject userInfo = new JSONObject(info);
                                 String name = userInfo.optString("name", "");
                                 String image = userInfo.optString("profile_image_url", "");
-                                return NetworkManager.instance.loginWithThird(mAccessToken.getUid(), "icon_qq", name, image);
+                                return NetworkManager.instance.loginWithThird(mAccessToken.getUid(),
+                                        "icon_qq", name, image).subscribeOn(Schedulers.io());
                             } catch (JSONException e) {
                                 if (listener != null) {
                                     listener.onFailed(ACTION_TAG_LOGIN, TYPE_THIRD_QQ, "数据解析失败");
@@ -201,33 +204,31 @@ public class ThirdpartAuthManager {
                             }
                             return null;
                         }
-                    }).subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Action1<ResponseBean<ThirdLoginBean>>() {
-                                @Override
-                                public void call(ResponseBean<ThirdLoginBean> bean) {
-                                    if (bean.getCode() == 0) {
-                                        NetworkManager.instance.setLoginInfo();
-                                        if (listener != null) {
-                                            listener.onSuccess(ACTION_TAG_LOGIN, TYPE_THIRD_QQ,
-                                                    bean.getData().isFirstlogin());
-                                        }
-                                    } else {
-                                        if (listener != null) {
-                                            listener.onFailed(ACTION_TAG_LOGIN, TYPE_THIRD_QQ,
-                                                    bean.getMsg());
-                                        }
-                                    }
+                    }).subscribe(new Action1<ResponseBean<ThirdLoginBean>>() {
+                        @Override
+                        public void call(ResponseBean<ThirdLoginBean> bean) {
+                            if (bean.getCode() == 0) {
+                                NetworkManager.instance.setLoginInfo();
+                                if (listener != null) {
+                                    listener.onSuccess(ACTION_TAG_LOGIN, TYPE_THIRD_QQ,
+                                            bean.getData().isFirstlogin());
                                 }
-                            }, new Action1<Throwable>() {
-                                @Override
-                                public void call(Throwable throwable) {
-                                    if (listener != null) {
-                                        listener.onFailed(ACTION_TAG_LOGIN, TYPE_THIRD_QQ,
-                                                throwable.getLocalizedMessage());
-                                    }
+                            } else {
+                                if (listener != null) {
+                                    listener.onFailed(ACTION_TAG_LOGIN, TYPE_THIRD_QQ,
+                                            bean.getMsg());
                                 }
-                            });
+                            }
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            if (listener != null) {
+                                listener.onFailed(ACTION_TAG_LOGIN, TYPE_THIRD_QQ,
+                                        throwable.getLocalizedMessage());
+                            }
+                        }
+                    });
                 } else {
                     if (null != listener) {
                         listener.onFailed(ACTION_TAG_LOGIN, TYPE_THIRD_WEIBO, "Token 验证失败, 登录失败");

@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.runnerfun.beans.RunTotalBean;
 import com.runnerfun.network.NetworkManager;
+import com.runnerfun.tools.UITools;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -72,14 +73,14 @@ public class TotalRecordFragment extends Fragment {
             @Override
             public void onNext(RunTotalBean runTotalBean) {
                 if (runTotalBean != null) {
-                    totalHour.setText(runTotalBean.getSumTimes());
-                    totalDistance.setText(runTotalBean.getSumTotalDistance());
-                    totalHot.setText(runTotalBean.getSumCalorie());
+                    totalHour.setText(UITools.numberFormat(runTotalBean.getSumTimes()));
+                    totalDistance.setText(UITools.numberFormat(runTotalBean.getSumTotalDistance()));
+                    totalHot.setText(UITools.numberFormat(runTotalBean.getSumCalorie()));
                     // TODO
-                    averageSpeed.setText(runTotalBean.getSumTimes());
-                    averageSecSpeed.setText(runTotalBean.getSumDistance());
+                    averageSpeed.setText(UITools.numberFormat(runTotalBean.getSumTimes()));
+                    averageSecSpeed.setText(UITools.numberFormat(runTotalBean.getSumDistance()));
                     // ??? how to compute ???
-                    maxSpeed.setText(runTotalBean.getMaxHighSpeed());
+                    maxSpeed.setText(UITools.numberFormat(runTotalBean.getMaxHighSpeed()));
                     return;
                 }
                 showError(R.string.network_no_data);
