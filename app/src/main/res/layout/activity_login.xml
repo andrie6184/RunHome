@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/activity_login"
@@ -19,7 +21,7 @@
             android:src="@drawable/logo"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <EditText
             android:id="@+id/tel"
@@ -35,7 +37,7 @@
             android:inputType="phone"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView" />
+            app:layout_constraintTop_toBottomOf="@+id/imageView"/>
 
         <EditText
             android:id="@+id/password"
@@ -50,7 +52,7 @@
             android:inputType="textPassword"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tel" />
+            app:layout_constraintTop_toBottomOf="@+id/tel"/>
 
         <TextView
             android:id="@+id/forgot_password"
@@ -58,8 +60,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="忘记密码?"
+            android:textColor="#e0e0e0"
+            android:textSize="14sp"
             app:layout_constraintRight_toRightOf="@+id/password"
-            app:layout_constraintTop_toBottomOf="@+id/password" />
+            app:layout_constraintTop_toBottomOf="@+id/password"/>
 
         <LinearLayout
             android:id="@+id/button_area"
@@ -83,7 +87,7 @@
                 android:background="@drawable/register_btn_bg"
                 android:text="注册"
                 android:textColor="#000"
-                android:textSize="14sp" />
+                android:textSize="14sp"/>
 
             <Button
                 android:id="@+id/login_btn"
@@ -95,7 +99,7 @@
                 android:background="@drawable/login_btn_bg"
                 android:text="登录"
                 android:textColor="#FFF"
-                android:textSize="14sp" />
+                android:textSize="14sp"/>
         </LinearLayout>
 
         <ImageView
@@ -111,7 +115,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.2"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"/>
 
         <ImageView
             android:id="@+id/login_qq"
@@ -125,7 +129,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/login_weixin"
             app:layout_constraintLeft_toRightOf="@+id/login_weixin"
             app:layout_constraintRight_toLeftOf="@+id/login_weibo"
-            app:layout_constraintTop_toTopOf="@+id/login_weixin" />
+            app:layout_constraintTop_toTopOf="@+id/login_weixin"/>
 
         <ImageView
             android:id="@+id/login_weibo"
@@ -139,7 +143,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/login_weixin"
             app:layout_constraintHorizontal_bias="0.8"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"/>
 
         <TextView
             android:id="@+id/thirdLoginLable"
@@ -154,7 +158,7 @@
             android:textColor="#777777"
             app:layout_constraintBottom_toTopOf="@+id/login_qq"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"/>
 
     </android.support.constraint.ConstraintLayout>
 
@@ -171,7 +175,7 @@
             style="@android:style/Widget.Holo.Light.ProgressBar.Inverse"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
+            android:layout_centerInParent="true"/>
 
     </RelativeLayout>
 </RelativeLayout>

@@ -1,6 +1,7 @@
 package com.runnerfun;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,7 +19,7 @@ import rx.Subscription;
  * Created by andrie on 18/10/2016.
  */
 
-abstract public class BaseActivity extends AppCompatActivity {
+abstract public class BaseActivity extends Activity {
 
     protected Subscription _subscription;
 

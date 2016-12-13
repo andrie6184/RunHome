@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_run_record"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:context="com.runnerfun.RunRecordActivity">
 
@@ -11,7 +13,7 @@
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"/>
 
     <RelativeLayout
         android:id="@+id/viewpager_container"
@@ -26,7 +28,7 @@
             android:layout_width="160dp"
             android:layout_height="100dp"
             android:clipChildren="false"
-            android:overScrollMode="never" />
+            android:overScrollMode="never"/>
     </RelativeLayout>
 
 </LinearLayout>

@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/transparent_background"
+    android:fitsSystemWindows="true"
     tools:context="com.runnerfun.RunConfigActivity">
 
     <ImageView
@@ -75,8 +76,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/transparent_background"
-        android:popupBackground="@color/transparent_background"
         android:gravity="right"
+        android:popupBackground="@color/transparent_background"
         app:layout_constraintBottom_toBottomOf="@+id/textView4"
         app:layout_constraintRight_toLeftOf="@+id/cd_arror"
         app:layout_constraintTop_toTopOf="@+id/textView4"
@@ -87,8 +88,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/transparent_background"
-        android:popupBackground="@color/transparent_background"
         android:gravity="right"
+        android:popupBackground="@color/transparent_background"
         app:layout_constraintBottom_toBottomOf="@+id/textView5"
         app:layout_constraintRight_toLeftOf="@+id/mt_arror"
         app:layout_constraintTop_toTopOf="@+id/textView5"

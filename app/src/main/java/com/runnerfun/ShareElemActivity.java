@@ -40,7 +40,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ShareElemActivity extends BaseActivity {
+public class ShareElemActivity extends BaseFragmentActivity {
 
     private static final String TEXT_PARAM = "text_param";
     private static final String IMAGE_PARAM = "image_param";

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_record_detail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context="com.runnerfun.RecordDetailActivity">
 
     <LinearLayout
@@ -35,7 +37,7 @@
                 android:gravity="center"
                 android:text="个人记录"
                 android:textColor="#FFFFFF"
-                android:textSize="18sp" />
+                android:textSize="18sp"/>
 
             <ImageView
                 android:id="@+id/personal_record_selected"
@@ -44,7 +46,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:contentDescription="@null"
-                android:src="@drawable/tab_selected" />
+                android:src="@drawable/tab_selected"/>
         </RelativeLayout>
 
         <RelativeLayout
@@ -60,7 +62,7 @@
                 android:gravity="center"
                 android:text="周记录"
                 android:textColor="#FFFFFF"
-                android:textSize="18sp" />
+                android:textSize="18sp"/>
 
             <ImageView
                 android:id="@+id/week_record_selected"
@@ -70,7 +72,7 @@
                 android:layout_centerHorizontal="true"
                 android:contentDescription="@null"
                 android:src="@drawable/tab_selected"
-                android:visibility="gone" />
+                android:visibility="gone"/>
         </RelativeLayout>
 
         <RelativeLayout
@@ -86,7 +88,7 @@
                 android:gravity="center"
                 android:text="总记录"
                 android:textColor="#FFFFFF"
-                android:textSize="18sp" />
+                android:textSize="18sp"/>
 
             <ImageView
                 android:id="@+id/total_record_selected"
@@ -96,7 +98,7 @@
                 android:layout_centerHorizontal="true"
                 android:contentDescription="@null"
                 android:src="@drawable/tab_selected"
-                android:visibility="gone" />
+                android:visibility="gone"/>
         </RelativeLayout>
 
     </LinearLayout>
@@ -115,7 +117,7 @@
         android:src="@drawable/icon_back"
         app:layout_constraintBottom_toBottomOf="@+id/record_value_content"
         app:layout_constraintLeft_toLeftOf="@+id/record_value_content"
-        app:layout_constraintTop_toTopOf="@+id/record_value_content" />
+        app:layout_constraintTop_toTopOf="@+id/record_value_content"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/record_fragment_pager"
@@ -124,6 +126,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/record_value_content" />
+        app:layout_constraintTop_toBottomOf="@+id/record_value_content"/>
 
 </android.support.constraint.ConstraintLayout>

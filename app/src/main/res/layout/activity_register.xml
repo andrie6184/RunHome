@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_register"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/register_bg"
+    android:fitsSystemWindows="true"
     tools:context="com.runnerfun.RegisterActivity">
 
     <EditText
@@ -28,7 +30,7 @@
         app:layout_constraintHorizontal_bias="0.57"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <EditText
         android:id="@+id/code"
@@ -47,7 +49,7 @@
         app:layout_constraintHorizontal_bias="0.25"
         app:layout_constraintLeft_toLeftOf="@+id/tel"
         app:layout_constraintRight_toLeftOf="@+id/get_code"
-        app:layout_constraintTop_toBottomOf="@+id/tel" />
+        app:layout_constraintTop_toBottomOf="@+id/tel"/>
 
     <EditText
         android:id="@+id/password"
@@ -65,19 +67,19 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="@+id/tel"
         app:layout_constraintRight_toRightOf="@+id/tel"
-        app:layout_constraintTop_toBottomOf="@+id/code" />
+        app:layout_constraintTop_toBottomOf="@+id/code"/>
 
     <Button
         android:id="@+id/get_code"
         android:layout_width="wrap_content"
+        android:layout_height="42dp"
         android:background="@drawable/register_btn_bg"
         android:gravity="center"
         android:text="获取验证码"
         android:textSize="13sp"
         app:layout_constraintBottom_toBottomOf="@+id/code"
         app:layout_constraintRight_toRightOf="@+id/tel"
-        app:layout_constraintVertical_bias="0.0"
-        android:layout_height="42dp" />
+        app:layout_constraintVertical_bias="0.0"/>
 
     <Button
         android:id="@+id/register"
@@ -90,7 +92,7 @@
         android:textSize="22sp"
         app:layout_constraintLeft_toLeftOf="@+id/tel"
         app:layout_constraintRight_toRightOf="@+id/tel"
-        app:layout_constraintTop_toBottomOf="@+id/password" />
+        app:layout_constraintTop_toBottomOf="@+id/password"/>
 
     <TextView
         android:id="@+id/title_label"
@@ -102,7 +104,7 @@
         android:textSize="24sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <ImageView
         android:id="@+id/back_btn"
@@ -113,6 +115,6 @@
         android:src="@drawable/return_btn"
         app:layout_constraintBottom_toBottomOf="@+id/title_label"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/title_label" />
+        app:layout_constraintTop_toTopOf="@+id/title_label"/>
 
 </android.support.constraint.ConstraintLayout>

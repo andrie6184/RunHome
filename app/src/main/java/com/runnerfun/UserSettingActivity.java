@@ -1,24 +1,19 @@
 package com.runnerfun;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.runnerfun.network.NetworkManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import okhttp3.Cookie;
 import rx.Subscriber;
-import rx.internal.schedulers.NewThreadScheduler;
 
 public class UserSettingActivity extends BaseActivity {
 
@@ -163,12 +158,12 @@ public class UserSettingActivity extends BaseActivity {
 
     @OnClick(R.id.user_protocol)
     void userProtocolClicked(View view) {
-
+        
     }
 
     @OnClick(R.id.about_us)
     void aboutUsClicked(View view) {
-
+        startActivity(new Intent(this, AboutUsActivity.class));
     }
 
     @OnClick(R.id.logout_btn)

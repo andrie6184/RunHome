@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_coin_detail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context="com.runnerfun.CoinDetailActivity">
 
     <LinearLayout
@@ -35,7 +37,7 @@
                 android:gravity="center"
                 android:text="运动里币"
                 android:textColor="#FFFFFF"
-                android:textSize="18sp" />
+                android:textSize="18sp"/>
 
             <ImageView
                 android:id="@+id/user_record_selected"
@@ -44,7 +46,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:contentDescription="@null"
-                android:src="@drawable/tab_selected" />
+                android:src="@drawable/tab_selected"/>
         </RelativeLayout>
 
         <RelativeLayout
@@ -60,7 +62,7 @@
                 android:gravity="center"
                 android:text="系统里币"
                 android:textColor="#FFFFFF"
-                android:textSize="18sp" />
+                android:textSize="18sp"/>
 
             <ImageView
                 android:id="@+id/system_record_selected"
@@ -70,7 +72,7 @@
                 android:layout_centerHorizontal="true"
                 android:contentDescription="@null"
                 android:src="@drawable/tab_selected"
-                android:visibility="gone" />
+                android:visibility="gone"/>
         </RelativeLayout>
 
     </LinearLayout>
@@ -89,7 +91,7 @@
         android:src="@drawable/icon_back"
         app:layout_constraintBottom_toBottomOf="@+id/record_value_content"
         app:layout_constraintLeft_toLeftOf="@+id/record_value_content"
-        app:layout_constraintTop_toTopOf="@+id/record_value_content" />
+        app:layout_constraintTop_toTopOf="@+id/record_value_content"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/coin_fragment_pager"
@@ -98,6 +100,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/record_value_content" />
+        app:layout_constraintTop_toBottomOf="@+id/record_value_content"/>
 
 </android.support.constraint.ConstraintLayout>

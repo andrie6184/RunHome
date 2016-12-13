@@ -15,14 +15,14 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <!-- 允许程序访问CellID或WiFi热点来获取粗略的位置 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <!--用于访问GPS定位-->
+    <!-- 用于访问GPS定位 -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <!--用于获取运营商信息，用于支持提供运营商信息相关的接口-->
+    <!-- 用于获取运营商信息，用于支持提供运营商信息相关的接口 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <!--用于访问网络，网络定位需要上网-->
-    <!--用于申请调用A-GPS模块-->
+    <!-- 用于访问网络，网络定位需要上网 -->
+    <!-- 用于申请调用A-GPS模块 -->
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
-    <!--用于申请获取蓝牙信息进行室内定位-->
+    <!-- 用于申请获取蓝牙信息进行室内定位 -->
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
@@ -39,7 +39,6 @@
 
     <uses-permission android:name="com.runnerfun.permission.MIPUSH_RECEIVE"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
-
 
     <application
         android:name=".RunApplication"
@@ -64,6 +63,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -87,7 +87,6 @@
         <activity
             android:name=".RunConfigActivity"
             android:screenOrientation="portrait"/>
-
         <activity
             android:name=".MapActivity"
             android:screenOrientation="portrait"/>
@@ -222,6 +221,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </receiver>
@@ -243,6 +243,10 @@
         <activity
             android:name=".ShareElemActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".AboutUsActivity">
+        </activity>
+        <activity android:name=".ProtocalActivity">
+        </activity>
     </application>
 
 </manifest>

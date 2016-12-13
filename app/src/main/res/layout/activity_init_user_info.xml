@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_init_user_info"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/init_uif_bg"
+    android:fitsSystemWindows="true"
     tools:context="com.runnerfun.InitUserInfoActivity">
 
     <ImageView
@@ -17,7 +19,7 @@
         android:layout_marginTop="40dp"
         android:src="@drawable/skip_btn"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
         android:id="@+id/textView"
@@ -35,7 +37,7 @@
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
         android:id="@+id/text_nan"
@@ -51,7 +53,7 @@
         app:layout_constraintHorizontal_bias="0.01"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/textView"/>
 
     <TextView
         android:id="@+id/text_nv"
@@ -67,7 +69,7 @@
         app:layout_constraintHorizontal_bias="0.99"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/text_nan" />
+        app:layout_constraintTop_toTopOf="@+id/text_nan"/>
 
     <TextView
         android:id="@+id/height"
@@ -82,7 +84,7 @@
         android:text="身高"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_nan" />
+        app:layout_constraintTop_toBottomOf="@+id/text_nan"/>
 
     <TextView
         android:id="@+id/weight"
@@ -97,7 +99,7 @@
         android:text="体重"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/height" />
+        app:layout_constraintTop_toBottomOf="@+id/height"/>
 
     <TextView
         android:id="@+id/age"
@@ -112,7 +114,7 @@
         android:text="年龄"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/weight" />
+        app:layout_constraintTop_toBottomOf="@+id/weight"/>
 
     <TextView
         android:id="@+id/next_btn"
@@ -129,6 +131,6 @@
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/age" />
+        app:layout_constraintTop_toBottomOf="@+id/age"/>
 
 </android.support.constraint.ConstraintLayout>

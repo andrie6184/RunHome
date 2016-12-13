@@ -26,7 +26,7 @@ import butterknife.OnClick;
 import rx.Observable;
 import rx.functions.Action1;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseFragmentActivity {
 
     public static final int REQUEST_CODE_IMAGE_PICKER = 1001;
 
