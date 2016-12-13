@@ -125,7 +125,7 @@ public class UserFragment extends Fragment {
 
     @OnClick(R.id.rule)
     void onClickRule(View view) {
-        String url = "http://m.paobuzhijia.com/rules.php";
+        String url = "https://m.paobuzhijia.com/rules.php";
         CommonWebActivity.openCommonWebActivity(getActivity(), url);
     }
 

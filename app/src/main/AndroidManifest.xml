@@ -63,7 +63,6 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -89,6 +88,9 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".MapActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".CommonWebActivity"
             android:screenOrientation="portrait"/>
 
         <service
@@ -243,10 +245,12 @@
         <activity
             android:name=".ShareElemActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".AboutUsActivity">
-        </activity>
-        <activity android:name=".ProtocalActivity">
-        </activity>
+        <activity
+            android:name=".AboutUsActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ProtocolActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

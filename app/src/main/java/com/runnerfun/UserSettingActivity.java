@@ -158,7 +158,7 @@ public class UserSettingActivity extends BaseActivity {
 
     @OnClick(R.id.user_protocol)
     void userProtocolClicked(View view) {
-        
+        startActivity(new Intent(this, ProtocolActivity.class));
     }
 
     @OnClick(R.id.about_us)
