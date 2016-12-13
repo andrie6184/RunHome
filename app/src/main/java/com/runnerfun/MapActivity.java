@@ -133,7 +133,6 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         mSpeedValue.setTypeface(boldTypeFace);
         mDisValue.setTypeface(boldTypeFace);
         mTimeValue.setTypeface(boldTypeFace);
-
     }
 
     @Override
@@ -278,14 +277,9 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
     }
 
     private void zoomTo(LatLng ll) {
-        MarkerOptions mark = new MarkerOptions()
-                .position(ll)
-                .title("your location");
-
-        mark.icon(
-                BitmapDescriptorFactory.fromBitmap(BitmapFactory
-                        .decodeResource(getResources(),
-                                R.drawable.icon_shezhi)));
+        MarkerOptions mark = new MarkerOptions().position(ll).title("your location");
+        mark.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(),
+                R.drawable.icon_shezhi)));
 
         mMap.getMap().addMarker(mark);
         CameraUpdate c = CameraUpdateFactory.newCameraPosition(CameraPosition.builder()
@@ -321,8 +315,8 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
     @Override
     public void onRecordChange(LatLng ll) {
         drawLines(RecordModel.instance.readCache());
-        CameraUpdate c = CameraUpdateFactory.newCameraPosition(CameraPosition.builder()
-                .target(ll).zoom(mMap.getMap().getCameraPosition().zoom).build());
+        CameraUpdate c = CameraUpdateFactory.newCameraPosition(CameraPosition.builder().target(ll)
+                .zoom(mMap.getMap().getCameraPosition().zoom).build());
         mMap.getMap().moveCamera(c);
     }
 

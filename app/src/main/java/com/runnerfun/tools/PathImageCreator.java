@@ -57,12 +57,13 @@ public class PathImageCreator {
         Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
         p.setStyle(Paint.Style.STROKE);
         p.setAntiAlias(true);
+        p.setStrokeWidth(4.0f);
         Canvas c = new Canvas(bmp);
         if(latLngs == null || latLngs.size() <= 0){
             return bmp;
         }
         Path path = new Path();
-        p.setColor(Color.BLACK);
+        p.setColor(Color.WHITE);
         LatLng[] ls = getBounds(latLngs);
         double widthScale = 100 / (ls[1].longitude - ls[0].longitude);
         double heightScale = 100 / (ls[1].latitude - ls[0].latitude);

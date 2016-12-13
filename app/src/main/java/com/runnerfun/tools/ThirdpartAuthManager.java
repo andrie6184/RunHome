@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.runnerfun.RunApplication;
@@ -68,12 +69,12 @@ public class ThirdpartAuthManager {
     public static final int TYPE_THIRD_WECHAT = 102;
     public static final int TYPE_THIRD_QQ = 103;
 
-    public static final String WEIXIN_APP_KEY = "wx69b810c173e5cb5e";
+    public static final String WEIXIN_APP_KEY = "wx8d08c221f73a378e";
     public static final String WEIXIN_APP_SECRET = "wx69b810c173e5cb5e";
-    private static final String WEIBO_APP_KEY = "3492357311";
-    private static final String QQ_APP_KEY = "1105728053";
+    private static final String WEIBO_APP_KEY = "2756294164";
+    private static final String QQ_APP_KEY = "1105741243";
 
-    private static final String WEIBO_REDIRECT_URL = "http://www.kanpanbao.com/";
+    private static final String WEIBO_REDIRECT_URL = "http://sns.whalecloud.com/sina2/callback";
     private static final String WEIBO_ACCESS_SCOPE =
             "email,direct_messages_read,direct_messages_write,"
                     + "friendships_groups_read,friendships_groups_write,statuses_to_me_read,"
@@ -81,6 +82,9 @@ public class ThirdpartAuthManager {
 
     private static IWXAPI iwxapi;
     private static Tencent mTencent;
+
+    public static IUiListener mTencentListener;
+    public static SsoHandler ssoHandler;
 
     private static ThirdpartAuthManager instance = new ThirdpartAuthManager();
 
@@ -95,16 +99,21 @@ public class ThirdpartAuthManager {
 
     public void startQQLogin(final Activity activity, final ThirdPartActionListener listener) {
         mTencent = Tencent.createInstance(QQ_APP_KEY, activity.getApplicationContext());
-        IUiListener mTencentListener = new IUiListener() {
+        mTencentListener = new IUiListener() {
             @Override
             public void onComplete(final Object response) {
                 final String id = ((JSONObject) response).optString("openid", "");
+                String accessToken = ((JSONObject) response).optString("access_token", "");
+                String expires = ((JSONObject) response).optString("expires_in", "");
+                mTencent.setOpenId(id);
+                mTencent.setAccessToken(accessToken, expires);
+
                 final UserInfo mInfo = new UserInfo(activity, mTencent.getQQToken());
                 mInfo.getUserInfo(new IUiListener() {
                     @Override
                     public void onComplete(Object response) {
                         JSONObject info = (JSONObject) response;
-                        NetworkManager.instance.loginWithThird(id, "icon_qq", info.optString("nickname", ""),
+                        NetworkManager.instance.loginWithThird(id, "qq", info.optString("nickname", ""),
                                 info.optString("figureurl_qq_2", ""), new Subscriber<ThirdLoginBean>() {
                                     @Override
                                     public void onCompleted() {
@@ -123,7 +132,7 @@ public class ThirdpartAuthManager {
                                         NetworkManager.instance.setLoginInfo();
                                         if (listener != null) {
                                             listener.onSuccess(ACTION_TAG_LOGIN, TYPE_THIRD_QQ,
-                                                    loginBean.isFirstlogin());
+                                                    true);//loginBean.isFirstlogin());
                                         }
                                     }
                                 });
@@ -160,7 +169,7 @@ public class ThirdpartAuthManager {
             }
         };
         if (!mTencent.isSessionValid()) {
-            mTencent.login(activity, Constants.LOGIN_INFO, mTencentListener);
+            mTencent.login(activity, "all", mTencentListener);
         }
     }
 
@@ -176,7 +185,7 @@ public class ThirdpartAuthManager {
     public void startWeiboLogin(final Activity activity, final ThirdPartActionListener listener) {
         AuthInfo authInfo = new AuthInfo(activity, WEIBO_APP_KEY,
                 WEIBO_REDIRECT_URL, WEIBO_ACCESS_SCOPE);
-        SsoHandler ssoHandler = new SsoHandler(activity, authInfo);
+        ssoHandler = new SsoHandler(activity, authInfo);
         ssoHandler.authorize(new WeiboAuthListener() {
             @Override
             public void onComplete(Bundle bundle) {
@@ -211,7 +220,7 @@ public class ThirdpartAuthManager {
                                 NetworkManager.instance.setLoginInfo();
                                 if (listener != null) {
                                     listener.onSuccess(ACTION_TAG_LOGIN, TYPE_THIRD_QQ,
-                                            bean.getData().isFirstlogin());
+                                            true);//bean.getData().isFirstlogin());
                                 }
                             } else {
                                 if (listener != null) {
@@ -280,7 +289,7 @@ public class ThirdpartAuthManager {
         } else {
             final SendAuth.Req req = new SendAuth.Req();
             req.scope = "snsapi_userinfo";
-            req.state = "kanpanbao_social_login";
+            req.state = "paobuzhijia_social_login";
             WXEntryActivity.actionListener = listener;
             WXEntryActivity.type = 0;
             iwxapi.sendReq(req);

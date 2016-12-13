@@ -2,14 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 
 android {
-//    signingConfigs {
-//        config {
-//            keyAlias 'paobuzhijia'
-//            keyPassword 'paobuzhijia1324'
-//            storeFile file('../runhome_android.jks')
-//            storePassword 'paobuzhijia1324'
-//        }
-//    }
+    signingConfigs {
+        config {
+            keyAlias 'paobuzhijia'
+            keyPassword 'paobuzhijia1324'
+            storeFile file('../runhome_android.jks')
+            storePassword 'paobuzhijia1324'
+        }
+    }
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
     defaultConfig {

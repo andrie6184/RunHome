@@ -11,7 +11,7 @@ public class ThirdLoginBean implements Serializable {
 
     private String sid;
     private String nick;
-    private boolean firstlogin;
+    // private boolean firstlogin;
 
     public String getSid() {
         return sid;
@@ -29,12 +29,12 @@ public class ThirdLoginBean implements Serializable {
         this.nick = nick;
     }
 
-    public boolean isFirstlogin() {
-        return firstlogin;
-    }
-
-    public void setFirstlogin(boolean firstlogin) {
-        this.firstlogin = firstlogin;
-    }
+//    public boolean isFirstlogin() {
+//        return firstlogin;
+//    }
+//
+//    public void setFirstlogin(boolean firstlogin) {
+//        this.firstlogin = firstlogin;
+//    }
 
 }

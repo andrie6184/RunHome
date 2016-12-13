@@ -2,7 +2,6 @@ package com.runnerfun;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -11,6 +10,8 @@ import android.widget.Toast;
 import com.runnerfun.beans.LoginBean;
 import com.runnerfun.network.NetworkManager;
 import com.runnerfun.tools.ThirdpartAuthManager;
+import com.tencent.connect.common.Constants;
+import com.tencent.tauth.Tencent;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,6 +32,16 @@ public class LoginActivity extends BaseActivity implements ThirdpartAuthManager.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constants.REQUEST_LOGIN) {
+            Tencent.onActivityResultData(requestCode, resultCode, data, ThirdpartAuthManager.mTencentListener);
+        } else if (ThirdpartAuthManager.ssoHandler != null) {
+            ThirdpartAuthManager.ssoHandler.authorizeCallBack(requestCode, resultCode, data);
+        }
     }
 
     @OnClick(R.id.login_btn)

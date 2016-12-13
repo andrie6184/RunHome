@@ -93,14 +93,13 @@ public class WXEntryActivity extends BaseActivity implements IWXAPIEventHandler 
                         if (bean.getCode() == 0) {
                             NetworkManager.instance.setLoginInfo();
                             if (actionListener != null) {
-                                actionListener.onSuccess(ACTION_TAG_LOGIN,
-                                        ThirdpartAuthManager.TYPE_THIRD_QQ,
-                                        bean.getData().isFirstlogin());
+                                actionListener.onSuccess(ACTION_TAG_LOGIN,ThirdpartAuthManager.TYPE_THIRD_QQ,
+                                        true);//bean.getData().isFirstlogin());
                             }
                         } else {
                             if (actionListener != null) {
-                                actionListener.onFailed(ACTION_TAG_LOGIN,
-                                        ThirdpartAuthManager.TYPE_THIRD_QQ, bean.getMsg());
+                                actionListener.onFailed(ACTION_TAG_LOGIN, ThirdpartAuthManager.TYPE_THIRD_QQ,
+                                        bean.getMsg());
                             }
                         }
                         finish();

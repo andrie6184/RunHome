@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,10 +74,21 @@ public class ShareElemActivity extends BaseFragmentActivity {
     TextView mDistanceView;
     @BindView(R.id.hour)
     TextView mHourView;
+    @BindView(R.id.content_hon)
+    LinearLayout mHonContent;
     @BindView(R.id.content)
     TextView mContentTextView;
     @BindView(R.id.features)
     RecyclerView mRecycleView;
+
+    @BindView(R.id.speed_ver)
+    TextView mSpeedViewVer;
+    @BindView(R.id.distance_ver)
+    TextView mDistanceViewVer;
+    @BindView(R.id.hour_ver)
+    TextView mHourViewVer;
+    @BindView(R.id.content_ver)
+    LinearLayout mVerContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,12 +119,20 @@ public class ShareElemActivity extends BaseFragmentActivity {
         mHourView.setTypeface(boldTypeFace);
         mDistanceView.setTypeface(boldTypeFace);
 
+        mSpeedViewVer.setTypeface(boldTypeFace);
+        mHourViewVer.setTypeface(boldTypeFace);
+        mDistanceViewVer.setTypeface(boldTypeFace);
+
         String speed = new DecimalFormat("###.##").format(RecordModel.instance.getSpeed());
         mSpeedView.setText(speed + "/h");
         mDistanceView.setText(String.valueOf(RecordModel.instance.getDistance() / 1000) + "km");
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
         format.setTimeZone(TimeZone.getTimeZone("GMT"));
         mHourView.setText(format.format(new Date(RecordModel.instance.getRecordTime())));
+
+        mSpeedViewVer.setText(speed + "/h");
+        mDistanceViewVer.setText(String.valueOf(RecordModel.instance.getDistance() / 1000) + "km");
+        mHourViewVer.setText(format.format(new Date(RecordModel.instance.getRecordTime())));
 
         SharedPreferences sp = getSharedPreferences("location", Context.MODE_PRIVATE);
         String location = sp.getString("location", "");
@@ -168,7 +188,8 @@ public class ShareElemActivity extends BaseFragmentActivity {
         mFeatures.add(new Triple<Integer, String, OnStatusChanged>(R.drawable.text_selector, "文字位置", new OnStatusChanged() {
             @Override
             public void onShow(boolean enable) {
-                //TODO://文字怎么换?
+                enableView(mVerContent, enable);
+                enableView(mHonContent, !enable);
             }
         }));
     }

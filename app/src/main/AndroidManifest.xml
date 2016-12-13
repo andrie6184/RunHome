@@ -32,6 +32,7 @@
     <uses-permission android:name="android.permission.READ_USER_DICTIONARY"/>
     <uses-permission android:name="android.permission.READ_LOGS"/>
     <uses-permission android:name="android.permission.GET_TASKS"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
 
     <permission
         android:name="com.runnerfun.permission.MIPUSH_RECEIVE"
@@ -49,7 +50,7 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="fbb5a4e30136b705b73412f24d06b1de"/>
+            android:value="b1249815ff057029f91008cb70a99a54"/>
         <!--
             <meta-data
             android:name="leancloud"
@@ -152,7 +153,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
 
-                <data android:scheme="tencent1105728053"/>
+                <data android:scheme="tencent1105741243"/>
             </intent-filter>
         </activity>
         <activity
