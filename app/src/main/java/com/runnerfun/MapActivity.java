@@ -200,6 +200,8 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
     public void onDestroy() {
         super.onDestroy();
         mMap.onDestroy();
+        mlocationClient.stopLocation();
+        mlocationClient.onDestroy();
     }
 
     @Override
