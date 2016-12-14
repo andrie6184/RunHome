@@ -70,7 +70,7 @@ public class ThirdpartAuthManager {
     public static final int TYPE_THIRD_QQ = 103;
 
     public static final String WEIXIN_APP_KEY = "wx8d08c221f73a378e";
-    public static final String WEIXIN_APP_SECRET = "wx69b810c173e5cb5e";
+    public static final String WEIXIN_APP_SECRET = "544e1939b3779abca4f9c7302de0c046";
     private static final String WEIBO_APP_KEY = "2756294164";
     private static final String QQ_APP_KEY = "1105741243";
 
@@ -132,7 +132,7 @@ public class ThirdpartAuthManager {
                                         NetworkManager.instance.setLoginInfo();
                                         if (listener != null) {
                                             listener.onSuccess(ACTION_TAG_LOGIN, TYPE_THIRD_QQ,
-                                                    true);//loginBean.isFirstlogin());
+                                                    loginBean.getFirstlogin() == 1);
                                         }
                                     }
                                 });
@@ -220,7 +220,7 @@ public class ThirdpartAuthManager {
                                 NetworkManager.instance.setLoginInfo();
                                 if (listener != null) {
                                     listener.onSuccess(ACTION_TAG_LOGIN, TYPE_THIRD_QQ,
-                                            true);//bean.getData().isFirstlogin());
+                                            bean.getData().getFirstlogin() == 1);
                                 }
                             } else {
                                 if (listener != null) {
