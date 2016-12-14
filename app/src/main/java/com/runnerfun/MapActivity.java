@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -23,6 +24,7 @@ import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.CameraUpdate;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
+import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
@@ -144,7 +146,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
             mPanelWidget.setVisibility(View.GONE);
             LatLng ll = RecordModel.instance.firstLatLng();
             if (ll != null) {
-                zoomTo(ll);
+                drawLines(RecordModel.instance.readCache());
             } else {
                 mlocationClient.startLocation();
             }
@@ -174,6 +176,15 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
             //TODO:RecordModel
         }
         RecordModel.instance.addListener(this);
+        run = BitmapDescriptorFactory.fromBitmap(BitmapFactory
+                .decodeResource(getResources(),
+                        R.drawable.run));
+        stop = BitmapDescriptorFactory.fromBitmap(BitmapFactory
+                .decodeResource(getResources(),
+                        R.drawable.zhong));
+        start_ic = BitmapDescriptorFactory.fromBitmap(BitmapFactory
+                .decodeResource(getResources(),
+                        R.drawable.shi));
     }
 
     private void updateVvalue(){
@@ -277,15 +288,19 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
     }
 
     private void zoomTo(LatLng ll) {
-        MarkerOptions mark = new MarkerOptions().position(ll).title("your location");
+        MarkerOptions mark = new MarkerOptions().position(ll);
         mark.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(),
-                R.drawable.icon_shezhi)));
+                R.drawable.run)));
 
         mMap.getMap().addMarker(mark);
         CameraUpdate c = CameraUpdateFactory.newCameraPosition(CameraPosition.builder()
                 .target(ll).zoom(mMap.getMap().getCameraPosition().zoom).build());
         mMap.getMap().moveCamera(c);
     }
+
+    private BitmapDescriptor run = null;
+    private BitmapDescriptor stop = null;
+    private BitmapDescriptor start_ic = null;
 
     private void drawLines(List<LatLng> records) {
         if (records == null || records.size() <= 0) {
@@ -295,6 +310,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         LatLng start = records.get(0);
         PolylineOptions po = new PolylineOptions();
         List<Integer> colors = new ArrayList<>();
+        boolean test = false;
         for (LatLng ll : records) {
             float distance = AMapUtils.calculateLineDistance(start, ll);
             if (distance/2 > 7.2f) {
@@ -310,6 +326,27 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         po.width(10f);
         mMap.getMap().clear();
         mMap.getMap().addPolyline(po);
+
+        MarkerOptions markerOption = new MarkerOptions();
+        markerOption.position(records.get(0));
+        markerOption.draggable(false);
+        markerOption.icon(start_ic);
+        markerOption.anchor(0.5f, 0.5f);
+        markerOption.setFlat(true);
+
+        mMap.getMap().addMarker(markerOption);
+
+        boolean isRunming = RecordModel.instance.isRecording() || RecordModel.instance.isPause();
+        if(isRunming) {
+            markerOption = new MarkerOptions().position(records.get(records.size() - 1))
+                    .draggable(false).setFlat(true).icon(run).anchor(0.5f, 0.5f);
+            mMap.getMap().addMarker(markerOption);
+
+        }else{
+            markerOption = new MarkerOptions().position(records.get(records.size() - 1))
+                    .draggable(false).setFlat(true).icon(stop).anchor(0.5f, 0.5f);
+            mMap.getMap().addMarker(markerOption);
+        }
     }
 
     @Override
