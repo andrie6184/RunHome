@@ -9,15 +9,14 @@ import com.runnerfun.R;
 import com.runnerfun.beans.ResponseBean;
 import com.runnerfun.beans.ThirdLoginBean;
 import com.runnerfun.model.thirdpart.ThirdAccountModel;
+import com.runnerfun.model.thirdpart.WeixinInfoBean;
+import com.runnerfun.model.thirdpart.WeixinTokenBean;
 import com.runnerfun.network.NetworkManager;
 import com.runnerfun.tools.ThirdpartAuthManager;
 import com.tencent.mm.sdk.modelbase.BaseReq;
 import com.tencent.mm.sdk.modelbase.BaseResp;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -52,16 +51,15 @@ public class WXEntryActivity extends BaseActivity implements IWXAPIEventHandler 
                 ThirdAccountModel.instance.getWeixinToken(ThirdpartAuthManager.WEIXIN_APP_KEY,
                         ThirdpartAuthManager.WEIXIN_APP_SECRET, resp.code)
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.io()).flatMap(new Func1<String, Observable<String>>() {
+                        .subscribeOn(Schedulers.io()).flatMap(new Func1<WeixinTokenBean,
+                        Observable<WeixinTokenBean>>() {
                     @Override
-                    public Observable<String> call(String tokenString) {
+                    public Observable<WeixinTokenBean> call(WeixinTokenBean bean) {
                         try {
-                            JSONObject tokenInfo = new JSONObject(tokenString);
-                            String token = tokenInfo.optString("access_token", "");
-                            String openId = tokenInfo.optString("access_token", "");
-                            return ThirdAccountModel.instance.getWeixinUserInfo(token, openId)
-                                    .subscribeOn(Schedulers.io());
-                        } catch (JSONException e) {
+                            String refreshToken = bean.getRefresh_token();
+                            return ThirdAccountModel.instance.refreshWeixinToken(ThirdpartAuthManager.WEIXIN_APP_KEY,
+                                    refreshToken).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+                        } catch (Throwable e) {
                             if (actionListener != null) {
                                 actionListener.onFailed(ACTION_TAG_LOGIN,
                                         ThirdpartAuthManager.TYPE_THIRD_WECHAT, "数据解析失败");
@@ -69,17 +67,32 @@ public class WXEntryActivity extends BaseActivity implements IWXAPIEventHandler 
                         }
                         return null;
                     }
-                }).flatMap(new Func1<String, Observable<ResponseBean<ThirdLoginBean>>>() {
+                }).flatMap(new Func1<WeixinTokenBean, Observable<WeixinInfoBean>>() {
                     @Override
-                    public Observable<ResponseBean<ThirdLoginBean>> call(String info) {
+                    public Observable<WeixinInfoBean> call(WeixinTokenBean info) {
                         try {
-                            JSONObject userInfo = new JSONObject(info);
-                            String openId = userInfo.optString("openid", "");
-                            String name = userInfo.optString("nickname", "");
-                            String avatar = userInfo.optString("headimgurl", "");
-                            return NetworkManager.instance.loginWithThird(openId, "icon_qq",
-                                    name, avatar).subscribeOn(Schedulers.io());
-                        } catch (JSONException e) {
+                            String openId = info.getOpenid();
+                            String token = info.getAccess_token();
+                            return ThirdAccountModel.instance.getWeixinUserInfo(token, openId)
+                                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+                        } catch (Throwable e) {
+                            if (actionListener != null) {
+                                actionListener.onFailed(ACTION_TAG_LOGIN,
+                                        ThirdpartAuthManager.TYPE_THIRD_WECHAT, "数据解析失败");
+                            }
+                        }
+                        return null;
+                    }
+                }).flatMap(new Func1<WeixinInfoBean, Observable<ResponseBean<ThirdLoginBean>>>() {
+                    @Override
+                    public Observable<ResponseBean<ThirdLoginBean>> call(WeixinInfoBean info) {
+                        try {
+                            String openId = info.getOpenid();
+                            String name = info.getNickname();
+                            String avatar = info.getHeadimgurl();
+                            return NetworkManager.instance.loginWithThird(openId, "weixin", name, avatar)
+                                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+                        } catch (Throwable e) {
                             if (actionListener != null) {
                                 actionListener.onFailed(ACTION_TAG_LOGIN,
                                         ThirdpartAuthManager.TYPE_THIRD_WECHAT, "数据解析失败");
@@ -93,7 +106,7 @@ public class WXEntryActivity extends BaseActivity implements IWXAPIEventHandler 
                         if (bean.getCode() == 0) {
                             NetworkManager.instance.setLoginInfo();
                             if (actionListener != null) {
-                                actionListener.onSuccess(ACTION_TAG_LOGIN,ThirdpartAuthManager.TYPE_THIRD_QQ,
+                                actionListener.onSuccess(ACTION_TAG_LOGIN, ThirdpartAuthManager.TYPE_THIRD_QQ,
                                         bean.getData().getFirstlogin() == 1);
                             }
                         } else {

@@ -17,9 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amap.api.maps.model.LatLng;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.runnerfun.beans.LanLatBean;
 import com.runnerfun.beans.PersonalRecordBean;
 import com.runnerfun.beans.RunRecordBean;
 import com.runnerfun.beans.RunTrackBean;
@@ -74,7 +71,7 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
     @Override
     public void onStart() {
         super.onStart();
-        requestCoinInfo(false);
+        // requestCoinInfo(false);
     }
 
     private void init() {
@@ -102,6 +99,8 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
                 menu.add(0, 1, 0, "删除");
             }
         });
+
+        requestCoinInfo(false);
     }
 
     @Override
@@ -157,14 +156,7 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
 
             @Override
             public void onNext(RunTrackBean runTrackBean) {
-                List<LanLatBean> beans = new Gson().fromJson(runTrackBean.getTrack(),
-                        new TypeToken<List<LanLatBean>>() {
-                        }.getType());
-                List<LatLng> lls = new ArrayList<LatLng>();
-                for (LanLatBean bean : beans) {
-                    LatLng item = new LatLng(bean.getValues().get(0), bean.getValues().get(2));
-                    lls.add(item);
-                }
+                List<LatLng> lls = RecordModel.parseStringToLatLng(runTrackBean.getTrack());
                 RecordModel.instance.initRecord(lls);
                 MapActivity.startWithDisplayMode(getActivity());
             }

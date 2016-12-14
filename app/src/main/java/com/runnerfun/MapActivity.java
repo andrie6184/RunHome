@@ -79,7 +79,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
     private DecimalFormat decimalFormat=new DecimalFormat("0.000");
 
     public static void startWithDisplayMode(Context c) {
-        Intent i = new Intent();
+        Intent i = new Intent(c, MapActivity.class);
         i.putExtra(DISPLAY_MODE, true);
         c.startActivity(i);
     }

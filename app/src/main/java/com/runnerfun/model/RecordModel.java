@@ -140,4 +140,27 @@ public class RecordModel {
         }
     }
 
+    public static List<LatLng> parseStringToLatLng(String track) {
+        List<LatLng> result = new ArrayList<>();
+        String temp = track.substring(1, track.length() - 1);
+        List<String> lats = new ArrayList<>();
+        List<String> lans = new ArrayList<>();
+        String[] itemTemps = temp.split(",");
+        for (String itemTemp : itemTemps) {
+            String trimTemp = itemTemp.trim();
+            if (trimTemp.contains("[")) {
+                lans.add(trimTemp.substring(trimTemp.indexOf("[") + 1).trim());
+            }
+            if (trimTemp.contains("]")) {
+                lats.add(trimTemp.substring(0, trimTemp.indexOf("]")).trim());
+            }
+        }
+
+        for (int x = 0; x < lats.size() && x < lans.size(); x++) {
+            LatLng item = new LatLng(Double.parseDouble(lats.get(x)), Double.parseDouble(lans.get(x)));
+            result.add(item);
+        }
+        return result;
+    }
+
 }

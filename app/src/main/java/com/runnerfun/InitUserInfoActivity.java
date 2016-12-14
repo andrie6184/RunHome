@@ -1,6 +1,5 @@
 package com.runnerfun;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -52,7 +51,9 @@ public class InitUserInfoActivity extends BaseActivity {
 
     @OnClick(R.id.skip_btn)
     void onSkipClicked(View view) {
-        startActivity(new Intent(this, MainActivity.class));
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("isFirstLogin", true);
+        startActivity(intent);
         finish();
     }
 
@@ -85,6 +86,9 @@ public class InitUserInfoActivity extends BaseActivity {
                     @Override
                     public void onNext(Object s) {
                         Toast.makeText(InitUserInfoActivity.this, "数据提交成功", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(InitUserInfoActivity.this, MainActivity.class);
+                        intent.putExtra("isFirstLogin", true);
+                        startActivity(intent);
                         finish();
                     }
                 });

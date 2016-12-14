@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.system.ErrnoException;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -12,6 +13,7 @@ import com.runnerfun.RunApplication;
 import com.runnerfun.beans.ResponseBean;
 import com.runnerfun.beans.ThirdLoginBean;
 import com.runnerfun.model.thirdpart.ThirdAccountModel;
+import com.runnerfun.model.thirdpart.WeiboInfoBean;
 import com.runnerfun.network.NetworkManager;
 import com.runnerfun.wxapi.WXEntryActivity;
 import com.sina.weibo.sdk.api.ImageObject;
@@ -91,6 +93,7 @@ public class ThirdpartAuthManager {
     private ThirdpartAuthManager() {
         mTencent = Tencent.createInstance(QQ_APP_KEY, RunApplication.getAppContex());
         iwxapi = WXAPIFactory.createWXAPI(RunApplication.getAppContex(), WEIXIN_APP_KEY);
+        iwxapi.registerApp(WEIXIN_APP_KEY);
     }
 
     public static ThirdpartAuthManager instance() {
@@ -196,17 +199,17 @@ public class ThirdpartAuthManager {
                     AccessTokenKeeper.writeAccessToken(activity, mAccessToken);
                     ThirdAccountModel.instance.getWeiboUserInfo(mAccessToken.getToken(),
                             mAccessToken.getUid()).observeOn(AndroidSchedulers.mainThread())
-                            .subscribeOn(Schedulers.io()).flatMap(new Func1<String,
+                            .subscribeOn(Schedulers.io()).flatMap(new Func1<WeiboInfoBean,
                             Observable<ResponseBean<ThirdLoginBean>>>() {
                         @Override
-                        public Observable<ResponseBean<ThirdLoginBean>> call(String info) {
+                        public Observable<ResponseBean<ThirdLoginBean>> call(WeiboInfoBean info) {
                             try {
-                                JSONObject userInfo = new JSONObject(info);
-                                String name = userInfo.optString("name", "");
-                                String image = userInfo.optString("profile_image_url", "");
+                                String name = info.getName();
+                                String image = info.getProfile_image_url();
                                 return NetworkManager.instance.loginWithThird(mAccessToken.getUid(),
-                                        "icon_qq", name, image).subscribeOn(Schedulers.io());
-                            } catch (JSONException e) {
+                                        "weibo", name, image).subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread());
+                            } catch (Throwable e) {
                                 if (listener != null) {
                                     listener.onFailed(ACTION_TAG_LOGIN, TYPE_THIRD_QQ, "数据解析失败");
                                 }

@@ -18,6 +18,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
+ * ThirdAccountModel
  * Created by andrie on 16/11/21.
  */
 
@@ -49,7 +50,7 @@ public class ThirdAccountModel {
                 .build();
 
         retrofitApiWeixin = new Retrofit.Builder()
-                .baseUrl("https://api.weixin.icon_qq.com/")
+                .baseUrl("https://api.weixin.qq.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(mClient)
@@ -68,17 +69,27 @@ public class ThirdAccountModel {
                 .subscribe(callback);
     }
 
-    public Observable<String> getWeiboUserInfo(String token, String uid) {
+    public Observable<WeiboInfoBean> getWeiboUserInfo(String token, String uid) {
         WeiboUserInfoRequest request = retrofitApiWeibo.create(WeiboUserInfoRequest.class);
         return request.getUserInfo(token, uid);
     }
 
-    public Observable<String> getWeixinToken(String appid, String secret, String code) {
+    public void getWeiboUserInfo(String token, String uid, Subscriber<WeiboInfoBean> callback) {
+        WeiboUserInfoRequest request = retrofitApiWeibo.create(WeiboUserInfoRequest.class);
+        rxRequest(request.getUserInfo(token, uid), callback);
+    }
+
+    public Observable<WeixinTokenBean> getWeixinToken(String appid, String secret, String code) {
         WeixinTokenRequest request = retrofitApiWeixin.create(WeixinTokenRequest.class);
         return request.getOauthToken(appid, secret, code, "authorization_code");
     }
 
-    public Observable<String> getWeixinUserInfo(String token, String openId) {
+    public Observable<WeixinTokenBean> refreshWeixinToken(String appid, String token) {
+        WXRefreshTokenRequest request = retrofitApiWeixin.create(WXRefreshTokenRequest.class);
+        return request.refreshOauthToken(appid, token, "refresh_token");
+    }
+
+    public Observable<WeixinInfoBean> getWeixinUserInfo(String token, String openId) {
         WeixinUserInfoRequest request = retrofitApiWeixin.create(WeixinUserInfoRequest.class);
         return request.getUserInfo(token, openId);
     }

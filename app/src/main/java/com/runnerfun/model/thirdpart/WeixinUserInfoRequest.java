@@ -10,7 +10,7 @@ import rx.Observable;
  */
 
 public interface WeixinUserInfoRequest {
-    @GET("/cgi-bin/user/info")
-    Observable<String> getUserInfo(@Query(value = "access_token") String token,
+    @GET("/sns/userinfo")
+    Observable<WeixinInfoBean> getUserInfo(@Query(value = "access_token") String token,
                                    @Query(value = "openid") String openid);
 }

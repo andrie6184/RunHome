@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -224,9 +225,11 @@ public class WeekRecordFragment extends Fragment {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
 
-            RunApplication.getAppContex().picasso.load(userInfo.getHeadimg())
-                    .placeholder(R.drawable.icon_avatar).transform(new RoundedTransformation(360, 0))
-                    .error(R.drawable.icon_avatar).into(viewHolder.userAvatar);
+            if (!TextUtils.isEmpty(userInfo.getHeadimg())) {
+                RunApplication.getAppContex().picasso.load(userInfo.getHeadimg())
+                        .placeholder(R.drawable.icon_avatar).transform(new RoundedTransformation(360, 0))
+                        .error(R.drawable.icon_avatar).into(viewHolder.userAvatar);
+            }
             viewHolder.userName.setText(userInfo.getUser_name());
 
             final RunWeekBean item = getItem(position);

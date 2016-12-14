@@ -111,9 +111,11 @@ public class LoginActivity extends BaseActivity implements ThirdpartAuthManager.
         loading.setVisibility(View.GONE);
         if (action == ThirdpartAuthManager.ACTION_TAG_LOGIN) {
             Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra("isFirstLogin", isFirst);
-            startActivity(intent);
+            if (isFirst) {
+                startActivity(new Intent(this, InitUserInfoActivity.class));
+            } else {
+                startActivity(new Intent(this, MainActivity.class));
+            }
             finish();
         }
     }

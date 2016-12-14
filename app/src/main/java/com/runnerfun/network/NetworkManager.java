@@ -62,7 +62,7 @@ public class NetworkManager {
     private Retrofit retrofitIP = null;
     private OkHttpClient mClient = null;
 
-    public static final int COMMON_PAGE_SIZE = 20;
+    public static final int COMMON_PAGE_SIZE = 10;
 
     private static final String KEY = "Paobuzhijia@163$";
 

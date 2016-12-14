@@ -11,8 +11,8 @@ import rx.Observable;
 
 public interface WeixinTokenRequest {
     @GET("/sns/oauth2/access_token")
-    Observable<String> getOauthToken(@Query(value = "appid") String appid,
-                                     @Query(value = "secret") String secret,
-                                     @Query(value = "code") String code,
-                                     @Query(value = "grant_type") String type);
+    Observable<WeixinTokenBean> getOauthToken(@Query(value = "appid") String appid,
+                                              @Query(value = "secret") String secret,
+                                              @Query(value = "code") String code,
+                                              @Query(value = "grant_type") String type);
 }
