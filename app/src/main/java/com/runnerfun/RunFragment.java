@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,6 +58,10 @@ public class RunFragment extends Fragment {
     TextView mMoney;
     @BindView(R.id.counter)
     TextView mCountDownView;
+    @BindView(R.id.start_panel)
+    View mStartPanel;
+    @BindView(R.id.stop_panel)
+    View mStopPanel;
 
     private SoundPool mSoundPool;
     private HashMap<Integer, Integer> mSoundPoolMap;
@@ -189,6 +194,8 @@ public class RunFragment extends Fragment {
     private void doStart(final long id) {
         if (ConfigModel.instance.getmCountDownSecond() <= 0) {
             RecordService.startRecord(getActivity(), id);
+            mStartPanel.setVisibility(View.GONE);
+            mStopPanel.setVisibility(View.VISIBLE);
             startActivity(new Intent(getActivity(), MapActivity.class));
             if (ConfigModel.instance.ismUserVoice()) {
                 playSound(11, 0);
@@ -216,6 +223,8 @@ public class RunFragment extends Fragment {
                                 mCounter.unsubscribe();
                                 mCountDownView.setVisibility(View.GONE);
                                 RecordService.startRecord(getActivity(), id);
+                                mStartPanel.setVisibility(View.GONE);
+                                mStopPanel.setVisibility(View.VISIBLE);
                                 startActivity(new Intent(getActivity(), MapActivity.class));
                                 if (ConfigModel.instance.ismUserVoice()) {
                                     playSound(11, 0);
@@ -248,6 +257,33 @@ public class RunFragment extends Fragment {
                         refreshResult();
                     }
                 });
+        if(RecordModel.instance.isPause() || RecordModel.instance.isRecording()){
+            mStartPanel.setVisibility(View.GONE);
+            mStopPanel.setVisibility(View.VISIBLE);
+        }
+        else{
+            mStartPanel.setVisibility(View.VISIBLE);
+            mStopPanel.setVisibility(View.GONE);
+        }
+    }
+
+    @OnClick(R.id.stop_btn)
+    void stop(){
+        mStopPanel.setVisibility(View.GONE);
+        mStartPanel.setVisibility(View.VISIBLE);
+        RecordService.stopRecord(getActivity());
+    }
+
+    @OnClick(R.id.resume_btn)
+    void pause(){
+        boolean isRecording = RecordModel.instance.isRecording();
+        ((ImageView)mStopPanel.findViewById(R.id.resume_btn)).setImageResource(isRecording?R.drawable.resume : R.drawable.resume);
+        if(isRecording){
+            RecordService.pauseRecord(getActivity());
+        }
+        else{
+            RecordService.resumeRecord(getActivity());
+        }
     }
 
     @Override
