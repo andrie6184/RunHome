@@ -66,6 +66,7 @@ public class SystemStatusBarManager {
      * @param activity The host activity.
      */
     @TargetApi(19)
+    @SuppressWarnings("ResourceType")
     public SystemStatusBarManager(Activity activity) {
 
         Window win = activity.getWindow();
