@@ -14,6 +14,7 @@ import android.webkit.CookieSyncManager;
 import com.avos.avoscloud.AVAnalytics;
 import com.avos.avoscloud.AVOSCloud;
 import com.runnerfun.model.ConfigModel;
+import com.runnerfun.network.NetworkManager;
 import com.squareup.picasso.Picasso;
 import com.xiaomi.channel.commonutils.logger.LoggerInterface;
 import com.xiaomi.mipush.sdk.Logger;
@@ -31,10 +32,9 @@ import timber.log.Timber;
 public class RunApplication extends Application {
 
     // for MI-push--------start-----------------
-    // user your appid the key.
-    // TODO private static final String MI_APP_ID = "2882303761517525173";
-    // user your appid the key.
-    // TODO private static final String MI_APP_KEY = "5701752515173";
+    private static final String MI_APP_ID = "2882303761517525173";
+    private static final String MI_APP_KEY = "5701752515173";
+
     public static final String TAG = "com.runnerfun.android";
 
     private static RunApplication _instance;
@@ -73,9 +73,9 @@ public class RunApplication extends Application {
         // TODO AVAnalytics.enableCrashReport(this, true);
 
         // for MI-push
-        /* if (shouldInit()) {
+        if (shouldInit()) {
             MiPushClient.registerPush(this, MI_APP_ID, MI_APP_KEY);
-            String account = "a" + getIMEI();
+            String account = "a" + NetworkManager.instance.getUserSid();
             MiPushClient.setAlias(this, account, "ANDROID_USER");
         }
         // init Mi-push log.
@@ -94,10 +94,10 @@ public class RunApplication extends Application {
                 Log.d(TAG, content);
             }
         };
-        Logger.setLogger(this, newLogger);*/
+        Logger.setLogger(this, newLogger);
     }
 
-    /*private boolean shouldInit() {
+    private boolean shouldInit() {
         ActivityManager am = ((ActivityManager) getSystemService(Context.ACTIVITY_SERVICE));
         List<ActivityManager.RunningAppProcessInfo> processInfos = am.getRunningAppProcesses();
         String mainProcessName = getPackageName();
@@ -108,6 +108,6 @@ public class RunApplication extends Application {
             }
         }
         return false;
-    }*/
+    }
 
 }

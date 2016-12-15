@@ -20,11 +20,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amap.api.maps.model.LatLng;
-import com.runnerfun.mock.TrackMocker;
 import com.runnerfun.model.RecordModel;
 import com.runnerfun.tools.PathImageCreator;
 import com.runnerfun.tools.Triple;
+import com.runnerfun.tools.UITools;
 import com.runnerfun.widget.ColorPickerDialog;
 import com.runnerfun.widget.FeatureItemHolder;
 
@@ -32,7 +31,6 @@ import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -125,13 +123,14 @@ public class ShareElemActivity extends BaseFragmentActivity {
 
         String speed = new DecimalFormat("###.##").format(RecordModel.instance.getSpeed());
         mSpeedView.setText(speed + "/h");
-        mDistanceView.setText(String.valueOf(RecordModel.instance.getDistance() / 1000) + "km");
+        String dis = UITools.numberFormat(RecordModel.instance.getDistance() / 1000, "0.000") + "km";
+        mDistanceView.setText(dis);
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
         format.setTimeZone(TimeZone.getTimeZone("GMT"));
         mHourView.setText(format.format(new Date(RecordModel.instance.getRecordTime())));
 
         mSpeedViewVer.setText(speed + "/h");
-        mDistanceViewVer.setText(String.valueOf(RecordModel.instance.getDistance() / 1000) + "km");
+        mDistanceViewVer.setText(dis);
         mHourViewVer.setText(format.format(new Date(RecordModel.instance.getRecordTime())));
 
         SharedPreferences sp = getSharedPreferences("location", Context.MODE_PRIVATE);
@@ -147,51 +146,56 @@ public class ShareElemActivity extends BaseFragmentActivity {
 
     private void initActionList() {
         mFeatures.clear();
-        mFeatures.add(new Triple<Integer, String, OnStatusChanged>(R.drawable.speed_selector, "配速", new OnStatusChanged() {
-            @Override
-            public void onShow(boolean enable) {
-                enableView(mSpeedView, enable);
-            }
-        }));
-        mFeatures.add(new Triple<Integer, String, OnStatusChanged>(R.drawable.location_selector, "定位", new OnStatusChanged() {
-
-            @Override
-            public void onShow(boolean enable) {
-                enableView(mLocationText, enable);
-            }
-        }));
-        mFeatures.add(new Triple<Integer, String, OnStatusChanged>(R.drawable.time_selector, "时间", new OnStatusChanged() {
-            @Override
-            public void onShow(boolean enable) {
-                enableView(mHourView, enable);
-            }
-        }));
-        mFeatures.add(new Triple<Integer, String, OnStatusChanged>(R.drawable.cal_selector, "卡路里", new OnStatusChanged() {
-            @Override
-            public void onShow(boolean enable) {
-                //TODO 哪有卡路里
-            }
-        }));
-        mFeatures.add(new Triple<Integer, String, OnStatusChanged>(R.drawable.distance_selector, "里程", new OnStatusChanged() {
-            @Override
-            public void onShow(boolean enable) {
-                enableView(mDistanceView, enable);
-            }
-        }));
-        mFeatures.add(new Triple<Integer, String, OnStatusChanged>(R.drawable.color_unchecked, "颜色设置", new OnStatusChanged() {
-
-            @Override
-            public void onShow(boolean enable) {
-                selectColor();
-            }
-        }));
-        mFeatures.add(new Triple<Integer, String, OnStatusChanged>(R.drawable.text_selector, "文字位置", new OnStatusChanged() {
-            @Override
-            public void onShow(boolean enable) {
-                enableView(mVerContent, enable);
-                enableView(mHonContent, !enable);
-            }
-        }));
+        mFeatures.add(new Triple<Integer, String, OnStatusChanged>(R.drawable.speed_selector, "配速",
+                new OnStatusChanged() {
+                    @Override
+                    public void onShow(boolean enable) {
+                        enableView(mSpeedView, enable);
+                    }
+                }));
+        mFeatures.add(new Triple<Integer, String, OnStatusChanged>(R.drawable.location_selector, "定位",
+                new OnStatusChanged() {
+                    @Override
+                    public void onShow(boolean enable) {
+                        enableView(mLocationText, enable);
+                    }
+                }));
+        mFeatures.add(new Triple<Integer, String, OnStatusChanged>(R.drawable.time_selector, "时间",
+                new OnStatusChanged() {
+                    @Override
+                    public void onShow(boolean enable) {
+                        enableView(mHourView, enable);
+                    }
+                }));
+        mFeatures.add(new Triple<Integer, String, OnStatusChanged>(R.drawable.cal_selector, "卡路里",
+                new OnStatusChanged() {
+                    @Override
+                    public void onShow(boolean enable) {
+                        //TODO 哪有卡路里
+                    }
+                }));
+        mFeatures.add(new Triple<Integer, String, OnStatusChanged>(R.drawable.distance_selector, "里程",
+                new OnStatusChanged() {
+                    @Override
+                    public void onShow(boolean enable) {
+                        enableView(mDistanceView, enable);
+                    }
+                }));
+        mFeatures.add(new Triple<Integer, String, OnStatusChanged>(R.drawable.color_unchecked, "颜色设置",
+                new OnStatusChanged() {
+                    @Override
+                    public void onShow(boolean enable) {
+                        selectColor();
+                    }
+                }));
+        mFeatures.add(new Triple<Integer, String, OnStatusChanged>(R.drawable.text_selector, "文字位置",
+                new OnStatusChanged() {
+                    @Override
+                    public void onShow(boolean enable) {
+                        enableView(mVerContent, enable);
+                        enableView(mHonContent, !enable);
+                    }
+                }));
     }
 
     /*private void initActionBar() {

@@ -141,7 +141,8 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
             return;
         }
         mIsJumping = true;
-        String rid = mRecords.get(position).getRid();
+        final RunRecordBean item = mRecords.get(position);
+        String rid = item.getRid();
         NetworkManager.instance.getRunTrack(rid, new Subscriber<RunTrackBean>() {
             @Override
             public void onCompleted() {
@@ -158,7 +159,10 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
             public void onNext(RunTrackBean runTrackBean) {
                 List<LatLng> lls = RecordModel.parseStringToLatLng(runTrackBean.getTrack());
                 RecordModel.instance.initRecord(lls);
-                MapActivity.startWithDisplayMode(getActivity());
+                String dis = UITools.numberFormat(Float.valueOf(item.getDistance()) / 1000) + "km";
+                String speed = UITools.numberFormat(Float.valueOf(item.getSpeed())) + "km/h";
+                String cal = UITools.numberFormat(Float.valueOf(item.getCalorie()) / 1000) + "kcal";
+                MapActivity.startWithDisplayMode(getActivity(), dis, speed, item.getStartTime().split(" ")[0], cal);
             }
         });
     }

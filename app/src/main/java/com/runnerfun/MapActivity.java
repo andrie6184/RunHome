@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -78,12 +77,17 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
     private AMapLocationClient mlocationClient = null;
     private Typeface boldTypeFace;
     private Subscription mTimer = null;
-    private DecimalFormat decimalFormat=new DecimalFormat("0.000");
+    private DecimalFormat decimalFormat = new DecimalFormat("0.000");
 
-    public static void startWithDisplayMode(Context c) {
-        Intent i = new Intent(c, MapActivity.class);
+    public static void startWithDisplayMode(Context context, String distance, String speed,
+                                            String time, String cal) {
+        Intent i = new Intent(context, MapActivity.class);
         i.putExtra(DISPLAY_MODE, true);
-        c.startActivity(i);
+        i.putExtra("intent_param_distance", distance);
+        i.putExtra("intent_param_speed", speed);
+        i.putExtra("intent_param_time", time);
+        i.putExtra("intent_param_cal", cal);
+        context.startActivity(i);
     }
 
     @Override
@@ -123,14 +127,14 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         });
 
         boldTypeFace = Typeface.createFromAsset(getAssets(), "fonts/dincond-bold.otf");
-        ((TextView)findViewById(R.id.cal).findViewById(R.id.attr_name)).setText("卡路里");
-        ((TextView)findViewById(R.id.speed).findViewById(R.id.attr_name)).setText("速度");
-        ((TextView)findViewById(R.id.distance).findViewById(R.id.attr_name)).setText("距离");
-        ((TextView)findViewById(R.id.time).findViewById(R.id.attr_name)).setText("时间");
-        mCalValue = (TextView)findViewById(R.id.cal).findViewById(R.id.attr_value);
-        mSpeedValue = (TextView)findViewById(R.id.speed).findViewById(R.id.attr_value);
-        mDisValue = (TextView)findViewById(R.id.distance).findViewById(R.id.attr_value);
-        mTimeValue = (TextView)findViewById(R.id.time).findViewById(R.id.attr_value);
+        ((TextView) findViewById(R.id.cal).findViewById(R.id.attr_name)).setText("卡路里");
+        ((TextView) findViewById(R.id.speed).findViewById(R.id.attr_name)).setText("速度");
+        ((TextView) findViewById(R.id.distance).findViewById(R.id.attr_name)).setText("距离");
+        ((TextView) findViewById(R.id.time).findViewById(R.id.attr_name)).setText("时间");
+        mCalValue = (TextView) findViewById(R.id.cal).findViewById(R.id.attr_value);
+        mSpeedValue = (TextView) findViewById(R.id.speed).findViewById(R.id.attr_value);
+        mDisValue = (TextView) findViewById(R.id.distance).findViewById(R.id.attr_value);
+        mTimeValue = (TextView) findViewById(R.id.time).findViewById(R.id.attr_value);
         mCalValue.setTypeface(boldTypeFace);
         mSpeedValue.setTypeface(boldTypeFace);
         mDisValue.setTypeface(boldTypeFace);
@@ -153,6 +157,11 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
             // mShareView.setVisibility(View.VISIBLE);
             topBar.setVisibility(View.VISIBLE);
             mBackView.setVisibility(View.GONE);
+
+            mSpeedValue.setText(getIntent().getStringExtra("intent_param_speed"));
+            mDisValue.setText(getIntent().getStringExtra("intent_param_distance"));
+            mTimeValue.setText(getIntent().getStringExtra("intent_param_time"));
+            mCalValue.setText(getIntent().getStringExtra("intent_param_cal"));
         } else {
             if (RecordModel.instance.isPause()) {
                 mPauseBtn.setText("继续");
@@ -162,7 +171,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
                 mPanelWidget.setVisibility(View.GONE);
             }
             mlocationClient.startLocation();
-            if(mTimer != null){
+            if (mTimer != null) {
                 mTimer.unsubscribe();
             }
             mTimer = Observable.interval(1000, TimeUnit.MILLISECONDS)
@@ -187,13 +196,13 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
                         R.drawable.shi));
     }
 
-    private void updateVvalue(){
+    private void updateVvalue() {
         String speed = decimalFormat.format(RecordModel.instance.getSpeed());
-        mSpeedValue.setText(""+speed + "km/h");
+        mSpeedValue.setText("" + speed + "km/h");
         String distance = decimalFormat.format(RecordModel.instance.getDistance() / 1000);
-        mDisValue.setText(""+distance + "km");
+        mDisValue.setText("" + distance + "km");
         mTimeValue.setText(TimeStringUtils.getTime(RecordModel.instance.getRecordTime()));
-        mCalValue.setText(""+RecordModel.instance.getCal() + "cal");
+        mCalValue.setText("" + decimalFormat.format(RecordModel.instance.getCal()) + "kcal");
     }
 
     @Override
@@ -209,7 +218,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         super.onPause();
         mMap.onPause();
         RecordModel.instance.removeListener(this);
-        if(mTimer != null){
+        if (mTimer != null) {
             mTimer.unsubscribe();
         }
     }
@@ -245,7 +254,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         }
         CameraUpdate c = CameraUpdateFactory.newLatLngBounds(llb.build(), 10);
         mMap.getMap().moveCamera(c);
-        if(mTimer != null){
+        if (mTimer != null) {
             mTimer.unsubscribe();
         }
     }
@@ -315,7 +324,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         boolean test = false;
         for (LatLng ll : records) {
             float distance = AMapUtils.calculateLineDistance(start, ll);
-            if (distance/2 > 7.2f) {
+            if (distance / 2 > 7.2f) {
                 colors.add(Color.RED);
             } else {
                 colors.add(Color.GREEN);
@@ -339,12 +348,12 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         mMap.getMap().addMarker(markerOption);
 
         boolean isRunming = RecordModel.instance.isRecording() || RecordModel.instance.isPause();
-        if(isRunming) {
+        if (isRunming) {
             markerOption = new MarkerOptions().position(records.get(records.size() - 1))
                     .draggable(false).setFlat(true).icon(run).anchor(0.5f, 0.5f);
             mMap.getMap().addMarker(markerOption);
 
-        }else{
+        } else {
             markerOption = new MarkerOptions().position(records.get(records.size() - 1))
                     .draggable(false).setFlat(true).icon(stop).anchor(0.5f, 0.5f);
             mMap.getMap().addMarker(markerOption);

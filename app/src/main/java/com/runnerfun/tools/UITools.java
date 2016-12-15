@@ -30,14 +30,22 @@ public class UITools {
     }
 
     public static String numberFormat(String num) {
-        float value = Float.valueOf(num);
-        return numberFormat(value);
+        return numberFormat(num, "0.00");
     }
 
     public static String numberFormat(float num) {
+        return numberFormat(num, "0.00");
+    }
+
+    public static String numberFormat(String num, String formatStr) {
+        float value = Float.valueOf(num);
+        return numberFormat(value, formatStr);
+    }
+
+    public static String numberFormat(float num, String formatStr) {
         String value = String.valueOf(num);
 
-        DecimalFormat format = new DecimalFormat("0.00");
+        DecimalFormat format = new DecimalFormat(formatStr);
         try {
             value = format.format(num);
         } catch (Exception e) {

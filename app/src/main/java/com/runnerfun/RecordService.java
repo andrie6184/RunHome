@@ -22,7 +22,6 @@ import com.amap.api.maps.model.LatLng;
 import com.runnerfun.beans.ResponseBean;
 import com.runnerfun.beans.RunSaveResultBean;
 import com.runnerfun.beans.RunUploadBean;
-import com.runnerfun.mock.TrackMocker;
 import com.runnerfun.model.RecordModel;
 import com.runnerfun.network.NetworkManager;
 
@@ -146,6 +145,11 @@ public class RecordService extends Service implements AMapLocationListener {
         bean.total_time = RecordModel.instance.getRecordTime();
         bean.total_distance = RecordModel.instance.getDistance();
         bean.position = lastPoi;
+
+        if (bean.distance <= 100) {
+            Toast.makeText(RunApplication.getAppContex(), "跑步距离太短,本次记录无效", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         NetworkManager.instance.getSaveRunRecordObservable(bean)
                 .observeOn(AndroidSchedulers.mainThread())

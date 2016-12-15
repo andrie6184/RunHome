@@ -1,6 +1,5 @@
 package com.runnerfun.model;
 
-import android.support.constraint.solver.Cache;
 import android.text.TextUtils;
 
 import com.amap.api.maps.AMapUtils;
@@ -15,7 +14,6 @@ import com.runnerfun.model.statusmodel.ResumeStatus;
 import com.runnerfun.model.statusmodel.StartStatus;
 import com.runnerfun.model.statusmodel.StopStatus;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,7 +67,7 @@ public class RecordModel {
                 UserFragment.SP_KEY_USER_INFO, "");
         if (!TextUtils.isEmpty(info)) {
             UserInfo userInfo = new Gson().fromJson(info, UserInfo.class);
-            return Float.valueOf(userInfo.getWeight()) * getDistance() * 1.036f /1000;
+            return Float.valueOf(userInfo.getWeight()) * getDistance() * 1.036f / 1000;
         } else {
             return 0f;
         }
@@ -79,14 +77,14 @@ public class RecordModel {
         return mStatus instanceof StartStatus || mStatus instanceof ResumeStatus;
     }
 
-    public boolean isPause(){
+    public boolean isPause() {
         return mStatus instanceof PauseStatus;
     }
 
     public float getSpeed() {
         long time = mStatus.getRecordTime();
         float distance = mStatus.getDistance();
-        return time == 0 ? 0 : (mStatus.getDistance()/1000)/ (mStatus.getRecordTime()/3600);// km/s = m/ms
+        return time == 0 ? 0 : (mStatus.getDistance() / 1000) / (mStatus.getRecordTime() / 3600);// km/s = m/ms
     }
 
     public long getRecordTime() {
@@ -95,23 +93,24 @@ public class RecordModel {
 
     /**
      * km
+     *
      * @return
      */
     public float getDistance() {
         return mStatus.getDistance();
     }
 
-    public float getRealDistance(){
+    public float getRealDistance() {
         List<LatLng> ll = readCache();
         float distance = 0.f;
-        if(ll == null || ll.size() <= 0){
+        if (ll == null || ll.size() <= 0) {
             return distance;
         }
 
         LatLng start = ll.get(0);
-        for(LatLng l : ll){
+        for (LatLng l : ll) {
             float dis = AMapUtils.calculateLineDistance(start, l);
-            if(dis <= 3.6f){
+            if (dis <= 3.6f) {
                 distance += dis;
             }
             start = l;
@@ -128,7 +127,7 @@ public class RecordModel {
         return mStatus.firstLatLng();
     }
 
-    public void initRecord(List<LatLng> ll){
+    public void initRecord(List<LatLng> ll) {
         mStatus.initCache(ll);
     }
 
