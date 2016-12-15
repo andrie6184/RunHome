@@ -84,7 +84,7 @@ public class RecordModel {
     public float getSpeed() {
         long time = mStatus.getRecordTime();
         float distance = mStatus.getDistance();
-        return time == 0 ? 0 : (mStatus.getDistance() / 1000) / (mStatus.getRecordTime() / 3600);// km/s = m/ms
+        return time == 0 ? 0 : (mStatus.getDistance()/1000)/ (mStatus.getRecordTime()/3600);// km/s = m/ms
     }
 
     public long getRecordTime() {

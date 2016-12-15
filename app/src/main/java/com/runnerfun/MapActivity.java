@@ -331,7 +331,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
             }
             start = ll;
         }
-        po.useGradient(true);
+//        po.useGradient(true);
         po.colorValues(colors);
         po.addAll(records);
         po.width(10f);
