@@ -194,6 +194,9 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         start_ic = BitmapDescriptorFactory.fromBitmap(BitmapFactory
                 .decodeResource(getResources(),
                         R.drawable.shi));
+
+        CameraUpdate cu = CameraUpdateFactory.zoomTo(14.f);
+        mMap.getMap().moveCamera(cu);
     }
 
     private void updateVvalue() {
