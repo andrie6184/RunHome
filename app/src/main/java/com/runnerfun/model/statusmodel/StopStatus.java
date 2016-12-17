@@ -5,13 +5,14 @@ import android.os.SystemClock;
 import com.amap.api.maps.model.LatLng;
 
 /**
- * Created by lixiaoyang on 22/11/2016.
+ * StopStatus
+ * Created by andrie on 22/11/2016.
  */
 
 public class StopStatus extends RecordStatus {
     public StopStatus(RecordStatus from) {
         super(from);
-        if(from != null && from.mStartTime != 0) {
+        if (from != null && from.mStartTime != 0) {
             mTimeOffset += SystemClock.elapsedRealtime() - mStartTime;
         }
         mStartTime = 0;

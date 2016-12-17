@@ -5,7 +5,8 @@ import java.util.Date;
 import java.util.TimeZone;
 
 /**
- * Created by lixiaoyang on 09/12/2016.
+ * TimeStringUtils
+ * Created by andrie on 09/12/2016.
  */
 
 public class TimeStringUtils {

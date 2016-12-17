@@ -228,8 +228,6 @@ public class RecordService extends Service implements AMapLocationListener {
         startUploadTimer();
         // start forground
         useForeground("跑步中...");
-
-
     }
 
     public void useForeground(String currSong) {

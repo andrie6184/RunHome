@@ -6,7 +6,7 @@ import android.os.SystemClock;
 import com.amap.api.maps.model.LatLng;
 
 /**
- * Created by lixiaoyang on 22/11/2016.
+ * Created by andrie on 22/11/2016.
  * 照这个破设计似乎还没什么卵用
  */
 

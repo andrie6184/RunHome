@@ -1,27 +1,16 @@
 package com.runnerfun;
 
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.Application;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 
-import com.avos.avoscloud.AVAnalytics;
-import com.avos.avoscloud.AVOSCloud;
 import com.runnerfun.model.ConfigModel;
-import com.runnerfun.network.NetworkManager;
 import com.squareup.picasso.Picasso;
-import com.xiaomi.channel.commonutils.logger.LoggerInterface;
-import com.xiaomi.mipush.sdk.Logger;
-import com.xiaomi.mipush.sdk.MiPushClient;
 
-import java.util.List;
-
+import cn.jpush.android.api.JPushInterface;
 import timber.log.Timber;
 
 /**
@@ -72,42 +61,10 @@ public class RunApplication extends Application {
         // TODO AVOSCloud.initialize(this, "OQpEDpAfPU5fxknXO4YWuV6J-gzGzoHsz", "huXzXqNd6uGPi8yI8tG2pwnj");
         // TODO AVAnalytics.enableCrashReport(this, true);
 
-        // for MI-push
-        if (shouldInit()) {
-            MiPushClient.registerPush(this, MI_APP_ID, MI_APP_KEY);
-            String account = "a" + NetworkManager.instance.getUserSid();
-            MiPushClient.setAlias(this, account, "ANDROID_USER");
-        }
-        // init Mi-push log.
-        LoggerInterface newLogger = new LoggerInterface() {
-            @Override
-            public void setTag(String tag) {
-            }
-
-            @Override
-            public void log(String content, Throwable t) {
-                Log.d(TAG, content, t);
-            }
-
-            @Override
-            public void log(String content) {
-                Log.d(TAG, content);
-            }
-        };
-        Logger.setLogger(this, newLogger);
-    }
-
-    private boolean shouldInit() {
-        ActivityManager am = ((ActivityManager) getSystemService(Context.ACTIVITY_SERVICE));
-        List<ActivityManager.RunningAppProcessInfo> processInfos = am.getRunningAppProcesses();
-        String mainProcessName = getPackageName();
-        int myPid = android.os.Process.myPid();
-        for (ActivityManager.RunningAppProcessInfo info : processInfos) {
-            if (info.pid == myPid && mainProcessName.equals(info.processName)) {
-                return true;
-            }
-        }
-        return false;
+        // for JiGuang-push
+        JPushInterface.setDebugMode(true);
+        JPushInterface.init(this);
+        JPushInterface.stopCrashHandler(this); //close crash report, duplicate with LeanCloud.
     }
 
 }

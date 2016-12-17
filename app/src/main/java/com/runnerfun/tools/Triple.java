@@ -2,7 +2,8 @@ package com.runnerfun.tools;
 
 
 /**
- * Created by lixiaoyang on 27/11/2016.
+ * Triple
+ * Created by andrie on 27/11/2016.
  */
 
 public class Triple<A, B, C> {

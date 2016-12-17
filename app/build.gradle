@@ -60,7 +60,6 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     testCompile 'junit:junit:4.12'
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
-    compile files('libs/MiPush_SDK_Client_3_1_2.jar')
     compile files('libs/avoscloud-sdk-v3.13.15.jar')
     compile files('libs/avoscloud-statistics-v3.13.15.jar')
     compile files('libs/libammsdk.jar')
@@ -74,4 +73,6 @@ dependencies {
     compile files('libs/alipaySdk-20161009.jar')
     compile 'com.larswerkman:HoloColorPicker:1.5'
     compile files('libs/AMap_Search_V3.6.1_20161122.jar')
+    compile files('libs/jcore-android_v1.0.0.jar')
+    compile files('libs/jpush-android_v3.0.0.jar')
 }

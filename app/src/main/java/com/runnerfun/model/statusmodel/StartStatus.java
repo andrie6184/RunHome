@@ -5,7 +5,8 @@ import android.os.SystemClock;
 import com.amap.api.maps.model.LatLng;
 
 /**
- * Created by lixiaoyang on 22/11/2016.
+ * StartStatus
+ * Created by andrie on 22/11/2016.
  */
 
 public class StartStatus extends RecordStatus {
@@ -18,7 +19,7 @@ public class StartStatus extends RecordStatus {
 
     @Override
     public long getRecordTime() {
-        return  SystemClock.elapsedRealtime() - mStartTime + mTimeOffset;
+        return SystemClock.elapsedRealtime() - mStartTime + mTimeOffset;
     }
 
     @Override

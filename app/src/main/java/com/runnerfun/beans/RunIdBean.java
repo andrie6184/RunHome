@@ -1,7 +1,7 @@
 package com.runnerfun.beans;
 
 /**
- * Created by lixiaoyang on 04/12/2016.
+ * Created by andrie on 04/12/2016.
  */
 
 public class RunIdBean {

@@ -20,7 +20,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * Created by lixiaoyang on 27/11/2016.
+ * ColorPickerDialog
+ * Created by andrie on 27/11/2016.
  */
 
 public class ColorPickerDialog extends DialogFragment {

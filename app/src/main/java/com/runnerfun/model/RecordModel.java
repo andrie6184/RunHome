@@ -19,7 +19,7 @@ import java.util.List;
 
 /**
  * RecordModel
- * Created by lixiaoyang on 18/11/2016.
+ * Created by andrie on 18/11/2016.
  */
 //转为单进程Service时需要改为 ContentProvider实现。
 public class RecordModel {

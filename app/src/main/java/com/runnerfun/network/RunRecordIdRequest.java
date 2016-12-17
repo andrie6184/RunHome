@@ -9,7 +9,8 @@ import retrofit2.http.POST;
 import rx.Observable;
 
 /**
- * Created by lixiaoyang on 04/12/2016.
+ * RunRecordIdRequest
+ * Created by andrie on 04/12/2016.
  */
 
 public interface RunRecordIdRequest {

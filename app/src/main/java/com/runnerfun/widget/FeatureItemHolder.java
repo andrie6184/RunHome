@@ -10,7 +10,8 @@ import com.runnerfun.ShareElemActivity;
 
 
 /**
- * Created by lixiaoyang on 27/11/2016.
+ * FeatureItemHolder
+ * Created by andrie on 27/11/2016.
  */
 
 public class FeatureItemHolder extends RecyclerView.ViewHolder {

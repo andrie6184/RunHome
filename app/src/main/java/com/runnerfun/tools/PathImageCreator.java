@@ -12,7 +12,8 @@ import java.util.List;
 
 
 /**
- * Created by lixiaoyang on 06/12/2016.
+ * PathImageCreator
+ * Created by andrie on 06/12/2016.
  */
 
 public class PathImageCreator {
