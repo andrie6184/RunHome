@@ -42,11 +42,14 @@ public class InitUserInfoActivity extends BaseActivity {
     private boolean heightSet = false;
     private boolean weightSet = false;
 
+    private String initUserName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_init_user_info);
         ButterKnife.bind(this);
+        initUserName = "user" + getIntent().getStringExtra("user_init_name");
     }
 
     @OnClick(R.id.skip_btn)
@@ -68,7 +71,7 @@ public class InitUserInfoActivity extends BaseActivity {
                 50 + heightList.indexOf(height.getText().toString());
         int weightValue = weightList.indexOf(weight.getText().toString()) == -1 ? 0 :
                 30 + weightList.indexOf(weight.getText().toString());
-        NetworkManager.instance.updateUserInfo("name", ageValue, "", "", gender, heightValue, weightValue,
+        NetworkManager.instance.updateUserInfo(initUserName, ageValue, "", "", gender, heightValue, weightValue,
                 new Subscriber<Object>() {
                     @Override
                     public void onCompleted() {

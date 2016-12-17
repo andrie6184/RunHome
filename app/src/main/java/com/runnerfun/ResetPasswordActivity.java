@@ -1,6 +1,5 @@
 package com.runnerfun;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -9,7 +8,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.runnerfun.beans.RegisterInfo;
 import com.runnerfun.network.NetworkManager;
 
 import java.util.Locale;
@@ -57,7 +55,7 @@ public class ResetPasswordActivity extends BaseActivity {
 
         view.setEnabled(false);
         view.setClickable(false);
-        NetworkManager.instance.sendCode(tel, 2, new Subscriber<String>() {
+        NetworkManager.instance.sendCode(tel, 2, new Subscriber<Object>() {
             @Override
             public void onCompleted() {
             }
@@ -66,12 +64,12 @@ public class ResetPasswordActivity extends BaseActivity {
             public void onError(Throwable e) {
                 view.setEnabled(true);
                 view.setClickable(true);
-                Toast.makeText(ResetPasswordActivity.this, "send code fail", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ResetPasswordActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onNext(String codeBean) {
-                Toast.makeText(ResetPasswordActivity.this, "send code success" + codeBean, Toast.LENGTH_SHORT).show();
+            public void onNext(Object codeBean) {
+                Toast.makeText(ResetPasswordActivity.this, "验证码已发送", Toast.LENGTH_SHORT).show();
                 mHourGlass = 60L * 1000L;
                 _subscription = Observable.interval(1000, 1000, TimeUnit.MILLISECONDS)
                         .observeOn(AndroidSchedulers.mainThread())
@@ -114,7 +112,7 @@ public class ResetPasswordActivity extends BaseActivity {
 
         view.setEnabled(false);
         view.setClickable(false);
-        NetworkManager.instance.register(tel, password, code, new Subscriber<RegisterInfo>() {
+        NetworkManager.instance.changePwd(tel, code, password, confirm, new Subscriber<Object>() {
             @Override
             public void onCompleted() {
                 view.setEnabled(true);
@@ -125,13 +123,13 @@ public class ResetPasswordActivity extends BaseActivity {
             public void onError(Throwable e) {
                 view.setEnabled(true);
                 view.setClickable(true);
-                Toast.makeText(ResetPasswordActivity.this, "register fail", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ResetPasswordActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onNext(RegisterInfo registerInfo) {
-                Toast.makeText(ResetPasswordActivity.this, "register success" + registerInfo, Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(ResetPasswordActivity.this, MainActivity.class));
+            public void onNext(Object info) {
+                Toast.makeText(ResetPasswordActivity.this, "密码重置成功,请使用新密码登录", Toast.LENGTH_SHORT).show();
+                finish();
             }
         });
     }

@@ -24,6 +24,7 @@ import com.runnerfun.beans.RunSaveResultBean;
 import com.runnerfun.beans.RunUploadBean;
 import com.runnerfun.model.RecordModel;
 import com.runnerfun.network.NetworkManager;
+import com.runnerfun.tools.ThirdpartAuthManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -160,6 +161,9 @@ public class RecordService extends Service implements AMapLocationListener {
                     public Observable<?> call(ResponseBean<RunSaveResultBean> bean) {
                         Toast.makeText(RunApplication.getAppContex(), String.format(Locale.getDefault(),
                                 "已获得%s里币", bean.getData().getCoin()), Toast.LENGTH_SHORT).show();
+                        ThirdpartAuthManager.setLastRidForShare(bean.getData().getId());
+                        ThirdpartAuthManager.setLastCoinForShare(bean.getData().getCoin());
+
                         String track = getTrack(RecordModel.instance.readCache());
                         LocalBroadcastManager.getInstance(RunApplication.getAppContex())
                                 .sendBroadcast(new Intent(UserFragment.USER_INFO_CHANGED_ACTION));

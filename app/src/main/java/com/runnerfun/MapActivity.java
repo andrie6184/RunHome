@@ -32,6 +32,7 @@ import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.PolylineOptions;
 import com.runnerfun.model.ConfigModel;
 import com.runnerfun.model.RecordModel;
+import com.runnerfun.tools.ThirdpartAuthManager;
 import com.runnerfun.tools.TimeStringUtils;
 import com.runnerfun.widget.MapBtnWidget;
 
@@ -79,14 +80,19 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
     private Subscription mTimer = null;
     private DecimalFormat decimalFormat = new DecimalFormat("0.000");
 
+    private String rid;
+    private String coin;
+
     public static void startWithDisplayMode(Context context, String distance, String speed,
-                                            String time, String cal) {
+                                            String time, String cal, String rid, String coin) {
         Intent i = new Intent(context, MapActivity.class);
         i.putExtra(DISPLAY_MODE, true);
         i.putExtra("intent_param_distance", distance);
         i.putExtra("intent_param_speed", speed);
         i.putExtra("intent_param_time", time);
         i.putExtra("intent_param_cal", cal);
+        i.putExtra("intent_param_rid", rid);
+        i.putExtra("intent_param_coin", coin);
         context.startActivity(i);
     }
 
@@ -162,6 +168,11 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
             mDisValue.setText(getIntent().getStringExtra("intent_param_distance"));
             mTimeValue.setText(getIntent().getStringExtra("intent_param_time"));
             mCalValue.setText(getIntent().getStringExtra("intent_param_cal"));
+
+            rid = getIntent().getStringExtra("intent_param_rid");
+            ThirdpartAuthManager.setLastRidForShare(rid);
+            coin = getIntent().getStringExtra("intent_param_coin");
+            ThirdpartAuthManager.setLastCoinForShare(rid);
         } else {
             if (RecordModel.instance.isPause()) {
                 mPauseBtn.setText("继续");
@@ -270,7 +281,8 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
 
     @OnClick(R.id.share_btn)
     void share() {
-        startActivity(new Intent(this, ShareTargetActivity.class));
+        ShareTargetActivity.startWithShareData(this, getIntent().getStringExtra("intent_param_distance"),
+                getIntent().getStringExtra("intent_param_speed"), getIntent().getStringExtra("intent_param_time"));
     }
 
     @OnClick(R.id.cancel_btn)

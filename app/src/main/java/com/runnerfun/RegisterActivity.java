@@ -49,7 +49,7 @@ public class RegisterActivity extends BaseActivity {
 
         view.setEnabled(false);
         view.setClickable(false);
-        NetworkManager.instance.sendCode(tel, 1, new Subscriber<String>() {
+        NetworkManager.instance.sendCode(tel, 1, new Subscriber<Object>() {
             @Override
             public void onCompleted() {
             }
@@ -62,8 +62,8 @@ public class RegisterActivity extends BaseActivity {
             }
 
             @Override
-            public void onNext(String codeBean) {
-                // Toast.makeText(RegisterActivity.this, "get code success" + codeBean, Toast.LENGTH_SHORT).show();
+            public void onNext(Object codeBean) {
+                Toast.makeText(RegisterActivity.this, "验证码已发送", Toast.LENGTH_SHORT).show();
                 mHourGlass = 60L * 1000L;
                 _subscription = Observable.interval(1000, 1000, TimeUnit.MILLISECONDS)
                         .observeOn(AndroidSchedulers.mainThread())
@@ -116,9 +116,10 @@ public class RegisterActivity extends BaseActivity {
 
             @Override
             public void onNext(RegisterInfo registerInfo) {
-                Toast.makeText(RegisterActivity.this, "注册成功, 已为您登录" + registerInfo, Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterActivity.this, "注册成功, 已为您登录", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(RegisterActivity.this, InitUserInfoActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.putExtra("user_init_name", registerInfo.getUid());
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
             }

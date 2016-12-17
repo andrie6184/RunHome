@@ -3,6 +3,7 @@ package com.runnerfun.beans;
 import java.io.Serializable;
 
 /**
+ * RegisterInfo
  * Created by andrie on 13/10/2016.
  */
 

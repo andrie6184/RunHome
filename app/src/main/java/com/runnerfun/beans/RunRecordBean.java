@@ -14,6 +14,7 @@ public class RunRecordBean implements Serializable {
     private String startTime;
     private String distance;
     private String total_distance;
+    private String total_time;
     private String highSpeed;
     private String speed;
     private String position;
@@ -107,6 +108,14 @@ public class RunRecordBean implements Serializable {
 
     public void setGet_score(String get_score) {
         this.get_score = get_score;
+    }
+
+    public String getTotal_time() {
+        return total_time;
+    }
+
+    public void setTotal_time(String total_time) {
+        this.total_time = total_time;
     }
 
 }

@@ -7,12 +7,13 @@ import retrofit2.http.Query;
 import rx.Observable;
 
 /**
+ * CodeRequest
  * Created by andrie on 13/10/2016.
  */
 
 public interface CodeRequest {
     @GET("/user/sendcode")
-    Observable<ResponseBean<String>> sendCode(@Query(value = "tel") String tel,
+    Observable<ResponseBean<Object>> sendCode(@Query(value = "tel") String tel,
                                               @Query(value = "type") int type,
                                               @Query(value = "sign") String sign);
 }

@@ -122,7 +122,13 @@ public class NetworkManager {
         rxRequest(request.register(tel, pwd, code), callback);
     }
 
-    public void sendCode(String tel, int type, Subscriber<String> callback) {
+    public void changePwd(String tel, String code, String pwd, String pwd1, Subscriber<Object> callback) {
+        ChangePasswordRequest request = retrofitApi.create(ChangePasswordRequest.class);
+        String sign = toMD5(KEY + tel + pwd + pwd1);
+        rxRequest(request.changePwd(tel, code, pwd, pwd1, sign), callback);
+    }
+
+    public void sendCode(String tel, int type, Subscriber<Object> callback) {
         String code = toMD5(KEY + tel + type);
         CodeRequest request = retrofitApi.create(CodeRequest.class);
         rxRequest(request.sendCode(tel, type, code), callback);

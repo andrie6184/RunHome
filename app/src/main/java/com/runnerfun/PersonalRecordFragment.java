@@ -24,8 +24,11 @@ import com.runnerfun.model.RecordModel;
 import com.runnerfun.network.NetworkManager;
 import com.runnerfun.tools.UITools;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,6 +54,7 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
     ListView mRecordList;
 
     private RecordListAdapter mAdapter;
+    private SimpleDateFormat formatter;
 
     public PersonalRecordFragment() {
     }
@@ -75,6 +79,9 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
     }
 
     private void init() {
+        formatter = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+        formatter.setTimeZone(TimeZone.getTimeZone("GMT+0:00"));
+
         mPtrLayout.setOnRefreshListener(this);
         mAdapter = new RecordListAdapter();
         mRecordList.setAdapter(mAdapter);
@@ -142,7 +149,7 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
         }
         mIsJumping = true;
         final RunRecordBean item = mRecords.get(position);
-        String rid = item.getRid();
+        final String rid = item.getRid();
         NetworkManager.instance.getRunTrack(rid, new Subscriber<RunTrackBean>() {
             @Override
             public void onCompleted() {
@@ -162,7 +169,8 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
                 String dis = UITools.numberFormat(Float.valueOf(item.getDistance()) / 1000) + "km";
                 String speed = UITools.numberFormat(Float.valueOf(item.getSpeed())) + "km/h";
                 String cal = UITools.numberFormat(Float.valueOf(item.getCalorie()) / 1000) + "kcal";
-                MapActivity.startWithDisplayMode(getActivity(), dis, speed, item.getStartTime().split(" ")[0], cal);
+                String time = formatter.format(Long.valueOf(item.getTotal_time()));
+                MapActivity.startWithDisplayMode(getActivity(), dis, speed, time, cal, rid, item.getGet_score());
             }
         });
     }
