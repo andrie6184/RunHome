@@ -4,12 +4,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,14 +24,28 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.runnerfun.beans.ResponseBean;
+import com.runnerfun.beans.UploadResult;
 import com.runnerfun.beans.UserInfo;
 import com.runnerfun.network.NetworkManager;
+import com.runnerfun.tools.FileUtils;
 import com.runnerfun.tools.RoundedTransformation;
+import com.runnerfun.tools.UITools;
+import com.runnerfun.widget.ImagePickerPopWindow;
+
+import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 //import com.lzy.imagepicker.ui.ImageGridActivity;
 
@@ -35,6 +55,12 @@ import rx.Subscriber;
  */
 
 public class UserFragment extends Fragment {
+
+    private static final int REQUESTCODE_PICK = 0x1001;
+    private static final int REQUESTCODE_TAKE = 0x1002;
+    private static final int REQUESTCODE_CUTTING = 0x1003;
+
+    private static final String IMAGE_FILE_NAME = "run_temp_avatar";
 
     public static final String USER_INFO_CHANGED_ACTION = "USER_INFO_CHANGED_ACTION";
     public static final String USER_INFO_RELOADED_ACTION = "USER_INFO_RELOADED_ACTION";
@@ -51,6 +77,12 @@ public class UserFragment extends Fragment {
     TextView mUserCoin;
     @BindView(R.id.user_length)
     TextView mUserLength;
+
+    @BindView(R.id.drawer_layout)
+    View mDrawerLayout;
+
+    private ImagePickerPopWindow menuWindow;
+    private UserInfo mUserInfo;
 
     private LocalBroadcastManager mLocalManager;
     private UserAvatarReceiver mReceiver;
@@ -104,6 +136,8 @@ public class UserFragment extends Fragment {
                 mUserCoin.setText(userInfo.getTotal_score());
                 mUserLength.setText(userInfo.getTotal_mileage() + "Km");
 
+                mUserInfo = userInfo;
+
                 LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(
                         new Intent(UserFragment.USER_INFO_RELOADED_ACTION));
 
@@ -132,6 +166,111 @@ public class UserFragment extends Fragment {
     @OnClick(R.id.icon_setting)
     void onSettingClicked(View view) {
         startActivity(new Intent(getActivity(), UserSettingActivity.class));
+    }
+
+    @OnClick(R.id.user_avatar)
+    void avatarClicked(final View view) {
+        if (menuWindow == null) {
+            menuWindow = new ImagePickerPopWindow(getActivity(), new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    menuWindow.dismiss();
+                    switch (v.getId()) {
+                        case R.id.takePhotoBtn:
+                            Intent takeIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            takeIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                                    Uri.fromFile(new File(Environment.getExternalStorageDirectory(),
+                                            IMAGE_FILE_NAME)));
+                            startActivityForResult(takeIntent, REQUESTCODE_TAKE);
+                            break;
+                        case R.id.pickPhotoBtn:
+                            Intent pickIntent = new Intent(Intent.ACTION_PICK, null);
+                            pickIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                            startActivityForResult(pickIntent, REQUESTCODE_PICK);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            });
+        }
+        menuWindow.showAtLocation(mDrawerLayout, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUESTCODE_PICK:
+                try {
+                    startPhotoZoom(data.getData());
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case REQUESTCODE_TAKE:
+                File temp = new File(Environment.getExternalStorageDirectory() + "/" + IMAGE_FILE_NAME);
+                startPhotoZoom(Uri.fromFile(temp));
+                break;
+            case REQUESTCODE_CUTTING:
+                if (data != null) {
+                    setPicToView(data);
+                }
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void startPhotoZoom(Uri uri) {
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(uri, "image/*");
+        intent.putExtra("crop", "true");
+        intent.putExtra("aspectX", 1);
+        intent.putExtra("aspectY", 1);
+        intent.putExtra("outputX", 200);
+        intent.putExtra("outputY", 200);
+        intent.putExtra("return-data", true);
+        startActivityForResult(intent, REQUESTCODE_CUTTING);
+    }
+
+    private void setPicToView(Intent picdata) {
+        Bundle extras = picdata.getExtras();
+        if (extras != null) {
+            Bitmap photo = extras.getParcelable("data");
+            String path = FileUtils.saveFile(getActivity(), "temphead.jpg", photo);
+            RunApplication.getAppContex().picasso.load("file://" + path)
+                    .transform(new RoundedTransformation(360, 0)).placeholder(R.drawable.icon_avatar)
+                    .error(R.drawable.icon_avatar).into(mUserAvatar);
+
+            byte[] file = UITools.bmpToByteArray(BitmapFactory.decodeFile(path), true);
+            RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+
+            mUserAvatar.setEnabled(false);
+            mUserAvatar.setClickable(false);
+            NetworkManager.instance.uploadAvatar("img", requestBody).observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io()).flatMap(new Func1<ResponseBean<UploadResult>, Observable<?>>() {
+                @Override
+                public Observable<ResponseBean<Object>> call(ResponseBean<UploadResult> bean) {
+                    return NetworkManager.instance.updateUserInfo(mUserInfo.getUser_name(),
+                            Integer.valueOf(mUserInfo.getAge()), bean.getData().getImg(), mUserInfo.getRemarks(),
+                            mUserInfo.getSex(), Integer.valueOf(mUserInfo.getHeight()), Integer.valueOf(mUserInfo.getWeight()))
+                            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+                }
+            }).subscribe(new Action1<Object>() {
+                @Override
+                public void call(Object o) {
+                    Toast.makeText(getActivity(), "头像上传成功", Toast.LENGTH_SHORT).show();
+                    mUserAvatar.setEnabled(true);
+                    mUserAvatar.setClickable(true);
+                }
+            }, new Action1<Throwable>() {
+                @Override
+                public void call(Throwable throwable) {
+                    Toast.makeText(getActivity(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                    mUserAvatar.setEnabled(true);
+                    mUserAvatar.setClickable(true);
+                }
+            });
+        }
     }
 
     private class UserAvatarReceiver extends BroadcastReceiver {

@@ -140,6 +140,12 @@ public class NetworkManager {
         rxRequest(request.editUserInfo(name, age, headimg, remarks, height, sexy, weight), callback);
     }
 
+    public Observable<ResponseBean<Object>> updateUserInfo(String name, int age, String headimg, String remarks,
+                                                           String sexy, int height, int weight) {
+        UserEditRequest request = retrofitApi.create(UserEditRequest.class);
+        return request.editUserInfo(name, age, headimg, remarks, height, sexy, weight);
+    }
+
     public void getUserInfo(Subscriber<UserInfo> callback) {
         UserInfoRequest request = retrofitApi.create(UserInfoRequest.class);
         rxRequest(request.getUserInfo(), callback);
@@ -153,6 +159,11 @@ public class NetworkManager {
     public void uploadAvatar(String description, RequestBody imgs, Subscriber<UploadResult> callback) {
         UploadAvatarRequest request = retrofitApi.create(UploadAvatarRequest.class);
         rxRequest(request.uploadAvatar(description, imgs), callback);
+    }
+
+    public Observable<ResponseBean<UploadResult>> uploadAvatar(String description, RequestBody imgs) {
+        UploadAvatarRequest request = retrofitApi.create(UploadAvatarRequest.class);
+        return request.uploadAvatar(description, imgs);
     }
 
     public void getUserPRecordList(int page, Subscriber<PersonalRecordBean> callback) {

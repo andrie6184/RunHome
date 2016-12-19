@@ -128,10 +128,10 @@ public class MainActivity extends BaseFragmentActivity {
         txt_title.setText(titles.get(position));
         ImageView img_title = (ImageView) view.findViewById(R.id.img_title);
         if (selected) {
-            txt_title.setTextColor(Color.parseColor("#979797"));
+            txt_title.setTextColor(Color.parseColor("#FFFFFF"));
             img_title.setImageResource(tabSelectedIcons[position]);
         } else {
-            txt_title.setTextColor(Color.parseColor("#FFFFFF"));
+            txt_title.setTextColor(Color.parseColor("#979797"));
             img_title.setImageResource(tabIcons[position]);
         }
         return view;

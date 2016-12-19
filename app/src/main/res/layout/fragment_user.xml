@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/user_bg">
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/drawer_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/user_bg">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -19,7 +20,7 @@
             android:src="@drawable/icon_avatar"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
             android:id="@+id/user_name"
@@ -31,7 +32,7 @@
             android:textSize="16sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/user_avatar" />
+            app:layout_constraintTop_toBottomOf="@+id/user_avatar"/>
 
         <ImageView
             android:id="@+id/icon_setting"
@@ -42,7 +43,7 @@
             android:layout_marginTop="17dp"
             android:src="@drawable/icon_setting"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
             android:id="@+id/user_sign"
@@ -58,7 +59,7 @@
             android:textSize="14sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/user_name" />
+            app:layout_constraintTop_toBottomOf="@+id/user_name"/>
 
         <LinearLayout
             android:id="@+id/record_value_content"
@@ -86,7 +87,7 @@
                 android:textColor="#FFFFFF"
                 android:textSize="26sp"
                 tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="448dp" />
+                tools:layout_editor_absoluteY="448dp"/>
 
             <TextView
                 android:id="@+id/user_length"
@@ -98,7 +99,7 @@
                 android:text="888888.38Km"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
-                android:textSize="26sp" />
+                android:textSize="26sp"/>
 
         </LinearLayout>
 
@@ -126,7 +127,7 @@
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="448dp" />
+                tools:layout_editor_absoluteY="448dp"/>
 
             <TextView
                 android:id="@+id/user_length_title"
@@ -136,7 +137,7 @@
                 android:text="总里程"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
-                android:textSize="16sp" />
+                android:textSize="16sp"/>
 
         </LinearLayout>
 
@@ -157,7 +158,7 @@
             android:textColor="#FFFFFF"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/record_title_content" />
+            app:layout_constraintTop_toBottomOf="@+id/record_title_content"/>
 
         <TextView
             android:id="@+id/detail"
@@ -174,7 +175,7 @@
             android:textColor="#FFFFFF"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/record" />
+            app:layout_constraintTop_toBottomOf="@+id/record"/>
 
         <TextView
             android:id="@+id/rule"
@@ -192,7 +193,7 @@
             android:textColor="#FFFFFF"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail" />
+            app:layout_constraintTop_toBottomOf="@+id/detail"/>
 
         <ImageView
             android:id="@+id/treasure"
@@ -203,7 +204,7 @@
             android:src="@drawable/icon_record"
             app:layout_constraintBottom_toBottomOf="@+id/record"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/record" />
+            app:layout_constraintTop_toTopOf="@+id/record"/>
 
         <ImageView
             android:id="@+id/mile"
@@ -214,7 +215,7 @@
             android:src="@drawable/icon_coin_detail"
             app:layout_constraintBottom_toBottomOf="@+id/detail"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/detail" />
+            app:layout_constraintTop_toTopOf="@+id/detail"/>
 
         <ImageView
             android:id="@+id/level"
@@ -225,7 +226,7 @@
             android:src="@drawable/icon_rules"
             app:layout_constraintBottom_toBottomOf="@+id/rule"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/rule" />
+            app:layout_constraintTop_toTopOf="@+id/rule"/>
 
         <ImageView
             android:id="@+id/enter_treasure"
@@ -236,7 +237,7 @@
             android:src="@drawable/icon_enter"
             app:layout_constraintBottom_toBottomOf="@+id/record"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/record" />
+            app:layout_constraintTop_toTopOf="@+id/record"/>
 
         <ImageView
             android:id="@+id/enter_mile"
@@ -247,7 +248,7 @@
             android:src="@drawable/icon_enter"
             app:layout_constraintBottom_toBottomOf="@+id/detail"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/detail" />
+            app:layout_constraintTop_toTopOf="@+id/detail"/>
 
         <ImageView
             android:id="@+id/enter_level"
@@ -258,7 +259,7 @@
             android:src="@drawable/icon_enter"
             app:layout_constraintBottom_toBottomOf="@+id/rule"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/rule" />
+            app:layout_constraintTop_toTopOf="@+id/rule"/>
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

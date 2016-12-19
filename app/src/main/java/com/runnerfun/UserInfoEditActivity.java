@@ -1,6 +1,5 @@
 package com.runnerfun;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -115,13 +114,15 @@ public class UserInfoEditActivity extends BaseActivity {
         intent.putExtra("crop", "true");
         intent.putExtra("aspectX", 1);
         intent.putExtra("aspectY", 1);
-        intent.putExtra("outputX", 100);
-        intent.putExtra("outputY", 100);
+        intent.putExtra("outputX", 200);
+        intent.putExtra("outputY", 200);
         intent.putExtra("return-data", true);
         startActivityForResult(intent, REQUESTCODE_CUTTING);
     }
 
     private void setPicToView(Intent picdata) {
+        findViewById(R.id.user_avatar).setEnabled(false);
+        findViewById(R.id.user_avatar).setClickable(false);
         Bundle extras = picdata.getExtras();
         if (extras != null) {
             Bitmap photo = extras.getParcelable("data");
@@ -181,9 +182,7 @@ public class UserInfoEditActivity extends BaseActivity {
     }
 
     @OnClick(R.id.user_avatar)
-    void avatarClicked(View view) {
-        view.setEnabled(false);
-        view.setClickable(false);
+    void avatarClicked(final View view) {
         if (menuWindow == null) {
             menuWindow = new ImagePickerPopWindow(this, new View.OnClickListener() {
                 @Override
