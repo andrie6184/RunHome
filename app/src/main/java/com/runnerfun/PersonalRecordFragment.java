@@ -47,6 +47,7 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
     private RunRecordBean mDeleteBean;
     private boolean mIsDeleting;
     private boolean mIsJumping;
+    private boolean mHasMoreData;
 
     @BindView(R.id.precord_list_ptr_frame)
     SwipeRefreshLayout mPtrLayout;
@@ -90,7 +91,7 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
             public void onScrollStateChanged(AbsListView view, int scrollState) {
                 if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE &&
                         view.getLastVisiblePosition() == (view.getCount() - 1) && view.getCount() > 0
-                        && !isLoading && mRecords != null && mRecords.size() >= COMMON_PAGE_SIZE) {
+                        && !isLoading && mRecords != null && mHasMoreData) {
                     requestCoinInfo(true);
                 }
             }
@@ -214,6 +215,13 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
                         } else {
                             mRecords.addAll(records.getList());
                         }
+
+                        if (Integer.valueOf(records.getCnt()) > mRecords.size()) {
+                            mHasMoreData = true;
+                        } else {
+                            mHasMoreData = false;
+                        }
+
                         mAdapter.notifyDataSetChanged();
                         return;
                     }
