@@ -62,6 +62,10 @@ public class RecordModel {
         mStatus = new ResumeStatus(mStatus);
     }
 
+    /**
+     * get expend hot
+     * @return K cal
+     */
     public float getCal() {
         String info = RunApplication.getAppContex().sharedPreferences.getString(
                 UserFragment.SP_KEY_USER_INFO, "");

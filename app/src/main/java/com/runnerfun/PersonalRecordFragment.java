@@ -22,6 +22,7 @@ import com.runnerfun.beans.RunRecordBean;
 import com.runnerfun.beans.RunTrackBean;
 import com.runnerfun.model.RecordModel;
 import com.runnerfun.network.NetworkManager;
+import com.runnerfun.tools.TimeStringUtils;
 import com.runnerfun.tools.UITools;
 
 import java.text.SimpleDateFormat;
@@ -55,7 +56,6 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
     ListView mRecordList;
 
     private RecordListAdapter mAdapter;
-    private SimpleDateFormat formatter;
 
     public PersonalRecordFragment() {
     }
@@ -80,9 +80,6 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
     }
 
     private void init() {
-        formatter = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
-        formatter.setTimeZone(TimeZone.getTimeZone("GMT+0:00"));
-
         mPtrLayout.setOnRefreshListener(this);
         mAdapter = new RecordListAdapter();
         mRecordList.setAdapter(mAdapter);
@@ -170,7 +167,7 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
                 String dis = UITools.numberFormat(Float.valueOf(item.getDistance()) / 1000) + "km";
                 String speed = UITools.numberFormat(Float.valueOf(item.getSpeed())) + "km/h";
                 String cal = UITools.numberFormat(Float.valueOf(item.getCalorie()) / 1000) + "kcal";
-                String time = formatter.format(Long.valueOf(item.getTotal_time()));
+                String time = TimeStringUtils.getTime(Long.valueOf(item.getTotal_time()));
                 MapActivity.startWithDisplayMode(getActivity(), dis, speed, time, cal, rid, item.getGet_score());
             }
         });
