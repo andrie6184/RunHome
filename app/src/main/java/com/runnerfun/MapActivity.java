@@ -110,6 +110,15 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
             mMap.getMap().setMapType(AMap.MAP_TYPE_NIGHT);
         }
         mPauseBtn = (TextView) mPanelWidget.findViewById(R.id.pause);
+        run = BitmapDescriptorFactory.fromBitmap(BitmapFactory
+                .decodeResource(getResources(),
+                        R.drawable.run));
+        stop = BitmapDescriptorFactory.fromBitmap(BitmapFactory
+                .decodeResource(getResources(),
+                        R.drawable.zhong));
+        start_ic = BitmapDescriptorFactory.fromBitmap(BitmapFactory
+                .decodeResource(getResources(),
+                        R.drawable.shi));
     }
 
     private void init() {
@@ -156,7 +165,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
             mPanelWidget.setVisibility(View.GONE);
             LatLng ll = RecordModel.instance.firstLatLng();
             if (ll != null) {
-                drawLines(RecordModel.instance.readCache());
+                showRecord(RecordModel.instance.readCache());
             } else {
                 mlocationClient.startLocation();
             }
@@ -196,15 +205,6 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
             //TODO:RecordModel
         }
         RecordModel.instance.addListener(this);
-        run = BitmapDescriptorFactory.fromBitmap(BitmapFactory
-                .decodeResource(getResources(),
-                        R.drawable.run));
-        stop = BitmapDescriptorFactory.fromBitmap(BitmapFactory
-                .decodeResource(getResources(),
-                        R.drawable.zhong));
-        start_ic = BitmapDescriptorFactory.fromBitmap(BitmapFactory
-                .decodeResource(getResources(),
-                        R.drawable.shi));
 
         CameraUpdate cu = CameraUpdateFactory.zoomTo(14.f);
         mMap.getMap().moveCamera(cu);
@@ -373,6 +373,52 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
                     .draggable(false).setFlat(true).icon(stop).anchor(0.5f, 0.5f);
             mMap.getMap().addMarker(markerOption);
         }
+    }
+
+    private void showRecord(List<LatLng> records) {
+        if (records == null || records.size() <= 0) {
+            return;
+        }
+
+        LatLng start = records.get(0);
+        PolylineOptions po = new PolylineOptions();
+        List<Integer> colors = new ArrayList<>();
+        boolean test = false;
+        for (LatLng ll : records) {
+            float distance = AMapUtils.calculateLineDistance(start, ll);
+            if (distance / 2 > 7.2f) {
+                colors.add(Color.RED);
+            } else {
+                colors.add(Color.GREEN);
+            }
+            start = ll;
+        }
+//        po.useGradient(true);
+        po.colorValues(colors);
+        po.addAll(records);
+        po.width(10f);
+        mMap.getMap().clear();
+        mMap.getMap().addPolyline(po);
+
+        MarkerOptions markerOption = new MarkerOptions();
+        markerOption.position(records.get(0));
+        markerOption.draggable(false);
+        markerOption.icon(start_ic);
+        markerOption.anchor(0.5f, 0.5f);
+        markerOption.setFlat(true);
+
+        mMap.getMap().addMarker(markerOption);
+
+        markerOption = new MarkerOptions().position(records.get(records.size() - 1))
+                .draggable(false).setFlat(true).icon(stop).anchor(0.5f, 0.5f);
+        mMap.getMap().addMarker(markerOption);
+
+        LatLngBounds.Builder llb = LatLngBounds.builder();
+        for (LatLng a : records) {
+            llb.include(a);
+        }
+        CameraUpdate c = CameraUpdateFactory.newLatLngBounds(llb.build(), 10);
+        mMap.getMap().moveCamera(c);
     }
 
     @Override
