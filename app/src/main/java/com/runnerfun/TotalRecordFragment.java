@@ -24,14 +24,14 @@ public class TotalRecordFragment extends Fragment {
     TextView totalHour;
     @BindView(R.id.total_distance)
     TextView totalDistance;
+    @BindView(R.id.valid_distance)
+    TextView validDistance;
     @BindView(R.id.total_hot)
     TextView totalHot;
     @BindView(R.id.average_speed)
     TextView averageSpeed;
     @BindView(R.id.average_sec_speed)
     TextView averageSecSpeed;
-    @BindView(R.id.max_speed)
-    TextView maxSpeed;
 
     public TotalRecordFragment() {
     }
@@ -47,10 +47,10 @@ public class TotalRecordFragment extends Fragment {
         Typeface boldTypeFace = Typeface.createFromAsset(getActivity().getAssets(), "fonts/dincond-bold.otf");
         totalHour.setTypeface(boldTypeFace);
         totalDistance.setTypeface(boldTypeFace);
+        validDistance.setTypeface(boldTypeFace);
         totalHot.setTypeface(boldTypeFace);
         averageSpeed.setTypeface(boldTypeFace);
         averageSecSpeed.setTypeface(boldTypeFace);
-        maxSpeed.setTypeface(boldTypeFace);
         return view;
     }
 
@@ -75,12 +75,11 @@ public class TotalRecordFragment extends Fragment {
             public void onNext(RunTotalBean runTotalBean) {
                 if (runTotalBean != null) {
                     totalHour.setText(TimeStringUtils.getTime(Long.valueOf(runTotalBean.getSumTimes())));
-                    float distance = Float.valueOf(runTotalBean.getSumDistance());
-                    totalDistance.setText(UITools.numberFormat(distance/ 1000));
+                    totalDistance.setText(UITools.numberFormat(runTotalBean.getSumTotalDistance()));
+                    validDistance.setText(UITools.numberFormat(runTotalBean.getSumDistance()));
                     totalHot.setText(UITools.numberFormat(runTotalBean.getSumCalorie()));
-                    averageSpeed.setText(UITools.numberFormat(runTotalBean.getSumTimes()));
-                    averageSecSpeed.setText(UITools.numberFormat(runTotalBean.getSumDistance()));
-                    maxSpeed.setText(UITools.numberFormat(runTotalBean.getMaxHighSpeed()));
+                    averageSpeed.setText(UITools.numberFormat(runTotalBean.getAvgSpeedMiles()));
+                    averageSecSpeed.setText(UITools.numberFormat(runTotalBean.getAvgSpeedSecond()));
                     return;
                 }
                 showError(R.string.network_no_data);

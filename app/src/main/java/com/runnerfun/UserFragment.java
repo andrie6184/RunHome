@@ -34,6 +34,7 @@ import com.runnerfun.tools.UITools;
 import com.runnerfun.widget.ImagePickerPopWindow;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -83,6 +84,8 @@ public class UserFragment extends Fragment {
 
     private ImagePickerPopWindow menuWindow;
     private UserInfo mUserInfo;
+    private String mTempAvatarUrl;
+    private Uri mUriTempFile;
 
     private LocalBroadcastManager mLocalManager;
     private UserAvatarReceiver mReceiver;
@@ -226,18 +229,28 @@ public class UserFragment extends Fragment {
         intent.putExtra("crop", "true");
         intent.putExtra("aspectX", 1);
         intent.putExtra("aspectY", 1);
-        intent.putExtra("outputX", 200);
-        intent.putExtra("outputY", 200);
-        intent.putExtra("return-data", true);
+        intent.putExtra("outputX", 500);
+        intent.putExtra("outputY", 500);
+        // intent.putExtra("return-data", true);
+        mUriTempFile = Uri.parse("file://" + "/" + Environment.getExternalStorageDirectory().getPath() + "/" + "small.jpg");
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, mUriTempFile);
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
         startActivityForResult(intent, REQUESTCODE_CUTTING);
     }
 
     private void setPicToView(Intent picdata) {
-        Bundle extras = picdata.getExtras();
-        if (extras != null) {
-            Bitmap photo = extras.getParcelable("data");
-            String path = FileUtils.saveFile(getActivity(), "temphead.jpg", photo);
-            RunApplication.getAppContex().picasso.load("file://" + path)
+        // Bundle extras = picdata.getExtras();
+        Bitmap photo = null; //extras.getParcelable("data");
+        try {
+            photo = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(mUriTempFile));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (photo != null) {
+            final String path = FileUtils.saveFile(getActivity(), "temphead.jpg", photo);
+            mUserAvatar.setImageBitmap(null);
+            RunApplication.getAppContex().picasso.invalidate("file://" + path);
+            RunApplication.getAppContex().picasso.load("file://" + path).resize(500, 500)
                     .transform(new RoundedTransformation(360, 0)).placeholder(R.drawable.icon_avatar)
                     .error(R.drawable.icon_avatar).into(mUserAvatar);
 
@@ -250,6 +263,7 @@ public class UserFragment extends Fragment {
                     .subscribeOn(Schedulers.io()).flatMap(new Func1<ResponseBean<UploadResult>, Observable<?>>() {
                 @Override
                 public Observable<ResponseBean<Object>> call(ResponseBean<UploadResult> bean) {
+                    mTempAvatarUrl = bean.getData().getImg();
                     return NetworkManager.instance.updateUserInfo(mUserInfo.getUser_name(),
                             Integer.valueOf(mUserInfo.getAge()), bean.getData().getImg(), mUserInfo.getRemarks(),
                             mUserInfo.getSex(), Integer.valueOf(mUserInfo.getHeight()), Integer.valueOf(mUserInfo.getWeight()))
@@ -259,6 +273,11 @@ public class UserFragment extends Fragment {
                 @Override
                 public void call(Object o) {
                     Toast.makeText(getActivity(), "头像上传成功", Toast.LENGTH_SHORT).show();
+
+                    mUserInfo.setHeadimg(mTempAvatarUrl);
+                    RunApplication.getAppContex().sharedPreferences.edit().putString(SP_KEY_USER_INFO,
+                            new Gson().toJson(mUserInfo)).apply();
+
                     mUserAvatar.setEnabled(true);
                     mUserAvatar.setClickable(true);
                 }

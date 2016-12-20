@@ -25,11 +25,9 @@ import com.runnerfun.network.NetworkManager;
 import com.runnerfun.tools.TimeStringUtils;
 import com.runnerfun.tools.UITools;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -164,8 +162,16 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
             public void onNext(RunTrackBean runTrackBean) {
                 List<LatLng> lls = RecordModel.parseStringToLatLng(runTrackBean.getTrack());
                 RecordModel.instance.initRecord(lls);
-                String dis = UITools.numberFormat(Float.valueOf(item.getDistance()) / 1000) + "km";
-                String speed = UITools.numberFormat(Float.valueOf(item.getSpeed())) + "km/h";
+                String dis = UITools.numberFormat(Float.valueOf(item.getDistance())) + "km";
+
+                String speed = "0'00\"";
+                if (Float.valueOf(runTrackBean.getTotal_time()) > 0 && Float.valueOf(runTrackBean.getDistance()) > 0) {
+                    float speedFloat = Float.valueOf(runTrackBean.getTotal_time()) /
+                            (Float.valueOf(runTrackBean.getDistance()) * 1000);
+                    float speedString = (float) (Math.round(speedFloat * 100) / 100);
+                    speed = String.format(Locale.getDefault(), "%d'%d\"", (int) speedString, (int) (speedString % 1));
+                }
+
                 String cal = UITools.numberFormat(Float.valueOf(item.getCalorie()) / 1000) + "kcal";
                 String time = TimeStringUtils.getTime(Long.valueOf(item.getTotal_time()));
                 MapActivity.startWithDisplayMode(getActivity(), dis, speed, time, cal, rid, item.getGet_score());

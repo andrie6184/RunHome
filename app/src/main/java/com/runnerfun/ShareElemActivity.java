@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -122,14 +123,14 @@ public class ShareElemActivity extends BaseFragmentActivity {
         mDistanceViewVer.setTypeface(boldTypeFace);
 
         String speed = new DecimalFormat("###.##").format(RecordModel.instance.getSpeed());
-        mSpeedView.setText(speed + "/h");
+        mSpeedView.setText(speed + "km/h");
         String dis = UITools.numberFormat(RecordModel.instance.getDistance() / 1000, "0.000") + "km";
         mDistanceView.setText(dis);
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
         format.setTimeZone(TimeZone.getTimeZone("GMT"));
         mHourView.setText(format.format(new Date(RecordModel.instance.getRecordTime())));
 
-        mSpeedViewVer.setText(speed + "/h");
+        mSpeedViewVer.setText(speed + "km/h");
         mDistanceViewVer.setText(dis);
         mHourViewVer.setText(format.format(new Date(RecordModel.instance.getRecordTime())));
 
@@ -137,7 +138,8 @@ public class ShareElemActivity extends BaseFragmentActivity {
         String location = sp.getString("location", "");
         mLocationText.setText(location);
 
-        mPathImageView.setImageBitmap(PathImageCreator.createBitmap(RecordModel.instance.readCache()));
+        mPathImageView.setImageBitmap(PathImageCreator.createBitmap(RecordModel.instance.readCache(),
+                Color.WHITE));
         //TODO:init other view
         initActionList();
         // initActionBar();
@@ -151,6 +153,7 @@ public class ShareElemActivity extends BaseFragmentActivity {
                     @Override
                     public void onShow(boolean enable) {
                         enableView(mSpeedView, enable);
+                        enableView(mSpeedViewVer, enable);
                     }
                 }));
         mFeatures.add(new Triple<Integer, String, OnStatusChanged>(R.drawable.location_selector, "定位",
@@ -165,20 +168,22 @@ public class ShareElemActivity extends BaseFragmentActivity {
                     @Override
                     public void onShow(boolean enable) {
                         enableView(mHourView, enable);
+                        enableView(mHourViewVer, enable);
                     }
                 }));
-        mFeatures.add(new Triple<Integer, String, OnStatusChanged>(R.drawable.cal_selector, "卡路里",
-                new OnStatusChanged() {
-                    @Override
-                    public void onShow(boolean enable) {
-                        //TODO 哪有卡路里
-                    }
-                }));
+//        mFeatures.add(new Triple<Integer, String, OnStatusChanged>(R.drawable.cal_selector, "卡路里",
+//                new OnStatusChanged() {
+//                    @Override
+//                    public void onShow(boolean enable) {
+//                        //TODO 哪有卡路里
+//                    }
+//                }));
         mFeatures.add(new Triple<Integer, String, OnStatusChanged>(R.drawable.distance_selector, "里程",
                 new OnStatusChanged() {
                     @Override
                     public void onShow(boolean enable) {
                         enableView(mDistanceView, enable);
+                        enableView(mDistanceViewVer, enable);
                     }
                 }));
         mFeatures.add(new Triple<Integer, String, OnStatusChanged>(R.drawable.color_unchecked, "颜色设置",
@@ -192,8 +197,8 @@ public class ShareElemActivity extends BaseFragmentActivity {
                 new OnStatusChanged() {
                     @Override
                     public void onShow(boolean enable) {
-                        enableView(mVerContent, enable);
-                        enableView(mHonContent, !enable);
+                        enableView(mVerContent, !enable);
+                        enableView(mHonContent, enable);
                     }
                 }));
     }
@@ -284,9 +289,13 @@ public class ShareElemActivity extends BaseFragmentActivity {
             public void onSelect(int color) {
                 mContentTextView.setTextColor(color);
                 mHourView.setTextColor(color);
+                mHourViewVer.setTextColor(color);
                 mDistanceView.setTextColor(color);
+                mDistanceViewVer.setTextColor(color);
                 mSpeedView.setTextColor(color);
+                mSpeedViewVer.setTextColor(color);
                 mLocationText.setTextColor(color);
+                mPathImageView.setImageBitmap(PathImageCreator.createBitmap(RecordModel.instance.readCache(), color));
             }
         });
         dialog.setCancelable(true);

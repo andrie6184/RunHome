@@ -25,6 +25,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp"
+                android:padding="20dp"
                 android:src="@drawable/icon_shezhi"/>
 
             <TextView
@@ -114,8 +115,8 @@
 
 
             <LinearLayout
-                android:layout_width="match_parent"
                 android:id="@+id/start_panel"
+                android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="7">
 
@@ -127,46 +128,52 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="20dp"
                     android:layout_marginTop="16dp"
-                    android:src="@drawable/btn_go" />
+                    android:src="@drawable/btn_go"/>
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/stop_panel"
-                android:layout_weight="7"
-                android:visibility="gone"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="0dp">
+                android:layout_height="0dp"
+                android:layout_weight="7"
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/resume"
-                    android:layout_weight="1"
                     android:id="@+id/resume_btn"
-                    android:layout_gravity="center_vertical"
-                    />
-
-                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/stop"
-                    android:id="@+id/stop_btn"
                     android:layout_gravity="center_vertical"
-                    />
+                    android:layout_weight="1"
+                    android:src="@drawable/resume"/>
+
+                <ImageView
+                    android:id="@+id/stop_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:src="@drawable/stop"/>
             </LinearLayout>
 
         </LinearLayout>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/counter"
+    <RelativeLayout
+        android:id="@+id/counter_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:textColor="#fff"
-        android:textSize="240sp"
-        android:visibility="gone"
-        />
+        android:background="#000"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/counter"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:textColor="#fff"
+            android:textSize="320sp"
+            android:visibility="gone"/>
+    </RelativeLayout>
 </RelativeLayout>

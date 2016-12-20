@@ -3,6 +3,7 @@ package com.runnerfun.beans;
 import java.io.Serializable;
 
 /**
+ * RunTotalBean
  * Created by andrie on 16/11/7.
  */
 
@@ -13,6 +14,8 @@ public class RunTotalBean implements Serializable {
     private String sumDistance;
     private String sumTotalDistance;
     private String sumCalorie;
+    private String avgSpeedMiles;
+    private String avgSpeedSecond;
 
     public String getMaxHighSpeed() {
         return maxHighSpeed;
@@ -53,4 +56,21 @@ public class RunTotalBean implements Serializable {
     public void setSumCalorie(String sumCalorie) {
         this.sumCalorie = sumCalorie;
     }
+
+    public String getAvgSpeedMiles() {
+        return avgSpeedMiles;
+    }
+
+    public void setAvgSpeedMiles(String avgSpeedMiles) {
+        this.avgSpeedMiles = avgSpeedMiles;
+    }
+
+    public String getAvgSpeedSecond() {
+        return avgSpeedSecond;
+    }
+
+    public void setAvgSpeedSecond(String avgSpeedSecond) {
+        this.avgSpeedSecond = avgSpeedSecond;
+    }
+
 }

@@ -8,13 +8,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.runnerfun.widget.NoScrollViewPager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,7 @@ public class MainActivity extends BaseFragmentActivity {
     private List<String> titles;
 
     @BindView(R.id.fragment_content)
-    ViewPager mContents;
+    NoScrollViewPager mContents;
     @BindView(R.id.tabs)
     TabLayout mTabs;
 

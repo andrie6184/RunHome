@@ -39,6 +39,7 @@ import com.runnerfun.widget.MapBtnWidget;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -143,7 +144,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
 
         boldTypeFace = Typeface.createFromAsset(getAssets(), "fonts/dincond-bold.otf");
         ((TextView) findViewById(R.id.cal).findViewById(R.id.attr_name)).setText("卡路里");
-        ((TextView) findViewById(R.id.speed).findViewById(R.id.attr_name)).setText("速度");
+        ((TextView) findViewById(R.id.speed).findViewById(R.id.attr_name)).setText("配速");
         ((TextView) findViewById(R.id.distance).findViewById(R.id.attr_name)).setText("距离");
         ((TextView) findViewById(R.id.time).findViewById(R.id.attr_name)).setText("时间");
         mCalValue = (TextView) findViewById(R.id.cal).findViewById(R.id.attr_value);
@@ -211,8 +212,14 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
     }
 
     private void updateVvalue() {
-        String speed = decimalFormat.format(RecordModel.instance.getSpeed());
-        mSpeedValue.setText("" + speed + "km/h");
+        if (RecordModel.instance.getRecordTime() > 0 && RecordModel.instance.getDistance() > 0) {
+            float speedFloat = RecordModel.instance.getRecordTime() / RecordModel.instance.getDistance();
+            float speedString = (float) (Math.round(speedFloat * 100) / 100);
+            String speedShow = String.format(Locale.getDefault(), "%d'%d\"", (int) speedString, (int) (speedString % 1));
+            mSpeedValue.setText(speedShow);
+        } else {
+            mSpeedValue.setText("0'00\"");
+        }
         String distance = decimalFormat.format(RecordModel.instance.getDistance() / 1000);
         mDisValue.setText("" + distance + "km");
         mTimeValue.setText(TimeStringUtils.getTime(RecordModel.instance.getRecordTime()));

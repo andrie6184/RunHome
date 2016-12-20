@@ -30,6 +30,7 @@ import com.runnerfun.widget.ImagePickerPopWindow;
 import com.runnerfun.widget.WheelView;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -76,6 +77,7 @@ public class UserInfoEditActivity extends BaseActivity {
     private ImagePickerPopWindow menuWindow;
 
     private UserInfo userInfo;
+    private Uri mUriTempFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,24 +118,33 @@ public class UserInfoEditActivity extends BaseActivity {
         intent.putExtra("aspectY", 1);
         intent.putExtra("outputX", 200);
         intent.putExtra("outputY", 200);
-        intent.putExtra("return-data", true);
+//        intent.putExtra("return-data", true);
+        mUriTempFile = Uri.parse("file://" + "/" + Environment.getExternalStorageDirectory().getPath() + "/" + "small.jpg");
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, mUriTempFile);
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
         startActivityForResult(intent, REQUESTCODE_CUTTING);
     }
 
     private void setPicToView(Intent picdata) {
-        findViewById(R.id.user_avatar).setEnabled(false);
-        findViewById(R.id.user_avatar).setClickable(false);
-        Bundle extras = picdata.getExtras();
-        if (extras != null) {
-            Bitmap photo = extras.getParcelable("data");
+        // Bundle extras = picdata.getExtras();
+        Bitmap photo = null; //extras.getParcelable("data");
+        try {
+            photo = BitmapFactory.decodeStream(getContentResolver().openInputStream(mUriTempFile));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (photo != null) {
             String path = FileUtils.saveFile(this, "temphead.jpg", photo);
-            RunApplication.getAppContex().picasso.load("file://" + path)
+            RunApplication.getAppContex().picasso.invalidate("file://" + path);
+            RunApplication.getAppContex().picasso.load("file://" + path).resize(200, 200)
                     .transform(new RoundedTransformation(360, 0)).placeholder(R.drawable.icon_avatar)
                     .error(R.drawable.icon_avatar).into(avatar);
 
             byte[] file = UITools.bmpToByteArray(BitmapFactory.decodeFile(path), true);
             RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
 
+            findViewById(R.id.user_avatar).setEnabled(false);
+            findViewById(R.id.user_avatar).setClickable(false);
             NetworkManager.instance.uploadAvatar("img", requestBody, new Subscriber<UploadResult>() {
                 @Override
                 public void onCompleted() {

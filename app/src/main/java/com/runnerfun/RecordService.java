@@ -52,7 +52,7 @@ public class RecordService extends Service implements AMapLocationListener {
     public static final String ACTION_RESUME_RECORD = "com.runnerfun.resume";
     public static final String ID_ARGS = "id";
 
-    public String lastPoi;
+    public String firstPoi;
     public long startTime;
 
     private AMapLocationClientOption mLocationOption = null;
@@ -94,16 +94,9 @@ public class RecordService extends Service implements AMapLocationListener {
             RecordModel.instance.addRecord(new LatLng(aMapLocation.getLatitude(),
                     aMapLocation.getLongitude()));
 
-            if (!TextUtils.isEmpty(aMapLocation.getPoiName())) {
-                lastPoi = aMapLocation.getPoiName();
-            } else if (!TextUtils.isEmpty(aMapLocation.getStreet())) {
-                lastPoi = aMapLocation.getStreet();
-            } else if (!TextUtils.isEmpty(aMapLocation.getCity())) {
-                lastPoi = aMapLocation.getCity();
-            } else if (!TextUtils.isEmpty(aMapLocation.getProvince())) {
-                lastPoi = aMapLocation.getProvince();
-            } else {
-                lastPoi = "中国";
+            if (TextUtils.isEmpty(firstPoi) && !TextUtils.isEmpty(aMapLocation.getCity())) {
+                firstPoi = aMapLocation.getCountry() + aMapLocation.getCity() + aMapLocation.getDistrict();
+                Toast.makeText(RunApplication.getAppContex(), firstPoi, Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -141,13 +134,13 @@ public class RecordService extends Service implements AMapLocationListener {
         SimpleDateFormat format = new SimpleDateFormat("yy-MM-dd hh:mm:ss", Locale.getDefault());
         bean.startTime = format.format(new Date(startTime));
         bean.calorie = RecordModel.instance.getCal();
-        bean.distance = RecordModel.instance.getRealDistance();
+        bean.distance = RecordModel.instance.getRealDistance() / 1000; //上传公里
         bean.endTime = format.format(new Date(System.currentTimeMillis()));
-        bean.total_time = RecordModel.instance.getRecordTime();
-        bean.total_distance = RecordModel.instance.getDistance();
-        bean.position = lastPoi;
+        bean.total_time = RecordModel.instance.getRecordTime() / 1000; //上传秒
+        bean.total_distance = RecordModel.instance.getDistance() / 1000; //上传公里
+        bean.position = firstPoi;
 
-        if (bean.distance <= 100) {
+        if (bean.distance <= 10) {
             Toast.makeText(RunApplication.getAppContex(), "跑步距离太短,本次记录无效", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -237,10 +230,10 @@ public class RecordService extends Service implements AMapLocationListener {
     public void useForeground(String currSong) {
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, 0);
-    /* Method 01
-     * this method must SET SMALLICON!
-     * otherwise it can't do what we want in Android 4.4 KitKat,
-     * it can only show the application info page which contains the 'Force Close' button.*/
+        /* Method 01
+         * this method must SET SMALLICON!
+         * otherwise it can't do what we want in Android 4.4 KitKat,
+         * it can only show the application info page which contains the 'Force Close' button.*/
         android.support.v4.app.NotificationCompat.Builder mNotifyBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setTicker("")
@@ -250,12 +243,12 @@ public class RecordService extends Service implements AMapLocationListener {
                 .setContentIntent(pendingIntent);
         Notification notification = mNotifyBuilder.build();
 
-    /* Method 02
-    Notification notification = new Notification(R.drawable.ic_launcher, tickerText,
-            System.currentTimeMillis());
-    notification.setLatestEventInfo(PlayService.this, getText(R.string.app_name),
-            currSong, pendingIntent);
-    */
+        /* Method 02
+        Notification notification = new Notification(R.drawable.ic_launcher, tickerText,
+                System.currentTimeMillis());
+        notification.setLatestEventInfo(PlayService.this, getText(R.string.app_name),
+                currSong, pendingIntent);
+        */
 
         startForeground(1234, notification);
     }

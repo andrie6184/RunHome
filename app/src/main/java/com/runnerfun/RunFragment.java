@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,7 @@ import com.runnerfun.tools.TimeStringUtils;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -58,6 +60,8 @@ public class RunFragment extends Fragment {
     TextView mMoney;
     @BindView(R.id.counter)
     TextView mCountDownView;
+    @BindView(R.id.counter_bg)
+    View mCountDownBG;
     @BindView(R.id.start_panel)
     View mStartPanel;
     @BindView(R.id.stop_panel)
@@ -124,7 +128,7 @@ public class RunFragment extends Fragment {
         ((TextView) kacl.findViewById(R.id.value)).setTypeface(typeFace);
 
         ((TextView) km.findViewById(R.id.en_title)).setText("km");
-        ((TextView) speed.findViewById(R.id.en_title)).setText("km/h");
+        ((TextView) speed.findViewById(R.id.en_title)).setText("km/s");
         ((TextView) kacl.findViewById(R.id.en_title)).setText("kacl");
         ((TextView) km.findViewById(R.id.zh_title)).setText("距离");
         ((TextView) speed.findViewById(R.id.zh_title)).setText("配速");
@@ -204,6 +208,7 @@ public class RunFragment extends Fragment {
         }
         mCountDownView.setText("");
         mCountDownView.setVisibility(View.VISIBLE);
+        mCountDownBG.setVisibility(View.VISIBLE);
         // 3,2,1 动画
         if (mCounter != null) {
             mCounter.unsubscribe();
@@ -222,6 +227,7 @@ public class RunFragment extends Fragment {
                             if (aLong >= s - 1) {
                                 mCounter.unsubscribe();
                                 mCountDownView.setVisibility(View.GONE);
+                                mCountDownBG.setVisibility(View.GONE);
                                 RecordService.startRecord(getActivity(), id);
                                 mStartPanel.setVisibility(View.GONE);
                                 mStopPanel.setVisibility(View.VISIBLE);
@@ -257,31 +263,29 @@ public class RunFragment extends Fragment {
                         refreshResult();
                     }
                 });
-        if(RecordModel.instance.isPause() || RecordModel.instance.isRecording()){
+        if (RecordModel.instance.isPause() || RecordModel.instance.isRecording()) {
             mStartPanel.setVisibility(View.GONE);
             mStopPanel.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             mStartPanel.setVisibility(View.VISIBLE);
             mStopPanel.setVisibility(View.GONE);
         }
     }
 
     @OnClick(R.id.stop_btn)
-    void stop(){
+    void stop() {
         mStopPanel.setVisibility(View.GONE);
         mStartPanel.setVisibility(View.VISIBLE);
         RecordService.stopRecord(getActivity());
     }
 
     @OnClick(R.id.resume_btn)
-    void pause(){
+    void pause() {
         boolean isRecording = RecordModel.instance.isRecording();
-        ((ImageView)mStopPanel.findViewById(R.id.resume_btn)).setImageResource(isRecording?R.drawable.resume : R.drawable.resume);
-        if(isRecording){
+        ((ImageView) mStopPanel.findViewById(R.id.resume_btn)).setImageResource(isRecording ? R.drawable.resume : R.drawable.resume);
+        if (isRecording) {
             RecordService.pauseRecord(getActivity());
-        }
-        else{
+        } else {
             RecordService.resumeRecord(getActivity());
         }
     }
@@ -298,9 +302,15 @@ public class RunFragment extends Fragment {
         mClockView.setText(msToString(RecordModel.instance.getRecordTime()));
         mKmValue.setText(decimalFormat.format(RecordModel.instance.getDistance() / 1000));
         mKaclValue.setText(String.valueOf((int) RecordModel.instance.getCal()));
-        mSpeedValue.setText(decimalFormat.format(RecordModel.instance.getSpeed()));
 
-
+        if (RecordModel.instance.getRecordTime() > 0 && RecordModel.instance.getDistance() > 0) {
+            float speedFloat = RecordModel.instance.getRecordTime() / RecordModel.instance.getDistance();
+            float speedString = (float) (Math.round(speedFloat * 100) / 100);
+            String speedShow = String.format(Locale.getDefault(), "%d'%d\"", (int) speedString, (int) (speedString % 1));
+            mSpeedValue.setText(speedShow);
+        } else {
+            mSpeedValue.setText("0'00\"");
+        }
     }
 
     private String msToString(long ms) {

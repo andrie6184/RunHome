@@ -1,5 +1,6 @@
 package com.runnerfun;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -129,6 +130,10 @@ public class ResetPasswordActivity extends BaseActivity {
             @Override
             public void onNext(Object info) {
                 Toast.makeText(ResetPasswordActivity.this, "密码重置成功,请使用新密码登录", Toast.LENGTH_SHORT).show();
+                NetworkManager.instance.clearLoginInfo();
+                Intent intent = new Intent(ResetPasswordActivity.this, LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
                 finish();
             }
         });

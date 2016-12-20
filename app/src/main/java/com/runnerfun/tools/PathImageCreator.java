@@ -53,7 +53,7 @@ public class PathImageCreator {
         return new LatLng((l[0].latitude + l[1].latitude)/2, (l[0].longitude + l[1].longitude)/2);
     }
 
-    public static Bitmap createBitmap(List<LatLng> latLngs){
+    public static Bitmap createBitmap(List<LatLng> latLngs, int color){
         Bitmap bmp = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_4444);
         Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
         p.setStyle(Paint.Style.STROKE);
@@ -64,7 +64,7 @@ public class PathImageCreator {
             return bmp;
         }
         Path path = new Path();
-        p.setColor(Color.WHITE);
+        p.setColor(color);
         LatLng[] ls = getBounds(latLngs);
         double widthScale = 100 / (ls[1].longitude - ls[0].longitude);
         double heightScale = 100 / (ls[1].latitude - ls[0].latitude);
