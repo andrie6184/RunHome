@@ -23,7 +23,7 @@ import butterknife.OnClick;
 
 public class ShareTargetActivity extends BaseActivity implements IWeiboHandler.Response {
 
-    private String shareUrl = "https://m.paobuzhijia.com/share.php?rid=";
+    private String shareUrl = "http://m.paobuzhijia.com/share.php?rid=";
     private String shareTitle = "我用跑步之家奔跑了%s公里";
     private String shareText = "用时:%s \r\n 配速:%s \r\n 本次获得的里币:%s";
 

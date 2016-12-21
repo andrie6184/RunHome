@@ -47,7 +47,7 @@ public class ShopFragment extends Fragment {
             }
         });
 
-        String shopUrl = "http://mall.paobuzhijia.com/mobile/";
+        String shopUrl = "http://mall.paobuzhijia.com/mobile?platform=android&ver=1.0.0";
         _webView.loadUrl(shopUrl);
         CookieUtils.synWebViewCookies(getActivity(), shopUrl, CookieUtils.getLocalCookies());
     }
