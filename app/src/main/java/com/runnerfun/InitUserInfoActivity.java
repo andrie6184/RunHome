@@ -71,7 +71,7 @@ public class InitUserInfoActivity extends BaseActivity {
                 50 + heightList.indexOf(height.getText().toString());
         int weightValue = weightList.indexOf(weight.getText().toString()) == -1 ? 0 :
                 30 + weightList.indexOf(weight.getText().toString());
-        NetworkManager.instance.updateUserInfo("", ageValue, "", "", gender, heightValue, weightValue,
+        NetworkManager.instance.initUserInfo(ageValue, gender, heightValue, weightValue,
                 new Subscriber<Object>() {
                     @Override
                     public void onCompleted() {

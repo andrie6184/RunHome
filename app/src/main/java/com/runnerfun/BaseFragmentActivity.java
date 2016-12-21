@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.avos.avoscloud.AVAnalytics;
 import com.runnerfun.tools.RxUtils;
 import com.runnerfun.widget.SystemStatusBarManager;
 
@@ -36,13 +37,13 @@ public class BaseFragmentActivity extends FragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // AVAnalytics.onResume(this);
+        AVAnalytics.onResume(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        // AVAnalytics.onPause(this);
+        AVAnalytics.onPause(this);
     }
 
     @Override

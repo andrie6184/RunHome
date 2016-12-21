@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.avos.avoscloud.AVAnalytics;
 import com.runnerfun.tools.RxUtils;
 import com.runnerfun.widget.SystemStatusBarManager;
 
@@ -38,13 +39,13 @@ abstract public class BaseActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        // AVAnalytics.onResume(this);
+        AVAnalytics.onResume(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        // AVAnalytics.onPause(this);
+        AVAnalytics.onPause(this);
     }
 
     @Override

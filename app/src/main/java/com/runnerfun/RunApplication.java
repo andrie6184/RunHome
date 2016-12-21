@@ -7,6 +7,8 @@ import android.os.Build;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 
+import com.avos.avoscloud.AVAnalytics;
+import com.avos.avoscloud.AVOSCloud;
 import com.runnerfun.model.ConfigModel;
 import com.squareup.picasso.Picasso;
 
@@ -58,8 +60,8 @@ public class RunApplication extends Application {
         ConfigModel.instance.load(this);
 
         // for lean-cloud analytic & feedback.
-        // TODO AVOSCloud.initialize(this, "OQpEDpAfPU5fxknXO4YWuV6J-gzGzoHsz", "huXzXqNd6uGPi8yI8tG2pwnj");
-        // TODO AVAnalytics.enableCrashReport(this, true);
+        AVOSCloud.initialize(this, "OQpEDpAfPU5fxknXO4YWuV6J-gzGzoHsz", "huXzXqNd6uGPi8yI8tG2pwnj");
+        AVAnalytics.enableCrashReport(this, true);
 
         // for JiGuang-push
         JPushInterface.setDebugMode(true);

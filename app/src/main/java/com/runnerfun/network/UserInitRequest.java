@@ -8,17 +8,14 @@ import retrofit2.http.POST;
 import rx.Observable;
 
 /**
- * UserEditRequest
- * Created by andrie on 13/10/2016.
+ * UserInitRequest
+ * Created by andrie on 16/12/21.
  */
 
-public interface UserEditRequest {
+public interface UserInitRequest {
     @FormUrlEncoded
     @POST("/user/modify")
-    Observable<ResponseBean<Object>> editUserInfo(@Field("user_name") String user_name,
-                                                  @Field("age") int age,
-                                                  @Field("headimg") String headimg,
-                                                  @Field("remarks") String remarks,
+    Observable<ResponseBean<Object>> initUserInfo(@Field("age") int age,
                                                   @Field("height") int height,
                                                   @Field("sexy") String sexy,
                                                   @Field("weight") int weight

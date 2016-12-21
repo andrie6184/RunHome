@@ -134,6 +134,11 @@ public class NetworkManager {
         rxRequest(request.sendCode(tel, type, code), callback);
     }
 
+    public void initUserInfo(int age, String sexy, int height, int weight, Subscriber<Object> callback) {
+        UserInitRequest request = retrofitApi.create(UserInitRequest.class);
+        rxRequest(request.initUserInfo(age, height, sexy, weight), callback);
+    }
+
     public void updateUserInfo(String name, int age, String headimg, String remarks, String sexy,
                                int height, int weight, Subscriber<Object> callback) {
         UserEditRequest request = retrofitApi.create(UserEditRequest.class);

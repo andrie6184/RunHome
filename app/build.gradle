@@ -75,4 +75,8 @@ dependencies {
     compile files('libs/AMap_Search_V3.6.1_20161122.jar')
     compile files('libs/jcore-android_v1.0.0.jar')
     compile files('libs/jpush-android_v3.0.0.jar')
+    compile files('libs/fastjson.jar')
+    compile files('libs/okhttp-2.6.0-leancloud.jar')
+    compile files('libs/okio-1.6.0-leancloud.jar')
+    compile files('libs/httpmime-4.2.4.jar')
 }
