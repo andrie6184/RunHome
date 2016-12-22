@@ -369,17 +369,9 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
 
         mMap.getMap().addMarker(markerOption);
 
-        boolean isRunming = RecordModel.instance.isRecording() || RecordModel.instance.isPause();
-        if (isRunming) {
-            markerOption = new MarkerOptions().position(records.get(records.size() - 1))
-                    .draggable(false).setFlat(true).icon(run).anchor(0.5f, 0.5f);
-            mMap.getMap().addMarker(markerOption);
-
-        } else {
-            markerOption = new MarkerOptions().position(records.get(records.size() - 1))
-                    .draggable(false).setFlat(true).icon(stop).anchor(0.5f, 0.5f);
-            mMap.getMap().addMarker(markerOption);
-        }
+        markerOption = new MarkerOptions().position(records.get(records.size() - 1))
+                .draggable(false).setFlat(true).icon(run).anchor(0.5f, 0.5f);
+        mMap.getMap().addMarker(markerOption);
     }
 
     private void showRecord(List<LatLng> records) {
