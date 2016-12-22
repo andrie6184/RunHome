@@ -24,6 +24,7 @@ public class ResumeStatus extends RecordStatus {
     @Override
     public void addRecord(LatLng ll) {
         mCache.add(ll);
+        mTime.add(System.currentTimeMillis());
     }
 
     @Override

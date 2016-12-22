@@ -30,6 +30,7 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.PolylineOptions;
+import com.runnerfun.beans.Record;
 import com.runnerfun.model.ConfigModel;
 import com.runnerfun.model.RecordModel;
 import com.runnerfun.tools.ThirdpartAuthManager;
@@ -278,6 +279,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         if (mTimer != null) {
             mTimer.unsubscribe();
         }
+        drawStop();
     }
 
     @Override
@@ -335,24 +337,32 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
     private BitmapDescriptor stop = null;
     private BitmapDescriptor start_ic = null;
 
-    private void drawLines(List<LatLng> records) {
-        if (records == null || records.size() <= 0) {
+    private void drawLines(List<LatLng> records, List<Long> times) {
+        if (records == null || records.size() <= 0|| times == null || times.size() < 0) {
             return;
         }
 
         LatLng start = records.get(0);
         PolylineOptions po = new PolylineOptions();
         List<Integer> colors = new ArrayList<>();
-        boolean test = false;
-        for (LatLng ll : records) {
+        long startTime = times.get(0);
+        for (int i = 0 ; i < records.size(); i++) {
+            LatLng ll = records.get(i);
+            if(ll.latitude == start.latitude && ll.longitude == start.longitude){
+                continue;
+            }
+            long time = times.get(i);
             float distance = AMapUtils.calculateLineDistance(start, ll);
-            if (distance / 2 > 7.2f) {
+            long interval = (time - startTime + 900) / 1000;
+            if (interval > 0 && distance / interval > 7.2f) {
                 colors.add(Color.RED);
             } else {
                 colors.add(Color.GREEN);
             }
             start = ll;
+            startTime = time;
         }
+
 //        po.useGradient(true);
         po.colorValues(colors);
         po.addAll(records);
@@ -382,27 +392,34 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         }
     }
 
+    private void drawStop(){
+        MarkerOptions markerOption = new MarkerOptions();
+        LatLng l = RecordModel.instance.lastLatlng();
+        markerOption.position(l);
+        markerOption.draggable(false);
+        markerOption.icon(start_ic);
+        markerOption.anchor(0.5f, 0.5f);
+        markerOption.setFlat(true);
+        markerOption = new MarkerOptions().position(l)
+                .draggable(false).setFlat(true).icon(stop).anchor(0.5f, 0.5f);
+        mMap.getMap().addMarker(markerOption);
+    }
+
     private void showRecord(List<LatLng> records) {
-        if (records == null || records.size() <= 0) {
+        if (records == null || records.size() <= 0 ) {
             return;
         }
 
         LatLng start = records.get(0);
         PolylineOptions po = new PolylineOptions();
         List<Integer> colors = new ArrayList<>();
-        int interval = 2;
         for (LatLng ll : records) {
-            if(start.latitude == ll.latitude && start.longitude == ll.longitude){
-                interval += 2;
-                continue;
-            }
             float distance = AMapUtils.calculateLineDistance(start, ll);
-            if (distance / interval > 7.2f) {
+            if (distance / 2 > 7.2f) {
                 colors.add(Color.RED);
             } else {
                 colors.add(Color.GREEN);
             }
-            interval = 2;
             start = ll;
         }
 //        po.useGradient(true);
@@ -435,7 +452,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
 
     @Override
     public void onRecordChange(LatLng ll) {
-        drawLines(RecordModel.instance.readCache());
+        drawLines(RecordModel.instance.readCache(), RecordModel.instance.readTimeCache());
         CameraUpdate c = CameraUpdateFactory.newCameraPosition(CameraPosition.builder().target(ll)
                 .zoom(mMap.getMap().getCameraPosition().zoom).build());
         mMap.getMap().moveCamera(c);
