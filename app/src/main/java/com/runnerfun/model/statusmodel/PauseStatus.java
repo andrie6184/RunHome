@@ -33,5 +33,6 @@ public class PauseStatus extends RecordStatus {
     @Override
     public void clearRecord() {
         mCache.clear();
+        mTime.clear();
     }
 }

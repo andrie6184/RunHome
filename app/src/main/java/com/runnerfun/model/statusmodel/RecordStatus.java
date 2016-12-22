@@ -16,10 +16,12 @@ public abstract class RecordStatus {
     protected long mStartTime = 0;
     protected long mTimeOffset = 0;
     protected List<LatLng> mCache = null;
+    protected List<Long> mTime = null;
 
     RecordStatus(RecordStatus from){
         if(from == null){
             mCache = new ArrayList<>();
+            mTime = new ArrayList<>();
             mStartTime = 0;
             mTimeOffset = 0;
         }
@@ -28,9 +30,11 @@ public abstract class RecordStatus {
             mTimeOffset = from.mTimeOffset;
             if(from.mCache != null){
                 mCache = new ArrayList<>(from.mCache);
+                mTime = new ArrayList<>(from.mTime);
             }
             else{
                 mCache = new ArrayList<>();
+                mTime = new ArrayList<>();
             }
         }
     }
@@ -38,6 +42,7 @@ public abstract class RecordStatus {
     public void initCache(List<LatLng> ll){
         mCache.clear();
         mCache.addAll(ll);
+        mTime.clear();
     }
     abstract public long getRecordTime();
     abstract public void addRecord(LatLng ll);
@@ -46,10 +51,12 @@ public abstract class RecordStatus {
         if(mCache != null && mCache.size() > 0){
             mCache.add(mCache.get(mCache.size() - 1));
         }
+        mTime.add(System.currentTimeMillis());
     }
 
     public void clearRecord(){
         mCache.clear();
+        mTime.clear();
     };
     /**
      * m
@@ -69,6 +76,9 @@ public abstract class RecordStatus {
         return distance;
     }
 
+    public List<Long> readTimeCache(){
+        return Collections.unmodifiableList(mTime);
+    }
     public List<LatLng> readCache(){
         return Collections.unmodifiableList(mCache);
     }

@@ -123,12 +123,20 @@ public class RecordModel {
         return distance;
     }
 
+    public List<Long> readTimeCache(){
+        return mStatus.readTimeCache();
+    }
+
     public List<LatLng> readCache() {
         return mStatus.readCache();
     }
 
     public LatLng firstLatLng() {
         return mStatus.firstLatLng();
+    }
+
+    public LatLng lastLatlng(){
+        return mStatus.lastLatLng();
     }
 
     public void initRecord(List<LatLng> ll) {
