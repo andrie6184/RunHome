@@ -31,6 +31,5 @@ public class StopStatus extends RecordStatus {
     @Override
     public void clearRecord() {
         mCache.clear();
-        mTime.clear();
     }
 }

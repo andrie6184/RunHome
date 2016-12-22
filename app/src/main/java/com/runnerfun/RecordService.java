@@ -1,5 +1,6 @@
 package com.runnerfun;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -202,6 +203,12 @@ public class RecordService extends Service implements AMapLocationListener {
             mlocationClient.onDestroy();
         }
         stopForeground(true);
+        Intent intent = new Intent("MY_LOCATION");
+        PendingIntent pi = PendingIntent.getBroadcast(this,0,intent,0);
+
+        AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
+        am.cancel(pi);
+//         TrackMocker.instance.stopMock();
     }
 
     private void doStart(long id) {
@@ -228,6 +235,15 @@ public class RecordService extends Service implements AMapLocationListener {
         startUploadTimer();
         // start forground
         useForeground("跑步中...");
+
+        Intent intent = new Intent("MY_LOCATION");
+        PendingIntent pi = PendingIntent.getBroadcast(this,0,intent,0);
+
+        AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
+
+//设置闹钟从当前时间开始，每隔5s执行一次PendingIntent对象pi，注意第一个参数与第二个参数的关系
+// 5秒后通过PendingIntent pi对象发送广播
+        am.setRepeating(AlarmManager.RTC_WAKEUP,System.currentTimeMillis(),2*1000,pi);
     }
 
     public void useForeground(String currSong) {
