@@ -390,14 +390,19 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         LatLng start = records.get(0);
         PolylineOptions po = new PolylineOptions();
         List<Integer> colors = new ArrayList<>();
-        boolean test = false;
+        int interval = 2;
         for (LatLng ll : records) {
+            if(start.latitude == ll.latitude && start.longitude == ll.longitude){
+                interval += 2;
+                continue;
+            }
             float distance = AMapUtils.calculateLineDistance(start, ll);
-            if (distance / 2 > 7.2f) {
+            if (distance / interval > 7.2f) {
                 colors.add(Color.RED);
             } else {
                 colors.add(Color.GREEN);
             }
+            interval = 2;
             start = ll;
         }
 //        po.useGradient(true);
