@@ -283,7 +283,7 @@ public class RunFragment extends Fragment {
     @OnClick(R.id.resume_btn)
     void pause() {
         boolean isRecording = RecordModel.instance.isRecording();
-        ((ImageView) mStopPanel.findViewById(R.id.resume_btn)).setImageResource(isRecording ? R.drawable.resume : R.drawable.continue_icon);
+        ((ImageView) mStopPanel.findViewById(R.id.resume_btn)).setImageResource(isRecording ? R.drawable.continue_icon : R.drawable.resume);
         if (isRecording) {
             RecordService.pauseRecord(getActivity());
         } else {
