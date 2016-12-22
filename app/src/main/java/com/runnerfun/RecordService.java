@@ -202,6 +202,7 @@ public class RecordService extends Service implements AMapLocationListener {
             mlocationClient.onDestroy();
         }
         stopForeground(true);
+//         TrackMocker.instance.stopMock();
     }
 
     private void doStart(long id) {
