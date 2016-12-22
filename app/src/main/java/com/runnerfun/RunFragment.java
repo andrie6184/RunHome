@@ -30,6 +30,7 @@ import com.runnerfun.model.ConfigModel;
 import com.runnerfun.model.RecordModel;
 import com.runnerfun.network.NetworkManager;
 import com.runnerfun.tools.TimeStringUtils;
+import com.runnerfun.tools.UITools;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -301,12 +302,12 @@ public class RunFragment extends Fragment {
     private void refreshResult() {
         mClockView.setText(msToString(RecordModel.instance.getRecordTime()));
         mKmValue.setText(decimalFormat.format(RecordModel.instance.getDistance() / 1000));
-        mKaclValue.setText(String.valueOf((int) RecordModel.instance.getCal()));
+        mKaclValue.setText(UITools.numberFormat(RecordModel.instance.getCal()));
 
         if (RecordModel.instance.getRecordTime() > 0 && RecordModel.instance.getDistance() > 0) {
             float seconds = RecordModel.instance.getRecordTime() / RecordModel.instance.getDistance();
             int minutes = (int) seconds  / 60;
-            String speedShow = String.format(Locale.getDefault(), "%d'%d\"", minutes, (int) (minutes % 60));
+            String speedShow = String.format(Locale.getDefault(), "%d'%d\"", minutes, (int) (seconds % 60));
             mSpeedValue.setText(speedShow);
         } else {
             mSpeedValue.setText("0'00\"");

@@ -215,7 +215,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         if (RecordModel.instance.getRecordTime() > 0 && RecordModel.instance.getDistance() > 0) {
             float seconds = RecordModel.instance.getRecordTime() / RecordModel.instance.getDistance();
             int minutes = (int) seconds  / 60;
-            String speedShow = String.format(Locale.getDefault(), "%d'%d\"", minutes, (int) (minutes % 60));
+            String speedShow = String.format(Locale.getDefault(), "%d'%d\"", minutes, (int) (seconds % 60));
             mSpeedValue.setText(speedShow);
         } else {
             mSpeedValue.setText("0'00\"");
