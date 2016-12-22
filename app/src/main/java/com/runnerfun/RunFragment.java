@@ -267,6 +267,8 @@ public class RunFragment extends Fragment {
         if (RecordModel.instance.isPause() || RecordModel.instance.isRecording()) {
             mStartPanel.setVisibility(View.GONE);
             mStopPanel.setVisibility(View.VISIBLE);
+            boolean isRecording = RecordModel.instance.isRecording();
+            ((ImageView) mStopPanel.findViewById(R.id.resume_btn)).setImageResource(isRecording ? R.drawable.continue_icon : R.drawable.resume);
         } else {
             mStartPanel.setVisibility(View.VISIBLE);
             mStopPanel.setVisibility(View.GONE);
