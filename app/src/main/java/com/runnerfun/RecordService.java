@@ -140,7 +140,7 @@ public class RecordService extends Service implements AMapLocationListener {
         bean.total_distance = RecordModel.instance.getDistance() / 1000; //上传公里
         bean.position = firstPoi;
 
-        if (bean.distance <= 10) {
+        if (bean.total_distance <= 10) {
             Toast.makeText(RunApplication.getAppContex(), "跑步距离太短,本次记录无效", Toast.LENGTH_SHORT).show();
             return;
         }

@@ -23,6 +23,7 @@
             android:textSize="32sp"/>
 
         <TextView
+            android:id="@+id/dis_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
@@ -33,13 +34,15 @@
             android:textSize="16sp"/>
 
         <TextView
+            android:id="@+id/warning"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/record_distance"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="8dp"
             android:layout_marginLeft="13dp"
             android:layout_marginStart="13dp"
-            android:layout_toRightOf="@+id/record_distance"
+            android:text="部分记录超速无效"
+            android:layout_toRightOf="@+id/dis_tag"
             android:gravity="center_horizontal"
             android:textColor="#E60012"
             android:textSize="14sp"/>
@@ -50,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/record_distance"
             android:layout_alignParentRight="true"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="8dp"
             android:layout_marginLeft="13dp"
             android:layout_marginStart="13dp"
             android:gravity="center_horizontal"

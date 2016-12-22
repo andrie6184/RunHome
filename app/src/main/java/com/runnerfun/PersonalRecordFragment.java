@@ -166,10 +166,10 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
 
                 String speed = "0'00\"";
                 if (Float.valueOf(runTrackBean.getTotal_time()) > 0 && Float.valueOf(runTrackBean.getDistance()) > 0) {
-                    float speedFloat = Float.valueOf(runTrackBean.getTotal_time()) /
+                    float seconds = Float.valueOf(runTrackBean.getTotal_time()) /
                             (Float.valueOf(runTrackBean.getDistance()) * 1000);
-                    float speedString = (float) (Math.round(speedFloat * 100) / 100);
-                    speed = String.format(Locale.getDefault(), "%d'%d\"", (int) speedString, (int) (speedString % 1));
+                    int minutes = (int) seconds  / 60;
+                    speed = String.format(Locale.getDefault(), "%d'%d\"", minutes, (int) (seconds % 60));
                 }
 
                 String cal = UITools.numberFormat(Float.valueOf(item.getCalorie()) / 1000) + "kcal";
@@ -273,6 +273,7 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
                 viewHolder.lengthValue.setTypeface(boldTypeFace);
                 viewHolder.recordDate = (TextView) convertView.findViewById(R.id.record_time);
                 viewHolder.recordAddress = (TextView) convertView.findViewById(R.id.record_location);
+                viewHolder.warning = (TextView) convertView.findViewById(R.id.warning);
 
                 convertView.setTag(viewHolder);
             } else {
@@ -281,9 +282,15 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
 
             final RunRecordBean item = getItem(position);
             if (item != null) {
-                viewHolder.lengthValue.setText(UITools.numberFormat(item.getDistance()));
+                viewHolder.lengthValue.setText(UITools.numberFormat(item.getTotal_distance()));
                 viewHolder.recordDate.setText(item.getStartTime().split(" ")[0]);
                 viewHolder.recordAddress.setText(item.getPosition());
+
+                if (Double.valueOf(item.getTotal_distance()) > Double.valueOf(item.getDistance())) {
+                    viewHolder.warning.setVisibility(View.VISIBLE);
+                } else {
+                    viewHolder.warning.setVisibility(View.GONE);
+                }
             }
             return convertView;
         }
@@ -292,6 +299,7 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
             TextView lengthValue;
             TextView recordDate;
             TextView recordAddress;
+            TextView warning;
         }
 
     }
