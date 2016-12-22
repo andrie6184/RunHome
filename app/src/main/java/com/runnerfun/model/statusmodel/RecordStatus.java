@@ -41,6 +41,13 @@ public abstract class RecordStatus {
     }
     abstract public long getRecordTime();
     abstract public void addRecord(LatLng ll);
+
+    public void addMockRecord(){
+        if(mCache != null && mCache.size() > 0){
+            mCache.add(mCache.get(mCache.size() - 1));
+        }
+    }
+
     public void clearRecord(){
         mCache.clear();
     };
@@ -66,7 +73,18 @@ public abstract class RecordStatus {
         return Collections.unmodifiableList(mCache);
     }
 
+    public LatLng lastLatLng(){
+        return mCache.size() > 0 ? mCache.get(mCache.size() - 1) : null;
+    }
+
     public LatLng firstLatLng() {
         return mCache.size() > 0 ? mCache.get(0) : null;
+    }
+
+    public float lastDistance(){
+        if(mCache.size() > 2){
+            return AMapUtils.calculateLineDistance(mCache.get(mCache.size() -1), mCache.get(mCache.size() - 2));
+        }
+        return 0;
     }
 }

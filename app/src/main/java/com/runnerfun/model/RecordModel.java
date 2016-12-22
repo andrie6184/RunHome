@@ -136,11 +136,25 @@ public class RecordModel {
     }
 
     public void addRecord(LatLng ll) {
+        LatLng last = mStatus.lastLatLng();
+        if(last != null){
+            float distance = AMapUtils.calculateLineDistance(ll, last);
+            float lastDistance = mStatus.lastDistance();
+            if(distance > 50 && mStatus.lastDistance() > 5 && (distance /lastDistance > 3) ){
+                addMockRecord();
+                return;
+            }
+        }
+
         mStatus.addRecord(ll);
         //TODO: aaa
         for (RecordChangeListener l : listeners) {
             l.onRecordChange(ll);
         }
+    }
+
+    public void addMockRecord(){
+        mStatus.addMockRecord();
     }
 
     public static List<LatLng> parseStringToLatLng(String track) {

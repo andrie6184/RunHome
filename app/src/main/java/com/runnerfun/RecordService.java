@@ -22,6 +22,7 @@ import com.amap.api.maps.model.LatLng;
 import com.runnerfun.beans.ResponseBean;
 import com.runnerfun.beans.RunSaveResultBean;
 import com.runnerfun.beans.RunUploadBean;
+import com.runnerfun.mock.TrackMocker;
 import com.runnerfun.model.RecordModel;
 import com.runnerfun.network.NetworkManager;
 import com.runnerfun.tools.ThirdpartAuthManager;
@@ -90,7 +91,7 @@ public class RecordService extends Service implements AMapLocationListener {
 
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
-        if (aMapLocation != null && aMapLocation.getErrorCode() == 0) {
+        if (aMapLocation != null && aMapLocation.getErrorCode() == 0 && aMapLocation.getAccuracy()  < 100.f){
             RecordModel.instance.addRecord(new LatLng(aMapLocation.getLatitude(),
                     aMapLocation.getLongitude()));
 
@@ -98,6 +99,9 @@ public class RecordService extends Service implements AMapLocationListener {
                 firstPoi = aMapLocation.getCountry() + aMapLocation.getCity() + aMapLocation.getDistrict();
                 Toast.makeText(RunApplication.getAppContex(), firstPoi, Toast.LENGTH_LONG).show();
             }
+        }
+        else{
+            RecordModel.instance.addMockRecord();
         }
     }
 
@@ -198,7 +202,7 @@ public class RecordService extends Service implements AMapLocationListener {
             mlocationClient.onDestroy();
         }
         stopForeground(true);
-        // TrackMocker.instance.stopMock();
+//         TrackMocker.instance.stopMock();
     }
 
     private void doStart(long id) {
@@ -209,7 +213,7 @@ public class RecordService extends Service implements AMapLocationListener {
         mlocationClient = new AMapLocationClient(this);
         mlocationClient.setLocationListener(this);
         mLocationOption = new AMapLocationClientOption();
-        mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+        mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Device_Sensors);
         mLocationOption.setOnceLocation(false);
         mLocationOption.setGpsFirst(true);
         mLocationOption.setMockEnable(false);
@@ -221,7 +225,7 @@ public class RecordService extends Service implements AMapLocationListener {
         }
         //TODO: start upload
         RecordModel.instance.start(id);
-        // TrackMocker.instance.startMock();
+//         TrackMocker.instance.startMock();
         startUploadTimer();
         // start forground
         useForeground("跑步中...");
