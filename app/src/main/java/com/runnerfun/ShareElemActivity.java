@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.runnerfun.model.RecordModel;
+import com.runnerfun.model.TimeLatLng;
 import com.runnerfun.tools.PathImageCreator;
 import com.runnerfun.tools.Triple;
 import com.runnerfun.tools.UITools;
@@ -138,7 +139,7 @@ public class ShareElemActivity extends BaseFragmentActivity {
         String location = sp.getString("location", "");
         mLocationText.setText(location);
 
-        mPathImageView.setImageBitmap(PathImageCreator.createBitmap(RecordModel.instance.readCache(),
+        mPathImageView.setImageBitmap(PathImageCreator.createBitmap(TimeLatLng.toLatLngList(RecordModel.instance.readCache()),
                 Color.WHITE));
         //TODO:init other view
         initActionList();
@@ -295,7 +296,7 @@ public class ShareElemActivity extends BaseFragmentActivity {
                 mSpeedView.setTextColor(color);
                 mSpeedViewVer.setTextColor(color);
                 mLocationText.setTextColor(color);
-                mPathImageView.setImageBitmap(PathImageCreator.createBitmap(RecordModel.instance.readCache(), color));
+                mPathImageView.setImageBitmap(PathImageCreator.createBitmap(TimeLatLng.toLatLngList(RecordModel.instance.readCache()), color));
             }
         });
         dialog.setCancelable(true);

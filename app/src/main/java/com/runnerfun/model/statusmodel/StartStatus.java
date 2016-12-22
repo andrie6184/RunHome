@@ -3,6 +3,7 @@ package com.runnerfun.model.statusmodel;
 import android.os.SystemClock;
 
 import com.amap.api.maps.model.LatLng;
+import com.runnerfun.model.TimeLatLng;
 
 /**
  * StartStatus
@@ -23,7 +24,7 @@ public class StartStatus extends RecordStatus {
     }
 
     @Override
-    public void addRecord(LatLng ll) {
+    public void addRecord(TimeLatLng ll) {
         mCache.add(ll);
     }
 

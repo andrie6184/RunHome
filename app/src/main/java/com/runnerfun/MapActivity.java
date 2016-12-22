@@ -32,6 +32,7 @@ import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.PolylineOptions;
 import com.runnerfun.model.ConfigModel;
 import com.runnerfun.model.RecordModel;
+import com.runnerfun.model.TimeLatLng;
 import com.runnerfun.tools.ThirdpartAuthManager;
 import com.runnerfun.tools.TimeStringUtils;
 import com.runnerfun.widget.MapBtnWidget;
@@ -161,12 +162,14 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
     protected void onResume() {
         super.onResume();
         mMap.onResume();
+        CameraUpdate cu = CameraUpdateFactory.zoomTo(14.f);
+        mMap.getMap().moveCamera(cu);
         boolean displayMode = getIntent().getBooleanExtra(DISPLAY_MODE, false);
         if (displayMode) {
             mPanelWidget.setVisibility(View.GONE);
-            LatLng ll = RecordModel.instance.firstLatLng();
+            LatLng ll = RecordModel.instance.firstLatLng().getLatlnt();
             if (ll != null) {
-                showRecord(RecordModel.instance.readCache());
+                showRecord(TimeLatLng.toLatLngList(RecordModel.instance.readCache()));
             } else {
                 mlocationClient.startLocation();
             }
@@ -191,7 +194,6 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
             } else {
                 mPanelWidget.setVisibility(View.GONE);
             }
-            mlocationClient.startLocation();
             if (mTimer != null) {
                 mTimer.unsubscribe();
             }
@@ -203,12 +205,10 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
                             updateVvalue();
                         }
                     });
-            //TODO:RecordModel
+            mlocationClient.startLocation();
+            drawLines(RecordModel.instance.readCache());
         }
         RecordModel.instance.addListener(this);
-
-        CameraUpdate cu = CameraUpdateFactory.zoomTo(14.f);
-        mMap.getMap().moveCamera(cu);
     }
 
     private void updateVvalue() {
@@ -262,7 +262,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         // mShareView.setVisibility(View.VISIBLE);
         topBar.setVisibility(View.VISIBLE);
         mBackView.setVisibility(View.GONE);
-        List<LatLng> lls = RecordModel.instance.readCache();
+        List<LatLng> lls = TimeLatLng.toLatLngList(RecordModel.instance.readCache());
 //        LatLng l = PathImageCreator.getCenter(lls);
 
 //        CameraUpdate c =CameraUpdateFactory.newCameraPosition(CameraPosition.builder()
@@ -304,30 +304,24 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
 
     @Override
     public void onLocationChanged(AMapLocation amapLocation) {
-        if (amapLocation != null) {
-            if (amapLocation.getErrorCode() == 0) {
-                SharedPreferences sp = getSharedPreferences("location", Context.MODE_PRIVATE);
-                sp.edit().putString("location", amapLocation.getCountry() + '·' + amapLocation.getCity()).apply();
-                mlocationClient.stopLocation();
-                mMap.getMap().moveCamera(CameraUpdateFactory.zoomTo(16f));
-                zoomTo(new LatLng(amapLocation.getLatitude(), amapLocation.getLongitude()));
-            } else {
-                //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
-                Log.e("AmapError", "location Error, ErrCode:"
-                        + amapLocation.getErrorCode() + ", errInfo:"
-                        + amapLocation.getErrorInfo());
+        mlocationClient.stopLocation();
+        if(amapLocation != null && amapLocation.getErrorCode() == 0){
+            SharedPreferences sp = getSharedPreferences("location", Context.MODE_PRIVATE);
+            sp.edit().putString("location", amapLocation.getCountry() + '·' + amapLocation.getCity()).apply();
+            if(RecordModel.instance.isRecording() || RecordModel.instance.isPause()){
+                return;//正在记录则丢弃当前定位
+            }
+            else{
+                moveTo(new LatLng(amapLocation.getLatitude(), amapLocation.getLongitude()));
+                mMap.getMap().moveCamera(CameraUpdateFactory.zoomTo(14f));
+                drawStart();
             }
         }
     }
 
-    private void zoomTo(LatLng ll) {
-        MarkerOptions mark = new MarkerOptions().position(ll);
-        mark.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(),
-                R.drawable.run)));
-
-        mMap.getMap().addMarker(mark);
+    private void moveTo(LatLng ll) {
         CameraUpdate c = CameraUpdateFactory.newCameraPosition(CameraPosition.builder()
-                .target(ll).zoom(mMap.getMap().getCameraPosition().zoom).build());
+                .target(ll).build());
         mMap.getMap().moveCamera(c);
     }
 
@@ -335,18 +329,16 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
     private BitmapDescriptor stop = null;
     private BitmapDescriptor start_ic = null;
 
-    private void drawLines(List<LatLng> records) {
+    private void drawLines(List<TimeLatLng> records) {
         if (records == null || records.size() <= 0) {
             return;
         }
 
-        LatLng start = records.get(0);
+        TimeLatLng start = records.get(0);
         PolylineOptions po = new PolylineOptions();
         List<Integer> colors = new ArrayList<>();
-        boolean test = false;
-        for (LatLng ll : records) {
-            float distance = AMapUtils.calculateLineDistance(start, ll);
-            if (distance / 2 > 7.2f) {
+        for (TimeLatLng ll : records) {
+            if (ll.speed(start) > 7.2f) {
                 colors.add(Color.RED);
             } else {
                 colors.add(Color.GREEN);
@@ -355,23 +347,18 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         }
 //        po.useGradient(true);
         po.colorValues(colors);
-        po.addAll(records);
+        po.addAll(TimeLatLng.toLatLngList(records));
         po.width(10f);
         mMap.getMap().clear();
         mMap.getMap().addPolyline(po);
 
-        MarkerOptions markerOption = new MarkerOptions();
-        markerOption.position(records.get(0));
-        markerOption.draggable(false);
-        markerOption.icon(start_ic);
-        markerOption.anchor(0.5f, 0.5f);
-        markerOption.setFlat(true);
-
-        mMap.getMap().addMarker(markerOption);
-
-        markerOption = new MarkerOptions().position(records.get(records.size() - 1))
-                .draggable(false).setFlat(true).icon(run).anchor(0.5f, 0.5f);
-        mMap.getMap().addMarker(markerOption);
+        drawStart();
+        if(RecordModel.instance.isPause() || RecordModel.instance.isRecording()){
+            drawCurrent();
+        }
+        else {
+            drawEnd();
+        }
     }
 
     private void showRecord(List<LatLng> records) {
@@ -404,25 +391,9 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         mMap.getMap().clear();
         mMap.getMap().addPolyline(po);
 
-        MarkerOptions markerOption = new MarkerOptions();
-        markerOption.position(records.get(0));
-        markerOption.draggable(false);
-        markerOption.icon(start_ic);
-        markerOption.anchor(0.5f, 0.5f);
-        markerOption.setFlat(true);
-
-        mMap.getMap().addMarker(markerOption);
-
-        markerOption = new MarkerOptions().position(records.get(records.size() - 1))
-                .draggable(false).setFlat(true).icon(stop).anchor(0.5f, 0.5f);
-        mMap.getMap().addMarker(markerOption);
-
-        LatLngBounds.Builder llb = LatLngBounds.builder();
-        for (LatLng a : records) {
-            llb.include(a);
-        }
-        CameraUpdate c = CameraUpdateFactory.newLatLngBounds(llb.build(), 10);
-        mMap.getMap().moveCamera(c);
+        drawStart();
+        drawEnd();
+        zoomToBound(records);
     }
 
     @Override
@@ -430,6 +401,60 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         drawLines(RecordModel.instance.readCache());
         CameraUpdate c = CameraUpdateFactory.newCameraPosition(CameraPosition.builder().target(ll)
                 .zoom(mMap.getMap().getCameraPosition().zoom).build());
+        mMap.getMap().moveCamera(c);
+    }
+
+    private void drawStart(){
+        LatLng start = RecordModel.instance.firstLatLng().getLatlnt();
+        if(start == null){
+            return;
+        }
+        MarkerOptions markerOption = new MarkerOptions();
+        markerOption.position(start);
+        markerOption.draggable(false);
+        markerOption.icon(start_ic);
+        markerOption.anchor(0.5f, 0.5f);
+        markerOption.setFlat(true);
+
+        mMap.getMap().addMarker(markerOption);
+    }
+
+    private void drawCurrent(){
+        LatLng start = RecordModel.instance.firstLatLng().getLatlnt();
+        if(start == null){
+            return;
+        }
+        MarkerOptions markerOption = new MarkerOptions();
+        markerOption.position(start);
+        markerOption.draggable(false);
+        markerOption.icon(run);
+        markerOption.anchor(0.5f, 0.5f);
+        markerOption.setFlat(true);
+
+        mMap.getMap().addMarker(markerOption);
+    }
+
+    private void drawEnd(){
+        LatLng start = RecordModel.instance.lastLatLng().getLatlnt();
+        if(start == null){
+            return;
+        }
+        MarkerOptions markerOption = new MarkerOptions();
+        markerOption.position(start);
+        markerOption.draggable(false);
+        markerOption.icon(stop);
+        markerOption.anchor(0.5f, 0.5f);
+        markerOption.setFlat(true);
+
+        mMap.getMap().addMarker(markerOption);
+    }
+
+    private void zoomToBound(List<LatLng> records){
+        LatLngBounds.Builder llb = LatLngBounds.builder();
+        for (LatLng a : records) {
+            llb.include(a);
+        }
+        CameraUpdate c = CameraUpdateFactory.newLatLngBounds(llb.build(), 10);
         mMap.getMap().moveCamera(c);
     }
 

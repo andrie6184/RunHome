@@ -17,6 +17,8 @@ import com.runnerfun.model.statusmodel.StopStatus;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Math.abs;
+
 /**
  * RecordModel
  * Created by andrie on 18/11/2016.
@@ -86,13 +88,17 @@ public class RecordModel {
     }
 
     public float getSpeed() {
-        long time = mStatus.getRecordTime();
+        long time = getRecordTime();
         float distance = mStatus.getDistance();
         return time == 0 ? 0 : (mStatus.getDistance()/1000)/ (mStatus.getRecordTime()/3600);// km/s = m/ms
     }
 
     public long getRecordTime() {
-        return mStatus.getRecordTime();
+        List<TimeLatLng> cache = mStatus.readCache();
+        if(cache == null || cache.size() <= 0){
+            return 0;
+        }
+        return abs(cache.get(0).getTime() - cache.get(cache.size() - 1).getTime());
     }
 
     /**
@@ -105,59 +111,59 @@ public class RecordModel {
     }
 
     public float getRealDistance() {
-        List<LatLng> ll = readCache();
-        float distance = 0.f;
-        if (ll == null || ll.size() <= 0) {
-            return distance;
+        List<TimeLatLng> ll = mStatus.readCache();
+        if(ll == null || ll .size() <= 0){
+            return 0;
         }
+        float distance = 0.f;
 
-        LatLng start = ll.get(0);
-        for (LatLng l : ll) {
-            float dis = AMapUtils.calculateLineDistance(start, l);
-            if (dis <= 3.6f) {
-                distance += dis;
+        TimeLatLng start = ll.get(0);
+        for(TimeLatLng tl : ll){
+            if(tl.speed(start) > 7.2f){
+                continue;
             }
-            start = l;
+            distance += tl.distance(start);
+            start = tl;
         }
 
         return distance;
     }
 
-    public List<LatLng> readCache() {
+    public List<TimeLatLng> readCache() {
         return mStatus.readCache();
     }
 
-    public LatLng firstLatLng() {
+    public TimeLatLng firstLatLng() {
         return mStatus.firstLatLng();
     }
 
+    public TimeLatLng lastLatLng(){
+        return mStatus.lastLatLng();
+    }
+
     public void initRecord(List<LatLng> ll) {
-        mStatus.initCache(ll);
+        mStatus.initCache(TimeLatLng.toTimeLatlngList(ll)); //TODO: 初始的数据最好改为TIMELATLNG
     }
 
     public void addRecord(LatLng ll) {
-        LatLng last = mStatus.lastLatLng();
+        LatLng last = mStatus.lastLatLng().getLatlnt();
         if(last != null){
             float distance = AMapUtils.calculateLineDistance(ll, last);
             float lastDistance = mStatus.lastDistance();
             if(distance > 50 && mStatus.lastDistance() > 5 && (distance /lastDistance > 3) ){
-                addMockRecord();
+                //TODO: 定位不靠谱的情况下是否需要mock 一个点？
                 return;
             }
         }
 
-        mStatus.addRecord(ll);
+        mStatus.addRecord(new TimeLatLng(ll));
         //TODO: aaa
         for (RecordChangeListener l : listeners) {
             l.onRecordChange(ll);
         }
     }
 
-    public void addMockRecord(){
-        mStatus.addMockRecord();
-    }
-
-    public static List<LatLng> parseStringToLatLng(String track) {
+    public static List<LatLng> parseStringToLatLng(String track) { //TODO:能改成TimeLatLng最好
         List<LatLng> result = new ArrayList<>();
         String temp = track.substring(1, track.length() - 1);
         List<String> lats = new ArrayList<>();

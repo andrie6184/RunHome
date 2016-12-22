@@ -4,6 +4,7 @@ package com.runnerfun.model.statusmodel;
 import android.os.SystemClock;
 
 import com.amap.api.maps.model.LatLng;
+import com.runnerfun.model.TimeLatLng;
 
 /**
  * Created by andrie on 22/11/2016.
@@ -26,7 +27,7 @@ public class PauseStatus extends RecordStatus {
     }
 
     @Override
-    public void addRecord(LatLng ll) {
+    public void addRecord(TimeLatLng ll) {
 
     }
 

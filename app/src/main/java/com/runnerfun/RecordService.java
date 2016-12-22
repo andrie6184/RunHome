@@ -25,6 +25,7 @@ import com.runnerfun.beans.RunSaveResultBean;
 import com.runnerfun.beans.RunUploadBean;
 import com.runnerfun.mock.TrackMocker;
 import com.runnerfun.model.RecordModel;
+import com.runnerfun.model.TimeLatLng;
 import com.runnerfun.network.NetworkManager;
 import com.runnerfun.tools.ThirdpartAuthManager;
 
@@ -102,7 +103,7 @@ public class RecordService extends Service implements AMapLocationListener {
             }
         }
         else{
-            RecordModel.instance.addMockRecord();
+            //TODO: do nothing
         }
     }
 
@@ -162,7 +163,7 @@ public class RecordService extends Service implements AMapLocationListener {
                         ThirdpartAuthManager.setLastRidForShare(bean.getData().getId());
                         ThirdpartAuthManager.setLastCoinForShare(bean.getData().getCoin());
 
-                        String track = getTrack(RecordModel.instance.readCache());
+                        String track = getTrack(TimeLatLng.toLatLngList(RecordModel.instance.readCache()));
                         LocalBroadcastManager.getInstance(RunApplication.getAppContex())
                                 .sendBroadcast(new Intent(UserFragment.USER_INFO_CHANGED_ACTION));
                         Log.d("hallucination", "trigger");
@@ -238,21 +239,13 @@ public class RecordService extends Service implements AMapLocationListener {
 
         Intent intent = new Intent("MY_LOCATION");
         PendingIntent pi = PendingIntent.getBroadcast(this,0,intent,0);
-
         AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
-
-//设置闹钟从当前时间开始，每隔5s执行一次PendingIntent对象pi，注意第一个参数与第二个参数的关系
-// 5秒后通过PendingIntent pi对象发送广播
         am.setRepeating(AlarmManager.RTC_WAKEUP,System.currentTimeMillis(),2*1000,pi);
     }
 
     public void useForeground(String currSong) {
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, 0);
-        /* Method 01
-         * this method must SET SMALLICON!
-         * otherwise it can't do what we want in Android 4.4 KitKat,
-         * it can only show the application info page which contains the 'Force Close' button.*/
         android.support.v4.app.NotificationCompat.Builder mNotifyBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setTicker("")
@@ -261,14 +254,6 @@ public class RecordService extends Service implements AMapLocationListener {
                 .setContentText(currSong)
                 .setContentIntent(pendingIntent);
         Notification notification = mNotifyBuilder.build();
-
-        /* Method 02
-        Notification notification = new Notification(R.drawable.ic_launcher, tickerText,
-                System.currentTimeMillis());
-        notification.setLatestEventInfo(PlayService.this, getText(R.string.app_name),
-                currSong, pendingIntent);
-        */
-
         startForeground(1234, notification);
     }
 

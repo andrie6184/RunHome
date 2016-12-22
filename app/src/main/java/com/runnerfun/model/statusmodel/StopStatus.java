@@ -3,6 +3,7 @@ package com.runnerfun.model.statusmodel;
 import android.os.SystemClock;
 
 import com.amap.api.maps.model.LatLng;
+import com.runnerfun.model.TimeLatLng;
 
 /**
  * StopStatus
@@ -24,7 +25,8 @@ public class StopStatus extends RecordStatus {
     }
 
     @Override
-    public void addRecord(LatLng ll) {
+    public void addRecord(TimeLatLng ll) {
+        throw new IllegalArgumentException("has stopped, should not add new record");
 
     }
 
