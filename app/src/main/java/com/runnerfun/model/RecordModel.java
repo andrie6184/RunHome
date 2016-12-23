@@ -155,6 +155,9 @@ public class RecordModel {
 
     public void addMockRecord(){
         mStatus.addMockRecord();
+        for (RecordChangeListener l : listeners) {
+            l.onRecordChange(mStatus.lastLatLng());
+        }
     }
 
     public static List<LatLng> parseStringToLatLng(String track) {
