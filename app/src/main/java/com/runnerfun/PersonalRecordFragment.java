@@ -21,6 +21,7 @@ import com.runnerfun.beans.PersonalRecordBean;
 import com.runnerfun.beans.RunRecordBean;
 import com.runnerfun.beans.RunTrackBean;
 import com.runnerfun.model.RecordModel;
+import com.runnerfun.model.TimeLatLng;
 import com.runnerfun.network.NetworkManager;
 import com.runnerfun.tools.TimeStringUtils;
 import com.runnerfun.tools.UITools;
@@ -160,20 +161,19 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
 
             @Override
             public void onNext(RunTrackBean runTrackBean) {
-                List<LatLng> lls = RecordModel.parseStringToLatLng(runTrackBean.getTrack());
+                List<TimeLatLng> lls = RecordModel.parseStringToLatLng(runTrackBean.getTrack());
                 RecordModel.instance.initRecord(lls);
-                String dis = UITools.numberFormat(Float.valueOf(item.getDistance())) + "km";
+                String dis = UITools.numberFormat(Float.valueOf(item.getTotal_distance())) + "km";
 
                 String speed = "0'00\"";
                 if (Float.valueOf(runTrackBean.getTotal_time()) > 0 && Float.valueOf(runTrackBean.getDistance()) > 0) {
-                    float seconds = Float.valueOf(runTrackBean.getTotal_time()) /
-                            (Float.valueOf(runTrackBean.getDistance()) * 1000);
+                    float seconds = Float.valueOf(runTrackBean.getTotal_time()) / (Float.valueOf(runTrackBean.getDistance()));
                     int minutes = (int) seconds  / 60;
                     speed = String.format(Locale.getDefault(), "%d'%d\"", minutes, (int) (seconds % 60));
                 }
 
                 String cal = UITools.numberFormat(Float.valueOf(item.getCalorie()) / 1000) + "kcal";
-                String time = TimeStringUtils.getTime(Long.valueOf(item.getTotal_time()));
+                String time = TimeStringUtils.getTime(Long.valueOf(item.getTotal_time()) * 1000);
                 MapActivity.startWithDisplayMode(getActivity(), dis, speed, time, cal, rid, item.getGet_score());
             }
         });

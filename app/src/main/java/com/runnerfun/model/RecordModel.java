@@ -94,11 +94,12 @@ public class RecordModel {
     }
 
     public long getRecordTime() {
-        List<TimeLatLng> cache = mStatus.readCache();
-        if(cache == null || cache.size() <= 0){
-            return 0;
-        }
-        return abs(cache.get(0).getTime() - cache.get(cache.size() - 1).getTime());
+//        List<TimeLatLng> cache = mStatus.readCache();
+//        if(cache == null || cache.size() <= 0){
+//            return 0;
+//        }
+//        return abs(cache.get(0).getTime() - cache.get(cache.size() - 1).getTime());
+        return mStatus.getRecordTime();
     }
 
     /**
@@ -141,14 +142,14 @@ public class RecordModel {
         return mStatus.lastLatLng();
     }
 
-    public void initRecord(List<LatLng> ll) {
-        mStatus.initCache(TimeLatLng.toTimeLatlngList(ll)); //TODO: 初始的数据最好改为TIMELATLNG
+    public void initRecord(List<TimeLatLng> ll) {
+        mStatus.initCache(ll); //TODO: 初始的数据最好改为TIMELATLNG
     }
 
     public void addRecord(LatLng ll) {
-        LatLng last = mStatus.lastLatLng().getLatlnt();
+        TimeLatLng last = mStatus.lastLatLng();
         if(last != null){
-            float distance = AMapUtils.calculateLineDistance(ll, last);
+            float distance = AMapUtils.calculateLineDistance(ll, last.getLatlnt());
             float lastDistance = mStatus.lastDistance();
             if(distance > 50 && mStatus.lastDistance() > 5 && (distance /lastDistance > 3) ){
                 //TODO: 定位不靠谱的情况下是否需要mock 一个点？
@@ -163,11 +164,13 @@ public class RecordModel {
         }
     }
 
-    public static List<LatLng> parseStringToLatLng(String track) { //TODO:能改成TimeLatLng最好
-        List<LatLng> result = new ArrayList<>();
+    public static List<TimeLatLng> parseStringToLatLng(String track) { //TODO:能改成TimeLatLng最好
+        List<TimeLatLng> result = new ArrayList<>();
         String temp = track.substring(1, track.length() - 1);
         List<String> lats = new ArrayList<>();
         List<String> lans = new ArrayList<>();
+        List<String> speeds = new ArrayList<>();
+
         String[] itemTemps = temp.split(",");
         for (String itemTemp : itemTemps) {
             String trimTemp = itemTemp.trim();
@@ -177,10 +180,15 @@ public class RecordModel {
             if (trimTemp.contains("]")) {
                 lats.add(trimTemp.substring(0, trimTemp.indexOf("]")).trim());
             }
+            if (!trimTemp.contains("[") && !trimTemp.contains("]")) {
+                speeds.add(trimTemp);
+            }
         }
 
         for (int x = 0; x < lats.size() && x < lans.size(); x++) {
-            LatLng item = new LatLng(Double.parseDouble(lats.get(x)), Double.parseDouble(lans.get(x)));
+            TimeLatLng item = new TimeLatLng(new LatLng(Double.parseDouble(lats.get(x)),
+                    Double.parseDouble(lans.get(x))));
+            item.setSpeed(Float.valueOf(speeds.get(x)));
             result.add(item);
         }
         return result;

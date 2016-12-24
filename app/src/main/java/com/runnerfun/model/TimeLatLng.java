@@ -29,8 +29,17 @@ public class TimeLatLng  {
         this.time = time;
     }
 
+    public float getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+
     private LatLng latlnt;
     private long time;
+    private float speed;
 
     public TimeLatLng(LatLng l){
         latlnt = l;
@@ -47,7 +56,7 @@ public class TimeLatLng  {
 
     // m/s
     public float speed(TimeLatLng other){
-        return distance(other.getLatlnt()) / abs(time - other.getTime()) * 1000;
+        return distance(other.getLatlnt()) * 1000 / abs(time - other.getTime());
     }
 
     public static List<LatLng> toLatLngList(List<TimeLatLng> tl){

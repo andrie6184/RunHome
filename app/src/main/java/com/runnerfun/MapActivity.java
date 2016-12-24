@@ -169,7 +169,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
             mPanelWidget.setVisibility(View.GONE);
             LatLng ll = RecordModel.instance.firstLatLng().getLatlnt();
             if (ll != null) {
-                showRecord(TimeLatLng.toLatLngList(RecordModel.instance.readCache()));
+                showRecord(RecordModel.instance.readCache());
             } else {
                 mlocationClient.startLocation();
             }
@@ -278,6 +278,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         if (mTimer != null) {
             mTimer.unsubscribe();
         }
+        drawEnd();
     }
 
     @Override
@@ -338,7 +339,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         PolylineOptions po = new PolylineOptions();
         List<Integer> colors = new ArrayList<>();
         for (TimeLatLng ll : records) {
-            if (ll.speed(start) > 7.2f) {
+            if (ll.speed(start) > 12.2f) {
                 colors.add(Color.RED);
             } else {
                 colors.add(Color.GREEN);
@@ -361,39 +362,31 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         }
     }
 
-    private void showRecord(List<LatLng> records) {
+    private void showRecord(List<TimeLatLng> records) {
         if (records == null || records.size() <= 0) {
             return;
         }
 
-        LatLng start = records.get(0);
+        TimeLatLng start = records.get(0);
         PolylineOptions po = new PolylineOptions();
         List<Integer> colors = new ArrayList<>();
-        int interval = 2;
-        for (LatLng ll : records) {
-            if(start.latitude == ll.latitude && start.longitude == ll.longitude){
-                interval += 2;
-                continue;
-            }
-            float distance = AMapUtils.calculateLineDistance(start, ll);
-            if (distance / interval > 7.2f) {
+        for (TimeLatLng ll : records) {
+            if (ll.getSpeed() > (12.2f / 1000f)) {
                 colors.add(Color.RED);
             } else {
                 colors.add(Color.GREEN);
             }
-            interval = 2;
-            start = ll;
         }
 //        po.useGradient(true);
         po.colorValues(colors);
-        po.addAll(records);
+        po.addAll(TimeLatLng.toLatLngList(records));
         po.width(10f);
         mMap.getMap().clear();
         mMap.getMap().addPolyline(po);
 
         drawStart();
         drawEnd();
-        zoomToBound(records);
+        zoomToBound(TimeLatLng.toLatLngList(records));
     }
 
     @Override
@@ -411,7 +404,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         }
         MarkerOptions markerOption = new MarkerOptions();
         markerOption.position(start);
-        markerOption.draggable(false);
+        markerOption.draggable(true);
         markerOption.icon(start_ic);
         markerOption.anchor(0.5f, 0.5f);
         markerOption.setFlat(true);
@@ -420,13 +413,13 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
     }
 
     private void drawCurrent(){
-        LatLng start = RecordModel.instance.firstLatLng().getLatlnt();
+        LatLng start = RecordModel.instance.lastLatLng().getLatlnt();
         if(start == null){
             return;
         }
         MarkerOptions markerOption = new MarkerOptions();
         markerOption.position(start);
-        markerOption.draggable(false);
+        markerOption.draggable(true);
         markerOption.icon(run);
         markerOption.anchor(0.5f, 0.5f);
         markerOption.setFlat(true);
@@ -441,7 +434,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         }
         MarkerOptions markerOption = new MarkerOptions();
         markerOption.position(start);
-        markerOption.draggable(false);
+        markerOption.draggable(true);
         markerOption.icon(stop);
         markerOption.anchor(0.5f, 0.5f);
         markerOption.setFlat(true);

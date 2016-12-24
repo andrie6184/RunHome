@@ -1,11 +1,15 @@
 package com.runnerfun.network;
 
 
+import android.content.Intent;
+import android.widget.Toast;
+
 import com.franmontiel.persistentcookiejar.ClearableCookieJar;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.google.gson.Gson;
+import com.runnerfun.LoginActivity;
 import com.runnerfun.RunApplication;
 import com.runnerfun.beans.CoinBean;
 import com.runnerfun.beans.LoginBean;
@@ -285,6 +289,13 @@ public class NetworkManager {
                 .map(new Func1<ResponseBean<T>, T>() {
                     @Override
                     public T call(ResponseBean<T> result) {
+                        // check session invalid
+                        if (result.getCode() == -998) {
+                            Toast.makeText(RunApplication.getAppContex(), "您的帐号已在别处登录,请重新登录", Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(RunApplication.getAppContex(), LoginActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            RunApplication.getAppContex().startActivity(intent);
+                        }
                         if (result.getCode() != 0) {
                             throw new IllegalArgumentException(result.getMsg());
                         }

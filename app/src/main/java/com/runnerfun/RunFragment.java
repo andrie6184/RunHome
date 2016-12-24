@@ -268,7 +268,7 @@ public class RunFragment extends Fragment {
             mStartPanel.setVisibility(View.GONE);
             mStopPanel.setVisibility(View.VISIBLE);
             boolean isRecording = RecordModel.instance.isRecording();
-            ((ImageView) mStopPanel.findViewById(R.id.resume_btn)).setImageResource(isRecording ? R.drawable.continue_icon : R.drawable.resume);
+            ((ImageView) mStopPanel.findViewById(R.id.resume_btn)).setImageResource(isRecording ? R.drawable.resume : R.drawable.continue_icon);
         } else {
             mStartPanel.setVisibility(View.VISIBLE);
             mStopPanel.setVisibility(View.GONE);
@@ -285,11 +285,13 @@ public class RunFragment extends Fragment {
     @OnClick(R.id.resume_btn)
     void pause() {
         boolean isRecording = RecordModel.instance.isRecording();
-        ((ImageView) mStopPanel.findViewById(R.id.resume_btn)).setImageResource(isRecording ? R.drawable.continue_icon : R.drawable.resume);
+        // ((ImageView) mStopPanel.findViewById(R.id.resume_btn)).setImageResource(isRecording ? R.drawable.continue_icon : R.drawable.resume);
         if (isRecording) {
             RecordService.pauseRecord(getActivity());
+            ((ImageView) mStopPanel.findViewById(R.id.resume_btn)).setImageResource(R.drawable.continue_icon);
         } else {
             RecordService.resumeRecord(getActivity());
+            ((ImageView) mStopPanel.findViewById(R.id.resume_btn)).setImageResource(R.drawable.resume);
         }
     }
 

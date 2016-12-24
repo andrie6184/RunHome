@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
@@ -90,19 +89,22 @@ public class RecordService extends Service implements AMapLocationListener {
     public RecordService() {
         super();
     }
+    private int ignore = 2;
 
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
-        if (aMapLocation != null && aMapLocation.getErrorCode() == 0 && aMapLocation.getAccuracy()  < 100.f){
+        if(--ignore > 0){
+            return;
+        }
+        if (aMapLocation != null && aMapLocation.getErrorCode() == 0 && aMapLocation.getAccuracy() < 50.f) {
             RecordModel.instance.addRecord(new LatLng(aMapLocation.getLatitude(),
                     aMapLocation.getLongitude()));
 
             if (TextUtils.isEmpty(firstPoi) && !TextUtils.isEmpty(aMapLocation.getCity())) {
                 firstPoi = aMapLocation.getCountry() + aMapLocation.getCity() + aMapLocation.getDistrict();
-                Toast.makeText(RunApplication.getAppContex(), firstPoi, Toast.LENGTH_LONG).show();
+                // Toast.makeText(RunApplication.getAppContex(), firstPoi, Toast.LENGTH_LONG).show();
             }
-        }
-        else{
+        } else {
             //TODO: do nothing
         }
     }
@@ -163,10 +165,10 @@ public class RecordService extends Service implements AMapLocationListener {
                         ThirdpartAuthManager.setLastRidForShare(bean.getData().getId());
                         ThirdpartAuthManager.setLastCoinForShare(bean.getData().getCoin());
 
-                        String track = getTrack(TimeLatLng.toLatLngList(RecordModel.instance.readCache()));
+                        String track = getTrack(RecordModel.instance.readCache());
                         LocalBroadcastManager.getInstance(RunApplication.getAppContex())
                                 .sendBroadcast(new Intent(UserFragment.USER_INFO_CHANGED_ACTION));
-                        Log.d("hallucination", "trigger");
+                        Timber.d("hallucination", "trigger");
                         return NetworkManager.instance.getUploadTrackObservable(track, bean.getData()
                                 .getId()).subscribeOn(Schedulers.io());
                     }
@@ -205,14 +207,15 @@ public class RecordService extends Service implements AMapLocationListener {
         }
         stopForeground(true);
         Intent intent = new Intent("MY_LOCATION");
-        PendingIntent pi = PendingIntent.getBroadcast(this,0,intent,0);
+        PendingIntent pi = PendingIntent.getBroadcast(this, 0, intent, 0);
 
-        AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
+        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
         am.cancel(pi);
-//         TrackMocker.instance.stopMock();
+        // TrackMocker.instance.stopMock();
     }
 
     private void doStart(long id) {
+        ignore = 2;
         startTime = System.currentTimeMillis();
         if (mlocationClient != null) {
             mlocationClient.onDestroy();
@@ -220,7 +223,7 @@ public class RecordService extends Service implements AMapLocationListener {
         mlocationClient = new AMapLocationClient(this);
         mlocationClient.setLocationListener(this);
         mLocationOption = new AMapLocationClientOption();
-        mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Device_Sensors);
+        mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
         mLocationOption.setOnceLocation(false);
         mLocationOption.setGpsFirst(true);
         mLocationOption.setMockEnable(false);
@@ -232,15 +235,15 @@ public class RecordService extends Service implements AMapLocationListener {
         }
         //TODO: start upload
         RecordModel.instance.start(id);
-//         TrackMocker.instance.startMock();
+        // TrackMocker.instance.startMock();
         startUploadTimer();
         // start forground
         useForeground("跑步中...");
 
         Intent intent = new Intent("MY_LOCATION");
-        PendingIntent pi = PendingIntent.getBroadcast(this,0,intent,0);
-        AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
-        am.setRepeating(AlarmManager.RTC_WAKEUP,System.currentTimeMillis(),2*1000,pi);
+        PendingIntent pi = PendingIntent.getBroadcast(this, 0, intent, 0);
+        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 2 * 1000, pi);
     }
 
     public void useForeground(String currSong) {
@@ -282,24 +285,25 @@ public class RecordService extends Service implements AMapLocationListener {
     private void startUploadTimer() {
     }
 
-    private String getTrack(List<LatLng> records) {
+    private String getTrack(List<TimeLatLng> records) {
         if (records == null || records.size() == 0) {
             return "";
         }
         StringBuilder result = new StringBuilder();
         result.append("{");
-        LatLng temp = null;
+        TimeLatLng temp = null;
         for (int po = 0; po < records.size(); po++) {
-            LatLng item = records.get(po);
+            TimeLatLng item = records.get(po);
             if (item != null) {
                 result.append("[");
-                result.append(item.longitude).append(",");
+                result.append(item.getLatlnt().longitude).append(",");
                 if (temp != null) {
-                    result.append(AMapUtils.calculateLineDistance(item, temp)).append(",");
+                    float distance = AMapUtils.calculateLineDistance(temp.getLatlnt(), item.getLatlnt());
+                    result.append(distance / Math.abs(item.getTime() - temp.getTime())).append(",");
                 } else {
                     result.append("0").append(",");
                 }
-                result.append(item.latitude);
+                result.append(item.getLatlnt().latitude);
                 result.append("]");
             }
             if (po != records.size() - 1) {
