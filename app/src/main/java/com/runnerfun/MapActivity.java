@@ -30,6 +30,7 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.PolylineOptions;
+import com.runnerfun.beans.Record;
 import com.runnerfun.model.ConfigModel;
 import com.runnerfun.model.RecordModel;
 import com.runnerfun.model.TimeLatLng;
@@ -205,8 +206,14 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
                             updateVvalue();
                         }
                     });
-            mlocationClient.startLocation();
+
             drawLines(RecordModel.instance.readCache());
+            if(RecordModel.instance.isPause() || RecordModel.instance.isRecording()){
+                mlocationClient.startLocation();
+            }
+            else{
+                zoomToBound(TimeLatLng.toLatLngList(RecordModel.instance.readCache()));
+            }
         }
         RecordModel.instance.addListener(this);
     }
@@ -223,7 +230,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         String distance = decimalFormat.format(RecordModel.instance.getDistance() / 1000);
         mDisValue.setText("" + distance + "km");
         mTimeValue.setText(TimeStringUtils.getTime(RecordModel.instance.getRecordTime()));
-        mCalValue.setText("" + decimalFormat.format(RecordModel.instance.getCal()) + "kcal");
+        mCalValue.setText("" + decimalFormat.format(RecordModel.instance.getCal() / 1000) + "kcal");
     }
 
     @Override
@@ -309,14 +316,14 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         if(amapLocation != null && amapLocation.getErrorCode() == 0){
             SharedPreferences sp = getSharedPreferences("location", Context.MODE_PRIVATE);
             sp.edit().putString("location", amapLocation.getCountry() + '·' + amapLocation.getCity()).apply();
-            if(RecordModel.instance.isRecording() || RecordModel.instance.isPause()){
-                return;//正在记录则丢弃当前定位
-            }
-            else{
+//            if(RecordModel.instance.isRecording() || RecordModel.instance.isPause()){
+//                return;//正在记录则丢弃当前定位
+//            }
+//            else{
                 moveTo(new LatLng(amapLocation.getLatitude(), amapLocation.getLongitude()));
                 mMap.getMap().moveCamera(CameraUpdateFactory.zoomTo(14f));
                 drawStart();
-            }
+//            }
         }
     }
 

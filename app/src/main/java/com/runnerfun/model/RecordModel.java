@@ -73,7 +73,7 @@ public class RecordModel {
                 UserFragment.SP_KEY_USER_INFO, "");
         if (!TextUtils.isEmpty(info)) {
             UserInfo userInfo = new Gson().fromJson(info, UserInfo.class);
-            return Float.valueOf(userInfo.getWeight()) * getDistance() * 1.036f / 1000;
+            return Float.valueOf(userInfo.getWeight()) * (getRealDistance() / 1000f) * 1.036f;
         } else {
             return 0f;
         }
@@ -120,7 +120,7 @@ public class RecordModel {
 
         TimeLatLng start = ll.get(0);
         for(TimeLatLng tl : ll){
-            if(tl.speed(start) > 7.2f){
+            if(tl.speed(start) > 12.2f){
                 continue;
             }
             distance += tl.distance(start);

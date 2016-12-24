@@ -10,6 +10,7 @@ import java.io.Serializable;
 public class LoginBean implements Serializable {
 
     private String sid;
+    private String uid;
     private String nick;
 
     public String getSid() {
@@ -18,6 +19,14 @@ public class LoginBean implements Serializable {
 
     public void setSid(String sid) {
         this.sid = sid;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getNick() {

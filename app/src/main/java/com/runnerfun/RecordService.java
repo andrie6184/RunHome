@@ -96,7 +96,8 @@ public class RecordService extends Service implements AMapLocationListener {
         if(--ignore > 0){
             return;
         }
-        if (aMapLocation != null && aMapLocation.getErrorCode() == 0 && aMapLocation.getAccuracy() < 50.f) {
+        if (aMapLocation != null && aMapLocation.getErrorCode() == 0 && aMapLocation.getAccuracy() < 50.f
+                && aMapLocation.getLocationType() == AMapLocation.LOCATION_TYPE_GPS) {
             RecordModel.instance.addRecord(new LatLng(aMapLocation.getLatitude(),
                     aMapLocation.getLongitude()));
 

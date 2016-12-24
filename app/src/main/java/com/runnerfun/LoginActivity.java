@@ -71,6 +71,7 @@ public class LoginActivity extends BaseActivity implements ThirdpartAuthManager.
             @Override
             public void onNext(LoginBean loginBean) {
                 // Toast.makeText(LoginActivity.this, "login success" + loginBean.getSid(), Toast.LENGTH_SHORT).show();
+                RunApplication.getAppContex().sharedPreferences.edit().putString("USER_UID", loginBean.getUid()).apply();
                 NetworkManager.instance.setLoginInfo();
                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 finish();

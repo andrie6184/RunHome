@@ -306,7 +306,7 @@ public class RunFragment extends Fragment {
     private void refreshResult() {
         mClockView.setText(msToString(RecordModel.instance.getRecordTime()));
         mKmValue.setText(decimalFormat.format(RecordModel.instance.getDistance() / 1000));
-        mKaclValue.setText(UITools.numberFormat(RecordModel.instance.getCal()));
+        mKaclValue.setText(UITools.numberFormat(RecordModel.instance.getCal() / 1000));
 
         if (RecordModel.instance.getRecordTime() > 0 && RecordModel.instance.getDistance() > 0) {
             float seconds = RecordModel.instance.getRecordTime() / RecordModel.instance.getDistance();
