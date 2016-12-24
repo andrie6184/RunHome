@@ -163,7 +163,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
     protected void onResume() {
         super.onResume();
         mMap.onResume();
-        CameraUpdate cu = CameraUpdateFactory.zoomTo(14.f);
+        CameraUpdate cu = CameraUpdateFactory.zoomTo(18.0f);
         mMap.getMap().moveCamera(cu);
         boolean displayMode = getIntent().getBooleanExtra(DISPLAY_MODE, false);
         if (displayMode) {
@@ -321,7 +321,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
 //            }
 //            else{
                 moveTo(new LatLng(amapLocation.getLatitude(), amapLocation.getLongitude()));
-                mMap.getMap().moveCamera(CameraUpdateFactory.zoomTo(14f));
+                mMap.getMap().moveCamera(CameraUpdateFactory.zoomTo(18.0f));
                 drawStart();
 //            }
         }
