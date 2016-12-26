@@ -155,7 +155,7 @@ public class RunFragment extends Fragment {
     }
 
     //TODO: @OnClick(R.id.btn_run)
-    void start() {
+    void test() {
         if (RecordModel.instance.isRecording()) {
             Toast.makeText(getActivity(), "跑步已经开始", Toast.LENGTH_SHORT).show();
             return;
@@ -179,7 +179,7 @@ public class RunFragment extends Fragment {
     }
 
     @OnClick(R.id.btn_run)
-    void test() {
+    void start() {
         if (RecordModel.instance.isRecording() || RecordModel.instance.isPause()) {
             Toast.makeText(getActivity(), "跑步已经开始", Toast.LENGTH_SHORT).show();
             return;
@@ -268,7 +268,8 @@ public class RunFragment extends Fragment {
             mStartPanel.setVisibility(View.GONE);
             mStopPanel.setVisibility(View.VISIBLE);
             boolean isRecording = RecordModel.instance.isRecording();
-            ((ImageView) mStopPanel.findViewById(R.id.resume_btn)).setImageResource(isRecording ? R.drawable.resume : R.drawable.continue_icon);
+            ((ImageView) mStopPanel.findViewById(R.id.resume_btn)).setImageResource(isRecording ?
+                    R.drawable.resume : R.drawable.continue_icon);
         } else {
             mStartPanel.setVisibility(View.VISIBLE);
             mStopPanel.setVisibility(View.GONE);
@@ -285,7 +286,8 @@ public class RunFragment extends Fragment {
     @OnClick(R.id.resume_btn)
     void pause() {
         boolean isRecording = RecordModel.instance.isRecording();
-        // ((ImageView) mStopPanel.findViewById(R.id.resume_btn)).setImageResource(isRecording ? R.drawable.continue_icon : R.drawable.resume);
+        // ((ImageView) mStopPanel.findViewById(R.id.resume_btn)).setImageResource(isRecording ?
+        // R.drawable.continue_icon : R.drawable.resume);
         if (isRecording) {
             RecordService.pauseRecord(getActivity());
             ((ImageView) mStopPanel.findViewById(R.id.resume_btn)).setImageResource(R.drawable.continue_icon);
