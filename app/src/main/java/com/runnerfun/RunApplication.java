@@ -12,6 +12,8 @@ import com.avos.avoscloud.AVOSCloud;
 import com.runnerfun.model.ConfigModel;
 import com.squareup.picasso.Picasso;
 
+import org.litepal.LitePal;
+
 import cn.jpush.android.api.JPushInterface;
 import timber.log.Timber;
 
@@ -58,6 +60,9 @@ public class RunApplication extends Application {
         // init Picasso
         picasso = Picasso.with(this);
         ConfigModel.instance.load(this);
+
+        // init database
+        LitePal.initialize(this);
 
         // for lean-cloud analytic & feedback.
         AVOSCloud.initialize(this, "OQpEDpAfPU5fxknXO4YWuV6J-gzGzoHsz", "huXzXqNd6uGPi8yI8tG2pwnj");

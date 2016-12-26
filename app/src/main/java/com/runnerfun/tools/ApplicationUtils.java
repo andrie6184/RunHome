@@ -4,6 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo.State;
+import android.view.WindowManager;
 
 import com.runnerfun.LoginActivity;
 import com.runnerfun.RunApplication;
@@ -34,6 +38,27 @@ public class ApplicationUtils {
             applicationInfo = null;
         }
         return (String) packageManager.getApplicationLabel(applicationInfo);
+    }
+
+    public static boolean isNetworkAvailable() {
+        ConnectivityManager manager = (ConnectivityManager) RunApplication.getAppContex()
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        State gprs = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
+        State wifi = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
+        if (wifi == State.CONNECTED || wifi == State.CONNECTING) {
+            return true;
+        } else if (gprs == State.CONNECTED || gprs == State.CONNECTING) {
+            return true;
+        }
+        return false;
+    }
+
+    public static float getDeviceWidth() {
+        WindowManager wm = (WindowManager) RunApplication.getAppContex()
+                .getSystemService(Context.WINDOW_SERVICE);
+        Point point = new Point();
+        wm.getDefaultDisplay().getSize(point);
+        return point.x;
     }
 
 }

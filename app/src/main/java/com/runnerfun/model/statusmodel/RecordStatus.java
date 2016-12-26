@@ -45,6 +45,8 @@ public abstract class RecordStatus {
     abstract public void addRecord(TimeLatLng ll);
 
     public void clearRecord(){
+        mStartTime = 0;
+        mTimeOffset = 0;
         mCache.clear();
     };
     /**

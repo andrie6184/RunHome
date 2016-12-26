@@ -4,8 +4,10 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
@@ -22,6 +24,7 @@ import com.amap.api.maps.model.LatLng;
 import com.runnerfun.beans.ResponseBean;
 import com.runnerfun.beans.RunSaveResultBean;
 import com.runnerfun.beans.RunUploadBean;
+import com.runnerfun.beans.RunUploadDB;
 import com.runnerfun.mock.TrackMocker;
 import com.runnerfun.model.RecordModel;
 import com.runnerfun.model.TimeLatLng;
@@ -47,11 +50,11 @@ import timber.log.Timber;
  */
 public class RecordService extends Service implements AMapLocationListener {
 
-    public static final String ACTION_START_RECORD = "com.runnerfun.start";
-    public static final String ACTION_STOP_RECORD = "com.runnerfun.stop";
-    public static final String ACTION_CLEAR_RECORD = "com.runnerfun.clear";
-    public static final String ACTION_PAUSE_RECORD = "com.runnerfun.pause";
-    public static final String ACTION_RESUME_RECORD = "com.runnerfun.resume";
+    public static final String ACTION_START_RECORD = "com.runnerfun.service.action.start";
+    public static final String ACTION_STOP_RECORD = "com.runnerfun.service.action.stop";
+    public static final String ACTION_CLEAR_RECORD = "com.runnerfun.service.action.clear";
+    public static final String ACTION_PAUSE_RECORD = "com.runnerfun.service.action.pause";
+    public static final String ACTION_RESUME_RECORD = "com.runnerfun.service.action.resume";
     public static final String ID_ARGS = "id";
 
     public String firstPoi;
@@ -89,11 +92,12 @@ public class RecordService extends Service implements AMapLocationListener {
     public RecordService() {
         super();
     }
+
     private int ignore = 2;
 
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
-        if(--ignore > 0){
+        if (--ignore > 0) {
             return;
         }
         if (aMapLocation != null && aMapLocation.getErrorCode() == 0 && aMapLocation.getAccuracy() < 50.f
@@ -118,7 +122,7 @@ public class RecordService extends Service implements AMapLocationListener {
         switch (intent.getAction()) {
             case ACTION_START_RECORD:
                 long id = intent.getLongExtra(ID_ARGS, 0);
-                doStart(id);//TODO:是否需要notification?
+                doStart(id);
                 break;
             case ACTION_STOP_RECORD:
                 doStop();
@@ -135,11 +139,27 @@ public class RecordService extends Service implements AMapLocationListener {
             default:
                 break;
         }
+
+        IntentFilter mScreenOffFilter = new IntentFilter();
+        mScreenOffFilter.addAction(Intent.ACTION_SCREEN_OFF);
+        registerReceiver(mScreenOffReceiver, mScreenOffFilter);
+
         return START_NOT_STICKY;
     }
 
-    private void uploadData() {
-        RunUploadBean bean = new RunUploadBean();
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+//        if (RecordModel.instance.isRecording() || RecordModel.instance.isPause()) {
+//            doStop();
+//        }
+        unregisterReceiver(mScreenOffReceiver);
+        RecordModel.instance.clear();
+    }
+
+    private void uploadServiceData() {
+        final RunUploadBean bean = new RunUploadBean();
+        final String track = getTrack(RecordModel.instance.readCache());
         SimpleDateFormat format = new SimpleDateFormat("yy-MM-dd hh:mm:ss", Locale.getDefault());
         bean.startTime = format.format(new Date(startTime));
         bean.calorie = RecordModel.instance.getCal();
@@ -149,8 +169,9 @@ public class RecordService extends Service implements AMapLocationListener {
         bean.total_distance = RecordModel.instance.getDistance() / 1000; //上传公里
         bean.position = firstPoi;
 
-        if (RecordModel.instance.getDistance() <= 10) {
+        if ((bean.total_distance * 1000) <= 10) {
             Toast.makeText(RunApplication.getAppContex(), "跑步距离太短,本次记录无效", Toast.LENGTH_SHORT).show();
+            stopSelf();
             return;
         }
 
@@ -166,7 +187,6 @@ public class RecordService extends Service implements AMapLocationListener {
                         ThirdpartAuthManager.setLastRidForShare(bean.getData().getId());
                         ThirdpartAuthManager.setLastCoinForShare(bean.getData().getCoin());
 
-                        String track = getTrack(RecordModel.instance.readCache());
                         LocalBroadcastManager.getInstance(RunApplication.getAppContex())
                                 .sendBroadcast(new Intent(UserFragment.USER_INFO_CHANGED_ACTION));
                         Timber.d("hallucination", "trigger");
@@ -182,6 +202,10 @@ public class RecordService extends Service implements AMapLocationListener {
         }, new Action1<Throwable>() {
             @Override
             public void call(Throwable throwable) {
+                RunUploadDB saveModel = new RunUploadDB(bean);
+                saveModel.setId(System.currentTimeMillis());
+                saveModel.setTrack(track);
+                saveModel.save();
                 Timber.e(throwable.toString());
                 stopSelf();
             }
@@ -201,7 +225,6 @@ public class RecordService extends Service implements AMapLocationListener {
             mUploadTimer.unsubscribe();
         }
         RecordModel.instance.stop();
-        uploadData();
         if (mlocationClient != null) {
             mlocationClient.stopLocation();
             mlocationClient.onDestroy();
@@ -212,7 +235,9 @@ public class RecordService extends Service implements AMapLocationListener {
 
         AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
         am.cancel(pi);
-        // TrackMocker.instance.stopMock();
+
+        uploadServiceData();
+        TrackMocker.instance.stopMock();
     }
 
     private void doStart(long id) {
@@ -234,17 +259,15 @@ public class RecordService extends Service implements AMapLocationListener {
         if (mUploadTimer != null) {
             mUploadTimer.unsubscribe();
         }
-        //TODO: start upload
         RecordModel.instance.start(id);
-        // TrackMocker.instance.startMock();
+        TrackMocker.instance.startMock();
         startUploadTimer();
         // start forground
         useForeground("跑步中...");
-
-        Intent intent = new Intent("MY_LOCATION");
+        /* no use Intent intent = new Intent("MY_LOCATION");
         PendingIntent pi = PendingIntent.getBroadcast(this, 0, intent, 0);
         AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 2 * 1000, pi);
+        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 2 * 1000, pi);*/
     }
 
     public void useForeground(String currSong) {
@@ -266,15 +289,6 @@ public class RecordService extends Service implements AMapLocationListener {
 
     private void doResume() {
         RecordModel.instance.resume();
-    }
-
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-//        if (RecordModel.instance.isRecording() || RecordModel.instance.isPause()) {
-//            doStop();
-//        }
     }
 
     @Nullable
@@ -315,5 +329,16 @@ public class RecordService extends Service implements AMapLocationListener {
         result.append("}");
         return result.toString();
     }
+
+    private BroadcastReceiver mScreenOffReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+                Intent mLockIntent = new Intent(context, LockScreenActivity.class);
+                mLockIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                startActivity(mLockIntent);
+            }
+        }
+    };
 
 }

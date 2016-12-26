@@ -3,6 +3,7 @@ package com.runnerfun.beans;
 import java.io.Serializable;
 
 /**
+ * RunUploadBean
  * Created by andrie on 16/12/9.
  */
 

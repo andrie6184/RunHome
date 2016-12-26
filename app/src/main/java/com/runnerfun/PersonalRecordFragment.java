@@ -1,9 +1,15 @@
 package com.runnerfun;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -16,15 +22,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amap.api.maps.model.LatLng;
 import com.runnerfun.beans.PersonalRecordBean;
+import com.runnerfun.beans.PersonalRunRecordBean;
 import com.runnerfun.beans.RunRecordBean;
 import com.runnerfun.beans.RunTrackBean;
+import com.runnerfun.beans.RunUploadDB;
 import com.runnerfun.model.RecordModel;
 import com.runnerfun.model.TimeLatLng;
 import com.runnerfun.network.NetworkManager;
 import com.runnerfun.tools.TimeStringUtils;
 import com.runnerfun.tools.UITools;
+
+import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,11 +49,13 @@ import static com.runnerfun.network.NetworkManager.COMMON_PAGE_SIZE;
 
 public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    private ArrayList<RunRecordBean> mRecords;
+    public static final String TRACKS_REFRESH_ACTION = "TRACKS_REFRESH_ACTION";
+
+    private ArrayList<PersonalRunRecordBean> mRecords = new ArrayList<>();
     private boolean isLoading = false;
     private Typeface boldTypeFace;
 
-    private RunRecordBean mDeleteBean;
+    private PersonalRunRecordBean mDeleteBean;
     private boolean mIsDeleting;
     private boolean mIsJumping;
     private boolean mHasMoreData;
@@ -55,6 +66,9 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
     ListView mRecordList;
 
     private RecordListAdapter mAdapter;
+
+    private LocalBroadcastManager mLocalManager;
+    private RecordRefreshReceiver mReceiver;
 
     public PersonalRecordFragment() {
     }
@@ -69,6 +83,12 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
         ButterKnife.bind(this, view);
         boldTypeFace = Typeface.createFromAsset(getActivity().getAssets(), "fonts/dincond-bold.otf");
         init();
+
+        mLocalManager = LocalBroadcastManager.getInstance(getActivity());
+        IntentFilter filter = new IntentFilter(TRACKS_REFRESH_ACTION);
+        mReceiver = new RecordRefreshReceiver();
+        mLocalManager.registerReceiver(mReceiver, filter);
+
         return view;
     }
 
@@ -76,6 +96,12 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
     public void onStart() {
         super.onStart();
         // requestCoinInfo(false);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mLocalManager.unregisterReceiver(mReceiver);
     }
 
     private void init() {
@@ -110,25 +136,29 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getItemId() == 1) {
-            NetworkManager.instance.deleteRunRecord(mDeleteBean.getRid(), new Subscriber<Object>() {
-                @Override
-                public void onCompleted() {
-                    mIsDeleting = false;
-                }
+            if (mDeleteBean.getRid().equals("-1")) {
+                DataSupport.delete(RunUploadDB.class, mDeleteBean.getId());
+            } else {
+                NetworkManager.instance.deleteRunRecord(mDeleteBean.getRid(), new Subscriber<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        mIsDeleting = false;
+                    }
 
-                @Override
-                public void onError(Throwable e) {
-                    mIsDeleting = false;
-                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
+                    @Override
+                    public void onError(Throwable e) {
+                        mIsDeleting = false;
+                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
 
-                @Override
-                public void onNext(Object s) {
-                    Toast.makeText(getActivity(), "删除成功", Toast.LENGTH_SHORT).show();
-                    mRecords.remove(mDeleteBean);
-                    mAdapter.notifyDataSetChanged();
-                }
-            });
+                    @Override
+                    public void onNext(Object s) {
+                        Toast.makeText(getActivity(), "删除成功", Toast.LENGTH_SHORT).show();
+                        mRecords.remove(mDeleteBean);
+                        mAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
             return true;
         }
         return super.onContextItemSelected(item);
@@ -145,38 +175,32 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
             return;
         }
         mIsJumping = true;
-        final RunRecordBean item = mRecords.get(position);
-        final String rid = item.getRid();
-        NetworkManager.instance.getRunTrack(rid, new Subscriber<RunTrackBean>() {
-            @Override
-            public void onCompleted() {
-                mIsJumping = false;
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                mIsJumping = false;
-                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNext(RunTrackBean runTrackBean) {
-                List<TimeLatLng> lls = RecordModel.parseStringToLatLng(runTrackBean.getTrack());
-                RecordModel.instance.initRecord(lls);
-                String dis = UITools.numberFormat(Float.valueOf(item.getTotal_distance())) + "km";
-
-                String speed = "0'00\"";
-                if (Float.valueOf(runTrackBean.getTotal_time()) > 0 && Float.valueOf(runTrackBean.getDistance()) > 0) {
-                    float seconds = Float.valueOf(runTrackBean.getTotal_time()) / (Float.valueOf(runTrackBean.getDistance()));
-                    int minutes = (int) seconds  / 60;
-                    speed = String.format(Locale.getDefault(), "%d'%d\"", minutes, (int) (seconds % 60));
+        final PersonalRunRecordBean item = mRecords.get(position);
+        if (!TextUtils.isEmpty(item.getTrack())) {
+            openMapActivity(item.getTrack(), item.getTotal_distance(), item.getTotal_time(), item.getDistance(),
+                    item.getCalorie(), "0", "-1");
+            mIsJumping = false;
+        } else {
+            final String rid = item.getRid();
+            NetworkManager.instance.getRunTrack(rid, new Subscriber<RunTrackBean>() {
+                @Override
+                public void onCompleted() {
+                    mIsJumping = false;
                 }
 
-                String cal = UITools.numberFormat(Float.valueOf(item.getCalorie()) / 1000) + "kcal";
-                String time = TimeStringUtils.getTime(Long.valueOf(item.getTotal_time()) * 1000);
-                MapActivity.startWithDisplayMode(getActivity(), dis, speed, time, cal, rid, item.getGet_score());
-            }
-        });
+                @Override
+                public void onError(Throwable e) {
+                    mIsJumping = false;
+                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onNext(RunTrackBean runTrackBean) {
+                    openMapActivity(runTrackBean.getTrack(), item.getTotal_distance(), runTrackBean.getTotal_time()
+                            , runTrackBean.getDistance(), item.getCalorie(), rid, item.getGet_score());
+                }
+            });
+        }
     }
 
     @OnItemLongClick(R.id.precord_list_view)
@@ -205,7 +229,14 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
 
             @Override
             public void onError(Throwable e) {
-                showError(R.string.network_common_err);
+                List<RunUploadDB> localRecords = DataSupport.findAll(RunUploadDB.class);
+                if (localRecords != null && localRecords.size() > 0) {
+                    for (RunUploadDB db : localRecords) {
+                        mRecords.add(new PersonalRunRecordBean(db));
+                    }
+                } else {
+                    showError(R.string.network_common_err);
+                }
                 mPtrLayout.setRefreshing(false);
             }
 
@@ -213,18 +244,22 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
             public void onNext(PersonalRecordBean records) {
                 if (records != null) {
                     if (records.getList().size() > 0) {
+                        int localSize = 0;
                         if (!requestMore) {
-                            mRecords = records.getList();
-                        } else {
-                            mRecords.addAll(records.getList());
-                        }
+                            mRecords.clear();
 
-                        if (Integer.valueOf(records.getCnt()) > mRecords.size()) {
-                            mHasMoreData = true;
-                        } else {
-                            mHasMoreData = false;
+                            List<RunUploadDB> localRecords = DataSupport.findAll(RunUploadDB.class);
+                            if (localRecords != null && localRecords.size() > 0) {
+                                for (RunUploadDB db : localRecords) {
+                                    mRecords.add(new PersonalRunRecordBean(db));
+                                }
+                                localSize = localRecords.size();
+                            }
                         }
-
+                        for (RunRecordBean bean : records.getList()) {
+                            mRecords.add(new PersonalRunRecordBean(bean));
+                        }
+                        mHasMoreData = Integer.valueOf(records.getCnt()) > (mRecords.size() - localSize);
                         mAdapter.notifyDataSetChanged();
                         return;
                     }
@@ -238,6 +273,24 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
         Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
     }
 
+    private void openMapActivity(String track, String totalDis, String totalTime, String distance,
+                                 String calorie, String score, String rid) {
+        List<TimeLatLng> lls = RecordModel.parseStringToLatLng(track);
+        RecordModel.instance.initRecord(lls);
+        String dis = UITools.numberFormat(Float.valueOf(totalDis)) + "km";
+
+        String speed = "0'00\"";
+        if (Float.valueOf(totalTime) > 0 && Float.valueOf(distance) > 0) {
+            float seconds = Float.valueOf(totalTime) / (Float.valueOf(distance));
+            int minutes = (int) seconds / 60;
+            speed = String.format(Locale.getDefault(), "%d'%d\"", minutes, (int) (seconds % 60));
+        }
+
+        String cal = UITools.numberFormat(Float.valueOf(calorie) / 1000) + "kcal";
+        String time = TimeStringUtils.getTime(Long.valueOf(totalTime) * 1000);
+        MapActivity.startWithDisplayMode(getActivity(), dis, speed, time, cal, rid, score);
+    }
+
     private class RecordListAdapter extends BaseAdapter {
 
         @Override
@@ -249,7 +302,7 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
         }
 
         @Override
-        public RunRecordBean getItem(int i) {
+        public PersonalRunRecordBean getItem(int i) {
             if (mRecords != null && mRecords.size() > i) {
                 return mRecords.get(i);
             }
@@ -280,7 +333,7 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
                 viewHolder = (ViewHolder) convertView.getTag();
             }
 
-            final RunRecordBean item = getItem(position);
+            final PersonalRunRecordBean item = getItem(position);
             if (item != null) {
                 viewHolder.lengthValue.setText(UITools.numberFormat(item.getTotal_distance()));
                 viewHolder.recordDate.setText(item.getStartTime().split(" ")[0]);
@@ -302,6 +355,13 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
             TextView warning;
         }
 
+    }
+
+    private class RecordRefreshReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            requestCoinInfo(false);
+        }
     }
 
 }

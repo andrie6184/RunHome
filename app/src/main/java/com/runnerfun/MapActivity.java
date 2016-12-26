@@ -8,18 +8,17 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.AMap;
-import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.CameraUpdate;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
@@ -30,7 +29,6 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.PolylineOptions;
-import com.runnerfun.beans.Record;
 import com.runnerfun.model.ConfigModel;
 import com.runnerfun.model.RecordModel;
 import com.runnerfun.model.TimeLatLng;
@@ -208,10 +206,10 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
                     });
 
             drawLines(RecordModel.instance.readCache());
-            if(RecordModel.instance.isPause() || RecordModel.instance.isRecording()){
+            if (RecordModel.instance.isPause() || RecordModel.instance.isRecording()) {
                 mlocationClient.startLocation();
-            }
-            else{
+            } else {
+                mlocationClient.startLocation();
                 zoomToBound(TimeLatLng.toLatLngList(RecordModel.instance.readCache()));
             }
         }
@@ -221,7 +219,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
     private void updateVvalue() {
         if (RecordModel.instance.getRecordTime() > 0 && RecordModel.instance.getDistance() > 0) {
             float seconds = RecordModel.instance.getRecordTime() / RecordModel.instance.getDistance();
-            int minutes = (int) seconds  / 60;
+            int minutes = (int) seconds / 60;
             String speedShow = String.format(Locale.getDefault(), "%d'%d\"", minutes, (int) (seconds % 60));
             mSpeedValue.setText(speedShow);
         } else {
@@ -296,8 +294,12 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
 
     @OnClick(R.id.share_btn)
     void share() {
-        ShareTargetActivity.startWithShareData(this, getIntent().getStringExtra("intent_param_distance"),
-                getIntent().getStringExtra("intent_param_speed"), getIntent().getStringExtra("intent_param_time"));
+        if (rid.equals("-1")) {
+            Toast.makeText(this, "本次跑步记录尚未上传到服务器,暂时不能分享", Toast.LENGTH_SHORT).show();
+        } else {
+            ShareTargetActivity.startWithShareData(this, getIntent().getStringExtra("intent_param_distance"),
+                    getIntent().getStringExtra("intent_param_speed"), getIntent().getStringExtra("intent_param_time"));
+        }
     }
 
     @OnClick(R.id.cancel_btn)
@@ -313,16 +315,16 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
     @Override
     public void onLocationChanged(AMapLocation amapLocation) {
         mlocationClient.stopLocation();
-        if(amapLocation != null && amapLocation.getErrorCode() == 0){
+        if (amapLocation != null && amapLocation.getErrorCode() == 0) {
             SharedPreferences sp = getSharedPreferences("location", Context.MODE_PRIVATE);
             sp.edit().putString("location", amapLocation.getCountry() + '·' + amapLocation.getCity()).apply();
 //            if(RecordModel.instance.isRecording() || RecordModel.instance.isPause()){
 //                return;//正在记录则丢弃当前定位
 //            }
 //            else{
-                moveTo(new LatLng(amapLocation.getLatitude(), amapLocation.getLongitude()));
-                mMap.getMap().moveCamera(CameraUpdateFactory.zoomTo(18.0f));
-                drawStart();
+            moveTo(new LatLng(amapLocation.getLatitude(), amapLocation.getLongitude()));
+            mMap.getMap().moveCamera(CameraUpdateFactory.zoomTo(18.0f));
+            drawStart();
 //            }
         }
     }
@@ -361,10 +363,9 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         mMap.getMap().addPolyline(po);
 
         drawStart();
-        if(RecordModel.instance.isPause() || RecordModel.instance.isRecording()){
+        if (RecordModel.instance.isPause() || RecordModel.instance.isRecording()) {
             drawCurrent();
-        }
-        else {
+        } else {
             drawEnd();
         }
     }
@@ -404,9 +405,9 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         mMap.getMap().moveCamera(c);
     }
 
-    private void drawStart(){
+    private void drawStart() {
         LatLng start = RecordModel.instance.firstLatLng().getLatlnt();
-        if(start == null){
+        if (start == null) {
             return;
         }
         MarkerOptions markerOption = new MarkerOptions();
@@ -419,9 +420,9 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         mMap.getMap().addMarker(markerOption);
     }
 
-    private void drawCurrent(){
+    private void drawCurrent() {
         LatLng start = RecordModel.instance.lastLatLng().getLatlnt();
-        if(start == null){
+        if (start == null) {
             return;
         }
         MarkerOptions markerOption = new MarkerOptions();
@@ -434,9 +435,13 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         mMap.getMap().addMarker(markerOption);
     }
 
-    private void drawEnd(){
-        LatLng start = RecordModel.instance.lastLatLng().getLatlnt();
-        if(start == null){
+    private void drawEnd() {
+        TimeLatLng last = RecordModel.instance.lastLatLng();
+        if (last == null) {
+            return;
+        }
+        LatLng start = last.getLatlnt();
+        if (start == null) {
             return;
         }
         MarkerOptions markerOption = new MarkerOptions();
@@ -449,7 +454,7 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
         mMap.getMap().addMarker(markerOption);
     }
 
-    private void zoomToBound(List<LatLng> records){
+    private void zoomToBound(List<LatLng> records) {
         LatLngBounds.Builder llb = LatLngBounds.builder();
         for (LatLng a : records) {
             llb.include(a);
