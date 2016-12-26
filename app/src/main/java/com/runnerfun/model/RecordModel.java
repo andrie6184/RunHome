@@ -108,16 +108,10 @@ public class RecordModel {
      * @return
      */
     public float getDistance() {
-        if (mStatus instanceof StopStatus) {
-            return 0;
-        }
         return mStatus.getDistance() * 0.92f;
     }
 
     public float getRealDistance() {
-        if (mStatus instanceof StopStatus) {
-            return 0;
-        }
         List<TimeLatLng> ll = mStatus.readCache();
         if(ll == null || ll .size() <= 0){
             return 0;

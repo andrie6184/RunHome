@@ -8,11 +8,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Binder;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
@@ -154,7 +155,7 @@ public class RecordService extends Service implements AMapLocationListener {
 //            doStop();
 //        }
         unregisterReceiver(mScreenOffReceiver);
-        RecordModel.instance.clear();
+        // TODO very trouble!!! RecordModel.instance.clear();
     }
 
     private void uploadServiceData() {
@@ -291,12 +292,6 @@ public class RecordService extends Service implements AMapLocationListener {
         RecordModel.instance.resume();
     }
 
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
-
     private void startUploadTimer() {
     }
 
@@ -340,5 +335,27 @@ public class RecordService extends Service implements AMapLocationListener {
             }
         }
     };
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        Timber.i("RecordService", "onBind(), Thread: " + Thread.currentThread().getName());
+        return binder;
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        if (intent != null) {
+            Timber.i("RecordService", "onUnbind(), from:" + intent.getStringExtra("from"), "");
+        }
+        return false;
+    }
+
+    public class RecordServiceBinder extends Binder {
+        public RecordService getService() {
+            return RecordService.this;
+        }
+    }
+
+    private RecordServiceBinder binder = new RecordServiceBinder();
 
 }

@@ -1,8 +1,12 @@
 package com.runnerfun;
 
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -22,6 +26,7 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import timber.log.Timber;
 
 public class LockScreenActivity extends BaseActivity {
 
@@ -36,6 +41,21 @@ public class LockScreenActivity extends BaseActivity {
     UnderView underView;
 
     private Subscription mTimer = null;
+    private RecordService service;
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+            RecordService.RecordServiceBinder myBinder = (RecordService.RecordServiceBinder) binder;
+            service = myBinder.getService();
+            Timber.i("LockScreenActivity", "ActivityA onServiceConnected");
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Timber.i("LockScreenActivity", "ActivityA onServiceDisconnected");
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +71,9 @@ public class LockScreenActivity extends BaseActivity {
         underView.mMoveView = moveView;
         underView.mHandler = new Handler();
         underView.mActivity = this;
+
+        Intent intent = new Intent(this, RecordService.class);
+        bindService(intent, mConnection, BIND_AUTO_CREATE);
     }
 
     @Override
@@ -105,6 +128,7 @@ public class LockScreenActivity extends BaseActivity {
 
     @OnClick(R.id.stop_btn)
     void onStopClicked(View view) {
+        unbindService(mConnection);
         RecordService.stopRecord(this);
         finish();
     }
