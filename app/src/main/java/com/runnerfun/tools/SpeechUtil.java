@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Environment;
 import android.widget.Toast;
 
-import com.baidu.tts.auth.AuthInfo;
 import com.baidu.tts.client.SpeechError;
 import com.baidu.tts.client.SpeechSynthesizer;
 import com.baidu.tts.client.SpeechSynthesizerListener;
@@ -46,7 +45,6 @@ public class SpeechUtil implements SpeechSynthesizerListener {
      * @date 2015-4-14 下午1:36:53
      */
     private void init() {
-//      activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
         speechSynthesizer = SpeechSynthesizer.getInstance();
         speechSynthesizer.setContext(context);
         speechSynthesizer.setSpeechSynthesizerListener(this);
@@ -59,25 +57,13 @@ public class SpeechUtil implements SpeechSynthesizerListener {
         // 的实际路径，仅在使用临时license文件时需要进行设置，如果在[应用管理]中开通了正式离线授权，不需要设置该参数，
         // 建议将该行代码删除（离线引擎）
         // 如果合成结果出现临时授权文件将要到期的提示，说明使用了临时授权文件，请删除临时授权即可。
-        speechSynthesizer.setParam(SpeechSynthesizer.PARAM_TTS_LICENCE_FILE, mSampleDirPath + "/"
-                + LICENSE_FILE_NAME);
+        // speechSynthesizer.setParam(SpeechSynthesizer.PARAM_TTS_LICENCE_FILE, mSampleDirPath + "/" + LICENSE_FILE_NAME);
         // 请替换为语音开发者平台上注册应用得到的App ID (离线授权)
-        speechSynthesizer.setAppId("8535996"/*这里只是为了让Demo运行使用的APPID,请替换成自己的id。*/);
+        speechSynthesizer.setAppId("9133815");
         // 请替换为语音开发者平台注册应用得到的apikey和secretkey (在线授权)
-        speechSynthesizer.setApiKey("MxPpf3nF5QX0pndKKhS7IXcB", "7226e84664474aa098296da5eb2aa434");
+        speechSynthesizer.setApiKey("oGTUgGwrGXiZ5DyOTbMWyojb", "93a1e3758aff0714793778dcc28ddbe5");
         // 设置Mix模式的合成策略
         speechSynthesizer.setParam(SpeechSynthesizer.PARAM_MIX_MODE, SpeechSynthesizer.MIX_MODE_DEFAULT);
-        // 授权检测接口(只是通过AuthInfo进行检验授权是否成功。)
-        // AuthInfo接口用于测试开发者是否成功申请了在线或者离线授权，如果测试授权成功了，可以删除AuthInfo部分的代码
-        // （该接口首次验证时比较耗时），不会影响正常使用（合成使用时SDK内部会自动验证授权）
-        AuthInfo authInfo = speechSynthesizer.auth(TtsMode.MIX);
-
-        if (authInfo.isSuccess()) {
-            toPrint("auth success");
-        } else {
-            String errorMsg = authInfo.getTtsError().getDetailMessage();
-            toPrint("auth failed errorMsg=" + errorMsg);
-        }
 
         // 初始化tts
         speechSynthesizer.initTts(TtsMode.MIX);

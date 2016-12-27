@@ -26,11 +26,13 @@ import com.runnerfun.beans.RunSaveResultBean;
 import com.runnerfun.beans.RunUploadBean;
 import com.runnerfun.beans.RunUploadDB;
 import com.runnerfun.mock.TrackMocker;
+import com.runnerfun.model.ConfigModel;
 import com.runnerfun.model.RecordModel;
 import com.runnerfun.model.TimeLatLng;
 import com.runnerfun.network.NetworkManager;
 import com.runnerfun.tools.SpeechUtil;
 import com.runnerfun.tools.ThirdpartAuthManager;
+import com.runnerfun.tools.UITools;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -68,7 +70,7 @@ public class RecordService extends Service implements AMapLocationListener {
     private Subscription mUploadTimer = null;
     private SpeechUtil mSpeechUtil = null;
 
-    private String speakVoice = "%s公里配速%s,总用时为%s";
+    private String speakVoice = "恭喜你，已经跑了%s公里，上一公里配速%s，您总共用时%s";
 
     public static void startRecord(Context c, long id) {
         Intent i = new Intent(c, RecordService.class);
@@ -106,7 +108,7 @@ public class RecordService extends Service implements AMapLocationListener {
         if (--ignore > 0) {
             return;
         }
-        if (aMapLocation != null && aMapLocation.getErrorCode() == 0 && aMapLocation.getAccuracy() < 50.f
+        if (aMapLocation != null && aMapLocation.getErrorCode() == 0 && aMapLocation.getAccuracy() < 50f
                 && aMapLocation.getLocationType() == AMapLocation.LOCATION_TYPE_GPS) {
             RecordModel.instance.addRecord(new LatLng(aMapLocation.getLatitude(),
                     aMapLocation.getLongitude()));
@@ -120,25 +122,24 @@ public class RecordService extends Service implements AMapLocationListener {
         }
 
         // speak speed.
-        if (RecordModel.instance.getRealDistance() >= mileFlag * 1000) {
+        if (ConfigModel.instance.ismUserVoice() && RecordModel.instance.getRealDistance() >= (mileFlag * 1000)) {
             try {
                 long now = System.currentTimeMillis();
-                String prefix = "本";
-                if (mileFlag > 1) {
-                    prefix = "上一";
-                }
-                int speedMinute = (int) ((now - lastMileTime) / 60);
-                int speedSecond = (int) ((now - lastMileTime) % 60);
+
+                String dis = UITools.numberFormat(RecordModel.instance.getRealDistance() / 1000);
+
+                int speedMinute = (int) ((now - lastMileTime) / 1000 / 60);
+                int speedSecond = (int) ((now - lastMileTime) / 1000 % 60);
                 String speed = String.format(Locale.getDefault(), "%d分%d秒", speedMinute, speedSecond);
 
-                int totalMinute = (int) ((now - startTime) / 60);
-                int totalSecond = (int) ((now - startTime) % 60);
+                int totalMinute = (int) ((now - startTime) / 1000 / 60);
+                int totalSecond = (int) ((now - startTime) / 1000 % 60);
                 String total = String.format(Locale.getDefault(), "%d分%d秒", totalMinute, totalSecond);
 
-                mSpeechUtil.speak(String.format(Locale.getDefault(), speakVoice, prefix, speed, total));
+                mSpeechUtil.speak(String.format(Locale.getDefault(), speakVoice, dis, speed, total));
 
                 lastMileTime = now;
-                mileFlag++;
+                mileFlag += 1;
             } catch (Exception e) {
                 e.printStackTrace();
                 Timber.e(e, "service speak error!");
@@ -234,6 +235,8 @@ public class RecordService extends Service implements AMapLocationListener {
         }, new Action1<Throwable>() {
             @Override
             public void call(Throwable throwable) {
+                Toast.makeText(RunApplication.getAppContex(), "上传失败,已保存至本地,将会稍后重新上传!",
+                        Toast.LENGTH_SHORT).show();
                 RunUploadDB saveModel = new RunUploadDB(bean);
                 saveModel.setId(System.currentTimeMillis());
                 saveModel.setTrack(track);
@@ -245,6 +248,9 @@ public class RecordService extends Service implements AMapLocationListener {
     }
 
     private void doPause() {
+        if (ConfigModel.instance.ismUserVoice()) {
+            mSpeechUtil.speak("跑步暂停");
+        }
         mlocationClient.stopLocation();
         if (mUploadTimer != null) {
             mUploadTimer.unsubscribe();
@@ -253,6 +259,9 @@ public class RecordService extends Service implements AMapLocationListener {
     }
 
     private void doStop() {
+        if (ConfigModel.instance.ismUserVoice()) {
+            mSpeechUtil.speak("跑步结束");
+        }
         if (mUploadTimer != null) {
             mUploadTimer.unsubscribe();
         }
@@ -270,7 +279,7 @@ public class RecordService extends Service implements AMapLocationListener {
         am.cancel(pi);
 
         uploadServiceData();
-        TrackMocker.instance.stopMock();
+        //TrackMocker.instance.stopMock();
     }
 
     private void doStart(long id) {
@@ -298,7 +307,7 @@ public class RecordService extends Service implements AMapLocationListener {
             mSpeechUtil = new SpeechUtil();
         }
         RecordModel.instance.start(id);
-        TrackMocker.instance.startMock();
+        //TrackMocker.instance.startMock();
         startUploadTimer();
         // start forground
         useForeground("跑步中...");
@@ -326,6 +335,9 @@ public class RecordService extends Service implements AMapLocationListener {
     }
 
     private void doResume() {
+        if (ConfigModel.instance.ismUserVoice()) {
+            mSpeechUtil.speak("跑步开始");
+        }
         RecordModel.instance.resume();
     }
 
