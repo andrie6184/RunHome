@@ -87,6 +87,10 @@ public class RecordModel {
         return mStatus instanceof PauseStatus;
     }
 
+    public boolean isStop() {
+        return mStatus instanceof StopStatus;
+    }
+
     public float getSpeed() {
         long time = getRecordTime();
         float distance = mStatus.getDistance();

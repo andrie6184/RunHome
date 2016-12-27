@@ -13,7 +13,6 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
@@ -30,6 +29,7 @@ import com.runnerfun.mock.TrackMocker;
 import com.runnerfun.model.RecordModel;
 import com.runnerfun.model.TimeLatLng;
 import com.runnerfun.network.NetworkManager;
+import com.runnerfun.tools.SpeechUtil;
 import com.runnerfun.tools.ThirdpartAuthManager;
 
 import java.text.SimpleDateFormat;
@@ -60,10 +60,15 @@ public class RecordService extends Service implements AMapLocationListener {
 
     public String firstPoi;
     public long startTime;
+    public long lastMileTime;
+    public int mileFlag;
 
     private AMapLocationClientOption mLocationOption = null;
     private AMapLocationClient mlocationClient = null;
     private Subscription mUploadTimer = null;
+    private SpeechUtil mSpeechUtil = null;
+
+    private String speakVoice = "%s公里配速%s,总用时为%s";
 
     public static void startRecord(Context c, long id) {
         Intent i = new Intent(c, RecordService.class);
@@ -113,6 +118,32 @@ public class RecordService extends Service implements AMapLocationListener {
         } else {
             //TODO: do nothing
         }
+
+        // speak speed.
+        if (RecordModel.instance.getRealDistance() >= mileFlag * 1000) {
+            try {
+                long now = System.currentTimeMillis();
+                String prefix = "本";
+                if (mileFlag > 1) {
+                    prefix = "上一";
+                }
+                int speedMinute = (int) ((now - lastMileTime) / 60);
+                int speedSecond = (int) ((now - lastMileTime) % 60);
+                String speed = String.format(Locale.getDefault(), "%d分%d秒", speedMinute, speedSecond);
+
+                int totalMinute = (int) ((now - startTime) / 60);
+                int totalSecond = (int) ((now - startTime) % 60);
+                String total = String.format(Locale.getDefault(), "%d分%d秒", totalMinute, totalSecond);
+
+                mSpeechUtil.speak(String.format(Locale.getDefault(), speakVoice, prefix, speed, total));
+
+                lastMileTime = now;
+                mileFlag++;
+            } catch (Exception e) {
+                e.printStackTrace();
+                Timber.e(e, "service speak error!");
+            }
+        }
     }
 
     @Override
@@ -155,7 +186,7 @@ public class RecordService extends Service implements AMapLocationListener {
 //            doStop();
 //        }
         unregisterReceiver(mScreenOffReceiver);
-        // TODO very trouble!!! RecordModel.instance.clear();
+        // not here RecordModel.instance.clear();
     }
 
     private void uploadServiceData() {
@@ -230,6 +261,7 @@ public class RecordService extends Service implements AMapLocationListener {
             mlocationClient.stopLocation();
             mlocationClient.onDestroy();
         }
+        mSpeechUtil = null;
         stopForeground(true);
         Intent intent = new Intent("MY_LOCATION");
         PendingIntent pi = PendingIntent.getBroadcast(this, 0, intent, 0);
@@ -244,6 +276,8 @@ public class RecordService extends Service implements AMapLocationListener {
     private void doStart(long id) {
         ignore = 2;
         startTime = System.currentTimeMillis();
+        lastMileTime = System.currentTimeMillis();
+        mileFlag = 1;
         if (mlocationClient != null) {
             mlocationClient.onDestroy();
         }
@@ -259,6 +293,9 @@ public class RecordService extends Service implements AMapLocationListener {
         mlocationClient.startLocation();
         if (mUploadTimer != null) {
             mUploadTimer.unsubscribe();
+        }
+        if (mSpeechUtil == null) {
+            mSpeechUtil = new SpeechUtil();
         }
         RecordModel.instance.start(id);
         TrackMocker.instance.startMock();

@@ -144,6 +144,35 @@ public class RunFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        // clear last data.
+        if (RecordModel.instance.isStop()) {
+            RecordModel.instance.clear();
+        }
+
+        mTimer = Observable.interval(1000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long aLong) {
+                        refreshResult();
+                    }
+                });
+        if (RecordModel.instance.isPause() || RecordModel.instance.isRecording()) {
+            mStartPanel.setVisibility(View.GONE);
+            mStopPanel.setVisibility(View.VISIBLE);
+            boolean isRecording = RecordModel.instance.isRecording();
+            ((ImageView) mStopPanel.findViewById(R.id.resume_btn)).setImageResource(isRecording ?
+                    R.drawable.resume : R.drawable.continue_icon);
+        } else {
+            mStartPanel.setVisibility(View.VISIBLE);
+            mStopPanel.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         mLocalManager.unregisterReceiver(mReceiver);
@@ -251,29 +280,6 @@ public class RunFragment extends Fragment {
         mCountDownView.setText(String.valueOf(second));
         mCountDownView.clearAnimation();
         mCountDownView.startAnimation(mScaleAnimation);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mTimer = Observable.interval(1000, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Long>() {
-                    @Override
-                    public void call(Long aLong) {
-                        refreshResult();
-                    }
-                });
-        if (RecordModel.instance.isPause() || RecordModel.instance.isRecording()) {
-            mStartPanel.setVisibility(View.GONE);
-            mStopPanel.setVisibility(View.VISIBLE);
-            boolean isRecording = RecordModel.instance.isRecording();
-            ((ImageView) mStopPanel.findViewById(R.id.resume_btn)).setImageResource(isRecording ?
-                    R.drawable.resume : R.drawable.continue_icon);
-        } else {
-            mStartPanel.setVisibility(View.VISIBLE);
-            mStopPanel.setVisibility(View.GONE);
-        }
     }
 
     @OnClick(R.id.stop_btn)

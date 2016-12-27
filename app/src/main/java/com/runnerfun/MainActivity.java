@@ -2,6 +2,7 @@ package com.runnerfun;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
@@ -88,6 +89,8 @@ public class MainActivity extends BaseFragmentActivity {
         }
         // for JiGuang Push
         setAlias();
+        // for tts settings.
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
 
     @Override
@@ -145,6 +148,12 @@ public class MainActivity extends BaseFragmentActivity {
                 Timber.e(throwable, "upload local track error 2");
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);
     }
 
     @Override

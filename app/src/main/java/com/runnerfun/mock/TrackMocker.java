@@ -14,6 +14,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 /**
+ * TrackMocker
  * Created by andrie on 04/12/2016.
  */
 
@@ -37,8 +38,8 @@ public class TrackMocker {
                 .subscribe(new Action1<Long>() {
             @Override
             public void call(Long aLong) {
-                double lat = mSeed.nextDouble() / 100 + 39;
-                double lng = mSeed.nextDouble()  /100 + 116;
+                double lat = mSeed.nextDouble() / 1000 + 39.9;
+                double lng = mSeed.nextDouble()  /1000 + 116.4;
                 RecordModel.instance.addRecord(new LatLng(lat, lng));
             }
         });

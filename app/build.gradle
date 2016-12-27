@@ -80,4 +80,6 @@ dependencies {
     compile files('libs/okio-1.6.0-leancloud.jar')
     compile files('libs/httpmime-4.2.4.jar')
     compile 'org.litepal.android:core:1.4.1'
+    compile files('libs/galaxy-v2.0.jar')
+    compile files('libs/com.baidu.tts_2.2.9.20161020_154fa02_release.jar')
 }
