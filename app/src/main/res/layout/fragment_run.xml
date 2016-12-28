@@ -28,6 +28,15 @@
                 android:padding="10dp"
                 android:src="@drawable/icon_shezhi"/>
 
+            <ImageView
+                android:id="@+id/prime_config"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="5dp"
+                android:padding="10dp"
+                android:src="@drawable/icon_shezhi"/>
+
             <TextView
                 android:id="@+id/money"
                 android:layout_width="wrap_content"

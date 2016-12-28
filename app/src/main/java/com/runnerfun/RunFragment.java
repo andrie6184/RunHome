@@ -225,6 +225,11 @@ public class RunFragment extends Fragment {
         getActivity().startActivity(new Intent(getActivity(), RunConfigActivity.class));
     }
 
+    @OnClick(R.id.prime_config)
+    void optimizeConfig() {
+        getActivity().startActivity(new Intent(getActivity(), OptimizeSettingActivity.class));
+    }
+
     private void doStart(final long id) {
         if (ConfigModel.instance.getmCountDownSecond() <= 0) {
             RecordService.startRecord(getActivity(), id);

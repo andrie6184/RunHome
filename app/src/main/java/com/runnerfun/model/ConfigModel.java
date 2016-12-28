@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 /**
+ * ConfigModel
  * Created by andrie on 04/12/2016.
  */
 

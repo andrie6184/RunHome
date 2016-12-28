@@ -112,7 +112,7 @@ public class RecordModel {
      * @return
      */
     public float getDistance() {
-        return mStatus.getDistance() * 0.92f;
+        return mStatus.getDistance() * OptimizeConfigModel.instance.getLengthPercent();
     }
 
     public float getRealDistance() {
@@ -131,7 +131,7 @@ public class RecordModel {
             start = tl;
         }
 
-        return distance * 0.92f;
+        return distance * OptimizeConfigModel.instance.getLengthPercent();
     }
 
     public List<TimeLatLng> readCache() {

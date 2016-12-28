@@ -10,6 +10,7 @@ import android.webkit.CookieSyncManager;
 import com.avos.avoscloud.AVAnalytics;
 import com.avos.avoscloud.AVOSCloud;
 import com.runnerfun.model.ConfigModel;
+import com.runnerfun.model.OptimizeConfigModel;
 import com.squareup.picasso.Picasso;
 
 import org.litepal.LitePal;
@@ -60,6 +61,7 @@ public class RunApplication extends Application {
         // init Picasso
         picasso = Picasso.with(this);
         ConfigModel.instance.load(this);
+        OptimizeConfigModel.instance.load(this);
 
         // init database
         LitePal.initialize(this);

@@ -27,6 +27,7 @@ import com.runnerfun.beans.RunUploadBean;
 import com.runnerfun.beans.RunUploadDB;
 import com.runnerfun.mock.TrackMocker;
 import com.runnerfun.model.ConfigModel;
+import com.runnerfun.model.OptimizeConfigModel;
 import com.runnerfun.model.RecordModel;
 import com.runnerfun.model.TimeLatLng;
 import com.runnerfun.network.NetworkManager;
@@ -108,8 +109,27 @@ public class RecordService extends Service implements AMapLocationListener {
         if (--ignore > 0) {
             return;
         }
-        if (aMapLocation != null && aMapLocation.getErrorCode() == 0 && aMapLocation.getAccuracy() < 50f
-                && aMapLocation.getLocationType() == AMapLocation.LOCATION_TYPE_GPS) {
+
+        if (aMapLocation == null) {
+            return;
+        }
+
+        // for optimize
+        boolean optimizeSource = false;
+        if (OptimizeConfigModel.instance.getSourceType()
+                .contains(String.valueOf(aMapLocation.getLocationType()))) {
+            optimizeSource = true;
+        }
+        float accuracy = OptimizeConfigModel.instance.getGPSAccuracy();
+        boolean goodState = true;
+        if (OptimizeConfigModel.instance.isCheckGPSState()
+                && aMapLocation.getGpsAccuracyStatus() != AMapLocation.GPS_ACCURACY_GOOD) {
+            goodState = false;
+        }
+
+        if (aMapLocation.getErrorCode() == 0 && aMapLocation.getAccuracy() < accuracy
+                && (aMapLocation.getLocationType() == AMapLocation.LOCATION_TYPE_GPS
+                || optimizeSource) && goodState) {
             RecordModel.instance.addRecord(new LatLng(aMapLocation.getLatitude(),
                     aMapLocation.getLongitude()));
 

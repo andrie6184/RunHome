@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_optimaze_setting"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context="com.runnerfun.OptimizeSettingActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#000">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dip"
+            android:gravity="center"
+            android:singleLine="false"
+            android:text="优化参数设置"
+            android:textColor="#FFF"
+            android:textSize="16sp"/>
+
+        <ImageView
+            android:id="@+id/cancel_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:contentDescription="@null"
+            android:paddingLeft="15dip"
+            android:paddingRight="15dip"
+            android:scaleType="fitCenter"
+            android:src="@drawable/return_btn"/>
+
+        <TextView
+            android:id="@+id/save_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="10dip"
+            android:gravity="center"
+            android:singleLine="false"
+            android:text="保存"
+            android:textColor="#FFF"
+            android:textSize="14sp"/>
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:padding="10dip"
+                android:singleLine="false"
+                android:text="请选择是否只采用高质量GPS信号点:"
+                android:textColor="#000"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/gps_state"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="30dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/register_btn_bg"
+                android:gravity="center"
+                android:padding="10dip"
+                android:singleLine="false"
+                android:text="只记录优质GPS点"
+                android:textColor="#000"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:padding="10dip"
+                android:singleLine="false"
+                android:text="请选择记录点的信号来源类型(GPS类型默认已选择):"
+                android:textColor="#000"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/type_wifi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="30dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/register_btn_bg"
+                android:gravity="center"
+                android:padding="10dip"
+                android:singleLine="false"
+                android:text="WIFI来源"
+                android:textColor="#000"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/type_cell"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="30dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/register_btn_bg"
+                android:gravity="center"
+                android:padding="10dip"
+                android:singleLine="false"
+                android:text="基站来源"
+                android:textColor="#000"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/type_amap"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="30dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/register_btn_bg"
+                android:gravity="center"
+                android:padding="10dip"
+                android:singleLine="false"
+                android:text="高德sdk来源"
+                android:textColor="#000"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:padding="10dip"
+                android:singleLine="false"
+                android:text="请选择记录点的精度范围(1-100):"
+                android:textColor="#000"
+                android:textSize="14sp"/>
+
+            <EditText
+                android:id="@+id/accuracy"
+                style="@style/EditTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginEnd="50dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:hint="精度范围"
+                android:inputType="number"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:padding="10dip"
+                android:singleLine="false"
+                android:text="请选择距离修正比例(1-200)%:"
+                android:textColor="#000"
+                android:textSize="14sp"/>
+
+            <EditText
+                android:id="@+id/length"
+                style="@style/EditTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginBottom="50dp"
+                android:layout_marginEnd="50dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:hint="修正比例"
+                android:inputType="numberDecimal"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
