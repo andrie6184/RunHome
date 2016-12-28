@@ -45,6 +45,7 @@ public class SpeechUtil implements SpeechSynthesizerListener {
      * @date 2015-4-14 下午1:36:53
      */
     private void init() {
+        initialEnvironment();
         speechSynthesizer = SpeechSynthesizer.getInstance();
         speechSynthesizer.setContext(context);
         speechSynthesizer.setSpeechSynthesizerListener(this);
@@ -67,7 +68,6 @@ public class SpeechUtil implements SpeechSynthesizerListener {
 
         // 初始化tts
         speechSynthesizer.initTts(TtsMode.MIX);
-        initialEnvironment();
         setParams();
     }
 
@@ -80,7 +80,7 @@ public class SpeechUtil implements SpeechSynthesizerListener {
         FileUtils.copyFromAssetsToSdcard(context, false, SPEECH_FEMALE_MODEL_NAME, mSampleDirPath + "/" + SPEECH_FEMALE_MODEL_NAME);
         FileUtils.copyFromAssetsToSdcard(context, false, SPEECH_MALE_MODEL_NAME, mSampleDirPath + "/" + SPEECH_MALE_MODEL_NAME);
         FileUtils.copyFromAssetsToSdcard(context, false, TEXT_MODEL_NAME, mSampleDirPath + "/" + TEXT_MODEL_NAME);
-        FileUtils.copyFromAssetsToSdcard(context, false, LICENSE_FILE_NAME, mSampleDirPath + "/" + LICENSE_FILE_NAME);
+        // FileUtils.copyFromAssetsToSdcard(context, false, LICENSE_FILE_NAME, mSampleDirPath + "/" + LICENSE_FILE_NAME);
         FileUtils.copyFromAssetsToSdcard(context, false, "english/" + ENGLISH_SPEECH_FEMALE_MODEL_NAME, mSampleDirPath + "/"
                 + ENGLISH_SPEECH_FEMALE_MODEL_NAME);
         FileUtils.copyFromAssetsToSdcard(context, false, "english/" + ENGLISH_SPEECH_MALE_MODEL_NAME, mSampleDirPath + "/"
