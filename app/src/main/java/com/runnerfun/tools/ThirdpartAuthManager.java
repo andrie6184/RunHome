@@ -86,7 +86,7 @@ public class ThirdpartAuthManager {
     public static final String WEIXIN_APP_KEY = "wx8d08c221f73a378e";
     public static final String WEIXIN_APP_SECRET = "544e1939b3779abca4f9c7302de0c046";
     public static final String WEIBO_APP_KEY = "2756294164";
-    private static final String QQ_APP_KEY = "1105741243";
+    private static final String QQ_APP_KEY = "1105835637";
 
     private static final String WEIBO_REDIRECT_URL = "http://sns.whalecloud.com/sina2/callback";
     private static final String WEIBO_ACCESS_SCOPE =

@@ -14,7 +14,7 @@ public class ConfigModel {
     private int mMapType = 1;//1 normal, 2 night, 3 satellite
     private int mCountDownSecond = 3;
     private boolean mHideOnline = false;
-    private boolean mUserVoice = false;
+    private boolean mUserVoice = true;
 
     public static final ConfigModel instance = new ConfigModel();
 
@@ -78,7 +78,7 @@ public class ConfigModel {
     public void load(Context c){
         SharedPreferences sp = c.getSharedPreferences("config", Context.MODE_PRIVATE);
         mHideOnline = sp.getBoolean("hide_onlie", false);
-        mUserVoice = sp.getBoolean("use_voice", false);
+        mUserVoice = sp.getBoolean("use_voice", true);
         mMapType = sp.getInt("map_type", 0);
         mCountDownSecond = sp.getInt("second", 3);
         // mMapType = mMapType % 3;
