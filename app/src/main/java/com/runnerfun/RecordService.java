@@ -109,7 +109,8 @@ public class RecordService extends Service implements AMapLocationListener {
             return;
         }
         if (aMapLocation != null && aMapLocation.getErrorCode() == 0 && aMapLocation.getAccuracy() < 50f
-                && aMapLocation.getLocationType() == AMapLocation.LOCATION_TYPE_GPS) {
+                && (aMapLocation.getLocationType() == AMapLocation.LOCATION_TYPE_GPS
+                || aMapLocation.getLocationType() == AMapLocation.LOCATION_TYPE_WIFI)) {
             RecordModel.instance.addRecord(new LatLng(aMapLocation.getLatitude(),
                     aMapLocation.getLongitude()));
 
