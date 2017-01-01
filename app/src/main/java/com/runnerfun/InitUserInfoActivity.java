@@ -66,11 +66,24 @@ public class InitUserInfoActivity extends BaseActivity {
         view.setEnabled(false);
         view.setClickable(false);
         String gender = mIsMale ? "男" : "女";
-        int ageValue = ageList.indexOf(age.getText().toString()) == -1 ? 0 : 1 + ageList.indexOf(age.getText().toString());
-        int heightValue = heightList.indexOf(height.getText().toString()) == -1 ? 0 :
-                50 + heightList.indexOf(height.getText().toString());
-        int weightValue = weightList.indexOf(weight.getText().toString()) == -1 ? 0 :
-                30 + weightList.indexOf(weight.getText().toString());
+        int ageValue = 20;
+        if (ageList != null && ageList.size() > 0) {
+            ageValue = ageList.indexOf(age.getText().toString()) == -1 ? 0 : 1 +
+                    ageList.indexOf(age.getText().toString());
+        }
+
+        int heightValue = 170;
+        if (heightList != null && heightList.size() > 0) {
+            heightValue = heightList.indexOf(height.getText().toString()) == -1 ? 0 :
+                    50 + heightList.indexOf(height.getText().toString());
+        }
+
+        int weightValue = 50;
+        if (weightList != null && weightList.size() > 0) {
+            weightValue = weightList.indexOf(weight.getText().toString()) == -1 ? 0 :
+                    30 + weightList.indexOf(weight.getText().toString());
+        }
+
         NetworkManager.instance.initUserInfo(ageValue, gender, heightValue, weightValue,
                 new Subscriber<Object>() {
                     @Override

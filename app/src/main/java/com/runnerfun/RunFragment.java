@@ -258,7 +258,7 @@ public class RunFragment extends Fragment {
                                 mCounter.unsubscribe();
                                 mCountDownView.setVisibility(View.GONE);
                                 mCountDownBG.setVisibility(View.GONE);
-                                RecordService.startRecord(getActivity(), id);
+                                RecordService.startRecord(RunApplication.getAppContex(), id);
                                 mStartPanel.setVisibility(View.GONE);
                                 mStopPanel.setVisibility(View.VISIBLE);
                                 startActivity(new Intent(getActivity(), MapActivity.class));

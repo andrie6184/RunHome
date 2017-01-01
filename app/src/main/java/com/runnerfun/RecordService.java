@@ -68,7 +68,7 @@ public class RecordService extends Service implements AMapLocationListener {
     private AMapLocationClientOption mLocationOption = null;
     private AMapLocationClient mlocationClient = null;
     private Subscription mUploadTimer = null;
-    private SpeechUtil mSpeechUtil = null;
+    private SpeechUtil mSpeechUtil = new SpeechUtil();;
 
     private String speakVoice = "恭喜你，已经跑了%s公里，上一公里配速%s，您总共用时%s";
 
@@ -271,7 +271,6 @@ public class RecordService extends Service implements AMapLocationListener {
             mlocationClient.stopLocation();
             mlocationClient.onDestroy();
         }
-        mSpeechUtil = null;
         stopForeground(true);
         Intent intent = new Intent("MY_LOCATION");
         PendingIntent pi = PendingIntent.getBroadcast(this, 0, intent, 0);
@@ -303,9 +302,6 @@ public class RecordService extends Service implements AMapLocationListener {
         mlocationClient.startLocation();
         if (mUploadTimer != null) {
             mUploadTimer.unsubscribe();
-        }
-        if (mSpeechUtil == null) {
-            mSpeechUtil = new SpeechUtil();
         }
         RecordModel.instance.start(id);
         //TrackMocker.instance.startMock();
