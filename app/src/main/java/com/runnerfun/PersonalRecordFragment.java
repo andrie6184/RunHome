@@ -59,6 +59,8 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
     private boolean mIsDeleting;
     private boolean mIsJumping;
     private boolean mHasMoreData;
+    private int totalSize;
+    private int localSize;
 
     @BindView(R.id.precord_list_ptr_frame)
     SwipeRefreshLayout mPtrLayout;
@@ -156,6 +158,8 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
                         Toast.makeText(getActivity(), "删除成功", Toast.LENGTH_SHORT).show();
                         mRecords.remove(mDeleteBean);
                         mAdapter.notifyDataSetChanged();
+                        totalSize -= 1;
+                        mHasMoreData = totalSize <= 0 || totalSize > (mRecords.size() - localSize);
                     }
                 });
             }
@@ -243,8 +247,13 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
             @Override
             public void onNext(PersonalRecordBean records) {
                 if (records != null) {
+                    try {
+                        totalSize = Integer.valueOf(records.getCnt());
+                    } catch (Exception e) {
+                        totalSize = -1;
+                    }
                     if (records.getList().size() > 0) {
-                        int localSize = 0;
+                        localSize = 0;
                         if (!requestMore) {
                             mRecords.clear();
 
@@ -259,7 +268,7 @@ public class PersonalRecordFragment extends Fragment implements SwipeRefreshLayo
                         for (RunRecordBean bean : records.getList()) {
                             mRecords.add(new PersonalRunRecordBean(bean));
                         }
-                        mHasMoreData = Integer.valueOf(records.getCnt()) > (mRecords.size() - localSize);
+                        mHasMoreData = totalSize <= 0 || totalSize > (mRecords.size() - localSize);
                         mAdapter.notifyDataSetChanged();
                         return;
                     }

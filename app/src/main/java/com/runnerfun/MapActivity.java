@@ -436,6 +436,9 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
     }
 
     private void drawEnd() {
+        if (RecordModel.instance == null) {
+            return;
+        }
         TimeLatLng last = RecordModel.instance.lastLatLng();
         if (last == null) {
             return;

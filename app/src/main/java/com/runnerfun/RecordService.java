@@ -62,6 +62,7 @@ public class RecordService extends Service implements AMapLocationListener {
 
     public String firstPoi;
     public long startTime;
+    
     public long lastMileTime;
     public int mileFlag;
 
