@@ -87,6 +87,11 @@ public class LockScreenActivity extends BaseActivity {
                     public void call(Long aLong) {
                         chronometer.setText(TimeStringUtils.getTime(RecordModel.instance.getRecordTime()));
                     }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Timber.e(throwable, "LockScreen onResume error");
+                    }
                 });
 
         boolean isRecording = RecordModel.instance.isRecording();

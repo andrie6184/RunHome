@@ -201,8 +201,15 @@
             android:name=".wxapi.WXPayEntryActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="wx8d08c221f73a378e"/>
+            </intent-filter>
+        </activity>
 
         <!-- for alipay -->
         <activity
@@ -231,6 +238,7 @@
             android:theme="@android:style/Theme.NoTitleBar">
             <intent-filter>
                 <action android:name="cn.jpush.android.ui.PushActivity"/>
+
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="com.runnerfun"/>
             </intent-filter>

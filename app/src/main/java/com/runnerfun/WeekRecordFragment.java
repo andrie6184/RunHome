@@ -157,6 +157,11 @@ public class WeekRecordFragment extends Fragment {
                     @Override
                     public void call(TextView textView) {
                     }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Timber.e(throwable, "WeekRecordFragment onStart error");
+                    }
                 });
                 mPagerAdapter.notifyDataSetChanged();
                 viewPager.setOffscreenPageLimit(7);

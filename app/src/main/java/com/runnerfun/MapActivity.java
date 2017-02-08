@@ -49,6 +49,7 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import timber.log.Timber;
 
 public class MapActivity extends BaseActivity implements AMapLocationListener,
         RecordModel.RecordChangeListener {
@@ -202,6 +203,11 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
                         @Override
                         public void call(Long aLong) {
                             updateVvalue();
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            Timber.e(throwable, "MapActivity onResume error");
                         }
                     });
 

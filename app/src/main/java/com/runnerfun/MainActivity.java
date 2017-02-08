@@ -281,7 +281,7 @@ public class MainActivity extends BaseFragmentActivity {
                     logs = "Failed with errorCode = " + code;
                     Log.e(TAG, logs);
             }
-            Toast.makeText(MainActivity.this, logs, Toast.LENGTH_SHORT).show();
+            // Toast.makeText(MainActivity.this, logs, Toast.LENGTH_SHORT).show();
         }
     };
 

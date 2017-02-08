@@ -8,6 +8,7 @@ import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.runnerfun.R;
@@ -46,10 +47,14 @@ import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.util.LinkedList;
+import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -422,10 +427,21 @@ public class ThirdpartAuthManager {
                 req.partnerId = json.getString("partnerid");
                 req.prepayId = json.getString("prepayid");
                 req.nonceStr = json.getString("noncestr");
-                req.timeStamp = json.getString("timestamp");
-                req.packageValue = json.getString("package");
-                req.sign = json.getString("sign");
-                req.extData = "app data";
+                req.packageValue = "Sign=WXPay"; //json.getString("package");
+                // req.timeStamp = json.getString("timestamp");
+                // req.sign = json.getString("sign").toUpperCase();
+                req.timeStamp = String.valueOf(genTimeStamp());
+
+                List<NameValuePair> signParams = new LinkedList<NameValuePair>();
+                signParams.add(new BasicNameValuePair("appid", req.appId));
+                signParams.add(new BasicNameValuePair("noncestr", req.nonceStr));
+                signParams.add(new BasicNameValuePair("package", req.packageValue));
+                signParams.add(new BasicNameValuePair("partnerid", req.partnerId));
+                signParams.add(new BasicNameValuePair("prepayid", req.prepayId));
+                signParams.add(new BasicNameValuePair("timestamp", req.timeStamp));
+                req.sign = genAppSign(signParams);
+
+                // req.extData = "app data";
                 iwxapi.sendReq(req);
                 return true;
             } else {
@@ -434,6 +450,27 @@ public class ThirdpartAuthManager {
         } catch (JSONException e) {
             return false;
         }
+    }
+
+    private long genTimeStamp() {
+        return System.currentTimeMillis() / 1000;
+    }
+
+    private String genAppSign(List<NameValuePair> params) {
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < params.size(); i++) {
+            sb.append(params.get(i).getName());
+            sb.append('=');
+            sb.append(params.get(i).getValue());
+            sb.append('&');
+        }
+        sb.append("key=");
+        sb.append("RcxFyx3QXv2IbpHtJ4g9y8Y98wamkoM7");
+
+        String appSign = MD5.getMessageDigest(sb.toString().getBytes()).toUpperCase();
+        Log.e("orion", appSign);
+        return appSign;
     }
 
     public static void setLastRidForShare(String rid) {

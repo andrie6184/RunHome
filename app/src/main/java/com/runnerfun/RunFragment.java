@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +44,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import timber.log.Timber;
 
 /**
  * RunFragment
@@ -159,6 +159,11 @@ public class RunFragment extends Fragment {
                     public void call(Long aLong) {
                         refreshResult();
                     }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Timber.e(throwable, "RunFragment onResume error");
+                    }
                 });
         if (RecordModel.instance.isPause() || RecordModel.instance.isRecording()) {
             mStartPanel.setVisibility(View.GONE);
@@ -272,6 +277,11 @@ public class RunFragment extends Fragment {
                                 }
                             }
                         }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            Timber.e(throwable, "RunFragment doStart error");
+                        }
                     });
         }
     }
@@ -318,7 +328,7 @@ public class RunFragment extends Fragment {
 
         if (RecordModel.instance.getRecordTime() > 0 && RecordModel.instance.getDistance() > 0) {
             float seconds = RecordModel.instance.getRecordTime() / RecordModel.instance.getDistance();
-            int minutes = (int) seconds  / 60;
+            int minutes = (int) seconds / 60;
             String speedShow = String.format(Locale.getDefault(), "%d'%d\"", minutes, (int) (seconds % 60));
             mSpeedValue.setText(speedShow);
         } else {
