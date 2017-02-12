@@ -13,6 +13,7 @@ import android.webkit.DownloadListener;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.runnerfun.model.thirdpart.AliPayActivity;
 import com.runnerfun.tools.CookieUtils;
 import com.runnerfun.tools.ThirdpartAuthManager;
 
@@ -71,8 +72,9 @@ public class ShopFragment extends Fragment {
                         if (host.equalsIgnoreCase("weixinpay")) {
                             String payBill = url.substring(url.indexOf("paybill=") + 8);
                             ThirdpartAuthManager.instance().payByWeixin(URLDecoder.decode(payBill, "utf8"));
-                        } else if (host.equalsIgnoreCase("alipay")) {
-
+                        } else if (host.equalsIgnoreCase("payinfo")) {
+                            String payInfo = url.substring(url.indexOf("?") + 1);
+                            AliPayActivity.openAliPayActivity(getActivity(), payInfo);
                         }
                     } catch (Exception e) {
                         Timber.e(e.getMessage(), "parse pay url error");

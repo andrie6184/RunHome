@@ -56,7 +56,6 @@ public class AliPayActivity extends BaseActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case SDK_PAY_FLAG: {
-                    @SuppressWarnings("unchecked")
                     AliPayResult payResult = new AliPayResult((Map<String, String>) msg.obj);
                     /**
                      对于支付结果，请商户依赖服务端的异步通知结果。同步通知结果，仅作为支付结束的通知。
@@ -76,6 +75,7 @@ public class AliPayActivity extends BaseActivity {
                 default:
                     break;
             }
+            finish();
         }
     };
 
