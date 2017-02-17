@@ -57,6 +57,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:persistent="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <meta-data
             android:name="com.amap.api.v2.apikey"
@@ -111,6 +112,11 @@
         <service
             android:name=".RecordService"
             android:exported="false"/>
+
+        <service
+            android:name=".RecordDeamonService"
+            android:exported="false"
+            android:process="com.runnerfun:remote"/>
 
         <provider
             android:name=".RecordProvider"

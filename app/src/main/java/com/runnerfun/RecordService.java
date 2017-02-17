@@ -5,9 +5,11 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
@@ -25,7 +27,6 @@ import com.runnerfun.beans.ResponseBean;
 import com.runnerfun.beans.RunSaveResultBean;
 import com.runnerfun.beans.RunUploadBean;
 import com.runnerfun.beans.RunUploadDB;
-import com.runnerfun.mock.TrackMocker;
 import com.runnerfun.model.ConfigModel;
 import com.runnerfun.model.RecordModel;
 import com.runnerfun.model.TimeLatLng;
@@ -69,7 +70,7 @@ public class RecordService extends Service implements AMapLocationListener {
     private AMapLocationClientOption mLocationOption = null;
     private AMapLocationClient mlocationClient = null;
     private Subscription mUploadTimer = null;
-    private SpeechUtil mSpeechUtil = new SpeechUtil();;
+    private SpeechUtil mSpeechUtil = new SpeechUtil();
 
     private String speakVoice = "恭喜你，已经跑了%s公里，上一公里配速%s，您总共用时%s";
 
@@ -78,6 +79,10 @@ public class RecordService extends Service implements AMapLocationListener {
         i.setAction(ACTION_START_RECORD);
         i.putExtra(ID_ARGS, id);
         c.startService(i);
+
+        Intent i2 = new Intent(c, RecordDeamonService.class);
+        i2.setAction(ACTION_START_RECORD);
+        c.startService(i2);
     }
 
     public static void pauseRecord(Context c) {
@@ -150,6 +155,15 @@ public class RecordService extends Service implements AMapLocationListener {
     }
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        if (binder == null) {
+            binder = new RecordServiceBinder();
+        }
+        connection = new DeamonServiceConnection();
+    }
+
+    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent == null) {
             return START_NOT_STICKY;
@@ -179,7 +193,7 @@ public class RecordService extends Service implements AMapLocationListener {
         mScreenOffFilter.addAction(Intent.ACTION_SCREEN_OFF);
         registerReceiver(mScreenOffReceiver, mScreenOffFilter);
 
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
 
     @Override
@@ -261,6 +275,7 @@ public class RecordService extends Service implements AMapLocationListener {
     }
 
     private void doStop() {
+        unbindService(connection);
         if (ConfigModel.instance.ismUserVoice()) {
             mSpeechUtil.speak("跑步结束");
         }
@@ -316,6 +331,7 @@ public class RecordService extends Service implements AMapLocationListener {
     }
 
     public void useForeground(String currSong) {
+        bindService(new Intent(this, RecordDeamonService.class), connection, Context.BIND_IMPORTANT);
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, 0);
         android.support.v4.app.NotificationCompat.Builder mNotifyBuilder = new NotificationCompat.Builder(this)
@@ -397,12 +413,34 @@ public class RecordService extends Service implements AMapLocationListener {
         return false;
     }
 
-    public class RecordServiceBinder extends Binder {
+    private RecordServiceBinder binder = new RecordServiceBinder();
+    DeamonServiceConnection connection;
+
+    public class RecordServiceBinder extends Binder /*RunnerConnection.Stub*/ {
+        //        @Override
+//        public String getProName() throws RemoteException {
+//            return "RecordService";
+//        }
         public RecordService getService() {
             return RecordService.this;
         }
     }
 
-    private RecordServiceBinder binder = new RecordServiceBinder();
+    class DeamonServiceConnection implements ServiceConnection {
+
+        @Override
+        public void onServiceConnected(ComponentName arg0, IBinder arg1) {
+            Timber.i("runnerfun", "远程服务连接成功");
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            // 启动RemoteService
+            RecordService.this.startService(new Intent(RecordService.this, RecordDeamonService.class));
+            RecordService.this.bindService(new Intent(RecordService.this, RecordDeamonService.class),
+                    connection, Context.BIND_IMPORTANT);
+        }
+
+    }
 
 }
