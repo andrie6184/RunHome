@@ -13,9 +13,10 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.runnerfun.model.RecordModel;
 import com.runnerfun.tools.TimeStringUtils;
 import com.runnerfun.widget.UnderView;
+import com.runnerfun.xyzrunpackage.RunModel;
+import com.runnerfun.xyzrunpackage.RunRecordService;
 
 import java.util.concurrent.TimeUnit;
 
@@ -41,19 +42,19 @@ public class LockScreenActivity extends BaseActivity {
     UnderView underView;
 
     private Subscription mTimer = null;
-    private RecordService service;
+    // private RecordService service;
 
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder binder) {
-            RecordService.RecordServiceBinder myBinder = (RecordService.RecordServiceBinder) binder;
-            service = myBinder.getService();
-            Timber.i("LockScreenActivity", "ActivityA onServiceConnected");
+//            RecordService.RecordServiceBinder myBinder = (RecordService.RecordServiceBinder) binder;
+//            service = myBinder.getService();
+            Timber.i("LockScreenActivity", "LockScreenActivity onServiceConnected");
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            Timber.i("LockScreenActivity", "ActivityA onServiceDisconnected");
+            Timber.i("LockScreenActivity", "LockScreenActivity onServiceDisconnected");
         }
     };
 
@@ -72,7 +73,7 @@ public class LockScreenActivity extends BaseActivity {
         underView.mHandler = new Handler();
         underView.mActivity = this;
 
-        Intent intent = new Intent(this, RecordService.class);
+        Intent intent = new Intent(this, RunRecordService.class);
         bindService(intent, mConnection, BIND_AUTO_CREATE);
     }
 
@@ -85,7 +86,7 @@ public class LockScreenActivity extends BaseActivity {
                 .subscribe(new Action1<Long>() {
                     @Override
                     public void call(Long aLong) {
-                        chronometer.setText(TimeStringUtils.getTime(RecordModel.instance.getRecordTime()));
+                        chronometer.setText(TimeStringUtils.getTime(RunModel.instance.getRecordTime()));
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -94,7 +95,7 @@ public class LockScreenActivity extends BaseActivity {
                     }
                 });
 
-        boolean isRecording = RecordModel.instance.isRecording();
+        boolean isRecording = RunModel.instance.getState() == RunModel.RUN_STATE_RUNNING;
         restartBtn.setImageResource(isRecording ? R.drawable.resume : R.drawable.continue_icon);
     }
 
@@ -104,6 +105,12 @@ public class LockScreenActivity extends BaseActivity {
         if (mTimer != null) {
             mTimer.unsubscribe();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(mConnection);
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -121,12 +128,12 @@ public class LockScreenActivity extends BaseActivity {
 
     @OnClick(R.id.restart_btn)
     void onFlagClicked(View view) {
-        boolean isRecording = RecordModel.instance.isRecording();
+        boolean isRecording = RunModel.instance.getState() == RunModel.RUN_STATE_RUNNING;
         if (isRecording) {
-            RecordService.pauseRecord(this);
+            RunModel.instance.pauseRecord();
             restartBtn.setImageResource(R.drawable.continue_icon);
         } else {
-            RecordService.resumeRecord(this);
+            RunModel.instance.resumeRecord();
             restartBtn.setImageResource(R.drawable.resume);
         }
     }
@@ -134,7 +141,7 @@ public class LockScreenActivity extends BaseActivity {
     @OnClick(R.id.stop_btn)
     void onStopClicked(View view) {
         unbindService(mConnection);
-        RecordService.stopRecord(this);
+        RunRecordService.stopRun(this);
         finish();
     }
 

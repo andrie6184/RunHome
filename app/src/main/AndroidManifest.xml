@@ -56,8 +56,8 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
         android:persistent="true"
+        android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <meta-data
             android:name="com.amap.api.v2.apikey"
@@ -73,6 +73,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -109,14 +110,44 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait"/>
 
-        <service
-            android:name=".RecordService"
-            android:exported="false"/>
+        <receiver
+            android:name=".LocationReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="MY_LOCATION"/>
+            </intent-filter>
+        </receiver>
+
+        <!--<service-->
+            <!--android:name=".RecordService"-->
+            <!--android:exported="true"/>-->
+        <!--<service-->
+            <!--android:name=".RecordDeamonService"-->
+            <!--android:exported="true"-->
+            <!--android:process=":remote"/>-->
+
+        <!-- new version -->
+        <activity
+            android:name=".xyzrunpackage.RunMapActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".xyzrunpackage.TrackMapActivity"
+            android:screenOrientation="portrait"/>
 
         <service
-            android:name=".RecordDeamonService"
-            android:exported="false"
-            android:process="com.runnerfun:remote"/>
+            android:name=".xyzrunpackage.RunRecordService"
+            android:enabled="true"
+            android:exported="true"/>
+
+        <service
+            android:name=".xyzrunpackage.RunDeamonService"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":deamon"/>
+
+        <!-- new version end -->
 
         <provider
             android:name=".RecordProvider"
@@ -212,7 +243,9 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
+
                 <category android:name="android.intent.category.DEFAULT"/>
+
                 <data android:scheme="wx8d08c221f73a378e"/>
             </intent-filter>
         </activity>
@@ -324,14 +357,6 @@
             android:name="JPUSH_APPKEY"
             android:value="e619e19c2d172a1051d491bc"/>
 
-        <receiver
-            android:name=".LocationReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="MY_LOCATION"/>
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>

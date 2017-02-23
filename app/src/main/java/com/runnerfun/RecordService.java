@@ -10,8 +10,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.os.Binder;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
@@ -107,16 +107,17 @@ public class RecordService extends Service implements AMapLocationListener {
         super();
     }
 
-    private int ignore = 2;
+//    private int ignore = 2;
 
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
-        if (--ignore > 0) {
-            return;
-        }
+//        if (--ignore > 0) {
+//            return;
+//        }
         if (aMapLocation != null && aMapLocation.getErrorCode() == 0 && aMapLocation.getAccuracy() < 50f
                 && (aMapLocation.getLocationType() == AMapLocation.LOCATION_TYPE_GPS
-                || aMapLocation.getLocationType() == AMapLocation.LOCATION_TYPE_WIFI)) {
+                || aMapLocation.getLocationType() == AMapLocation.LOCATION_TYPE_WIFI
+                || aMapLocation.getLocationType() == AMapLocation.LOCATION_TYPE_CELL)) {
             RecordModel.instance.addRecord(new LatLng(aMapLocation.getLatitude(),
                     aMapLocation.getLongitude()));
 
@@ -299,7 +300,7 @@ public class RecordService extends Service implements AMapLocationListener {
     }
 
     private void doStart(long id) {
-        ignore = 2;
+//        ignore = 2;
         startTime = System.currentTimeMillis();
         lastMileTime = System.currentTimeMillis();
         mileFlag = 1;
@@ -416,14 +417,14 @@ public class RecordService extends Service implements AMapLocationListener {
     private RecordServiceBinder binder = new RecordServiceBinder();
     DeamonServiceConnection connection;
 
-    public class RecordServiceBinder extends Binder /*RunnerConnection.Stub*/ {
-        //        @Override
-//        public String getProName() throws RemoteException {
-//            return "RecordService";
-//        }
-        public RecordService getService() {
-            return RecordService.this;
+    public class RecordServiceBinder extends RunnerConnection.Stub {
+        @Override
+        public String getProName() throws RemoteException {
+            return "RecordService";
         }
+//        public RecordService getService() {
+//            return RecordService.this;
+//        }
     }
 
     class DeamonServiceConnection implements ServiceConnection {
@@ -436,9 +437,10 @@ public class RecordService extends Service implements AMapLocationListener {
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
             // 启动RemoteService
-            RecordService.this.startService(new Intent(RecordService.this, RecordDeamonService.class));
-            RecordService.this.bindService(new Intent(RecordService.this, RecordDeamonService.class),
-                    connection, Context.BIND_IMPORTANT);
+            Intent intent = new Intent(RecordService.this, RecordDeamonService.class);
+            intent.setAction(ACTION_START_RECORD);
+            RecordService.this.startService(intent);
+            RecordService.this.bindService(intent, connection, Context.BIND_IMPORTANT);
         }
 
     }

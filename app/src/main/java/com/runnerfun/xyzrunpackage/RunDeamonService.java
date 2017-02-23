@@ -1,4 +1,4 @@
-package com.runnerfun;
+package com.runnerfun.xyzrunpackage;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -10,29 +10,27 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.support.annotation.Nullable;
 import android.support.v7.app.NotificationCompat;
+
+import com.runnerfun.MainActivity;
+import com.runnerfun.R;
+import com.runnerfun.RunnerConnection;
 
 import timber.log.Timber;
 
 import static com.runnerfun.RecordService.ACTION_START_RECORD;
-import static com.runnerfun.RecordService.ACTION_STOP_RECORD;
 
-/**
- * RecordDeamonService
- * Created by andrie on 17/2/16.
- */
+public class RunDeamonService extends Service {
 
-public class RecordDeamonService extends Service {
 
-    RunBinder binder;
+    public static final String ACTION_DEAMON_SERVICE_START = "com.runnerfun.deamon.service.action.start.service";
+    public static final String ACTION_DEAMON_SERVICE_STOP = "com.runnerfun.deamon.service.action.stop.service";
+
+    private RunBinder binder;
     private PendingIntent intent;
-    RunServiceConnection connection;
+    private RunServiceConnection connection;
 
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return binder;
+    public RunDeamonService() {
     }
 
     @Override
@@ -50,10 +48,10 @@ public class RecordDeamonService extends Service {
             return START_NOT_STICKY;
         }
         switch (i0.getAction()) {
-            case ACTION_START_RECORD:
+            case ACTION_DEAMON_SERVICE_START:
                 doStart();
                 break;
-            case ACTION_STOP_RECORD:
+            case ACTION_DEAMON_SERVICE_STOP:
                 doStop();
                 break;
             default:
@@ -63,17 +61,19 @@ public class RecordDeamonService extends Service {
     }
 
     private void doStart() {
-        bindService(new Intent(this, RecordService.class), connection, Context.BIND_IMPORTANT);
+        bindService(new Intent(this, RunRecordService.class), connection, Context.BIND_IMPORTANT);
 
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, 0);
-        android.support.v4.app.NotificationCompat.Builder mNotifyBuilder = new NotificationCompat.Builder(this)
+        intent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        android.support.v4.app.NotificationCompat.Builder mNotifyBuilder
+                = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setTicker("")
                 .setWhen(System.currentTimeMillis())
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText("跑步中")
-                .setContentIntent(pendingIntent);
+                .setContentIntent(intent);
         Notification notification = mNotifyBuilder.build();
 
         startForeground(1234, notification);
@@ -81,12 +81,30 @@ public class RecordDeamonService extends Service {
 
     private void doStop() {
         unbindService(connection);
-        Intent intent = new Intent("MY_LOCATION");
-        PendingIntent pi = PendingIntent.getBroadcast(this, 0, intent, 0);
-        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-        am.cancel(pi);
         stopForeground(true);
+        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+        am.cancel(intent);
         stopSelf();
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return binder;
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        if (intent != null) {
+            Timber.i("RunDeamonService", "onUnbind(), from:" + intent.getStringExtra("from"), "");
+        }
+        return false;
+    }
+
+    @Override
+    public void onRebind(Intent intent) {
+        if (intent != null) {
+            Timber.i("RunDeamonService", "onRebind(), from:" + intent.getStringExtra("from"), "");
+        }
     }
 
     class RunServiceConnection implements ServiceConnection {
@@ -99,11 +117,13 @@ public class RecordDeamonService extends Service {
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
             // 连接出现了异常断开了，RecordService被杀死了
+            Timber.i("runnerfun", "RunRecordService断开，重新启动");
             // 启动RecordService
-            Intent intent = new Intent(RecordDeamonService.this, RecordService.class);
+            Intent intent = new Intent(RunDeamonService.this, RunRecordService.class);
             intent.setAction(ACTION_START_RECORD);
-            RecordDeamonService.this.startService(intent);
-            RecordDeamonService.this.bindService(intent, connection, Context.BIND_IMPORTANT);
+            RunDeamonService.this.startService(intent);
+            RunDeamonService.this.bindService(new Intent(RunDeamonService.this, RunRecordService.class),
+                    connection, Context.BIND_IMPORTANT);
         }
 
     }
@@ -111,7 +131,7 @@ public class RecordDeamonService extends Service {
     class RunBinder extends RunnerConnection.Stub {
         @Override
         public String getProName() throws RemoteException {
-            return "RecordDeamonService";
+            return "RunDeamonService";
         }
     }
 

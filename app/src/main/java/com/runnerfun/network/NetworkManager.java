@@ -297,7 +297,7 @@ public class NetworkManager {
                             RunApplication.getAppContex().startActivity(intent);
                         }
                         if (result.getCode() != 0) {
-                            throw new IllegalArgumentException(result.getMsg());
+                            throw new IllegalArgumentException("网络连接异常，请检查您的网络设置");
                         }
                         return result.getData();
                     }

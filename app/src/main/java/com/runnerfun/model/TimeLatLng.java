@@ -9,7 +9,8 @@ import java.util.List;
 import static java.lang.Math.abs;
 
 /**
- * Created by lixiaoyang on 2016/12/23.
+ * TimeLatLng
+ * Created by andrie on 2016/12/23.
  */
 
 public class TimeLatLng  {

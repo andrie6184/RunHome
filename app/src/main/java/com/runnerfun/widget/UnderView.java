@@ -88,7 +88,7 @@ public class UnderView extends View {
     private void doTriggerEvent(float x) {
         float movex = x - mStartX;
         if (mMoveView != null) {
-            if (movex > (mWidth * 0.4)) {
+            if (movex > (mWidth * 0.3)) {
                 moveMoveView(mWidth - mMoveView.getLeft(), true);//自动移动到屏幕右边界之外，并finish掉
 
             } else {

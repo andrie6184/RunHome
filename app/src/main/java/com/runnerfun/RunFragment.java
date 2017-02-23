@@ -92,7 +92,7 @@ public class RunFragment extends Fragment {
         mLocalManager.registerReceiver(mReceiver, filter);
 
         mSoundPool = new SoundPool(6, AudioManager.STREAM_MUSIC, 100);
-        mSoundPoolMap = new HashMap<Integer, Integer>();
+        mSoundPoolMap = new HashMap<>();
         mSoundPoolMap.put(1, mSoundPool.load(getActivity(), R.raw.one, 1));
         mSoundPoolMap.put(2, mSoundPool.load(getActivity(), R.raw.two, 1));
         mSoundPoolMap.put(3, mSoundPool.load(getActivity(), R.raw.three, 1));

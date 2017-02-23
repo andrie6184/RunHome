@@ -1,6 +1,7 @@
 package com.runnerfun.model;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.model.LatLng;
@@ -151,7 +152,7 @@ public class RecordModel {
     }
 
     public void initRecord(List<TimeLatLng> ll) {
-        mStatus.initCache(ll); //TODO: 初始的数据最好改为TIMELATLNG
+        mStatus.initCache(ll);
     }
 
     public void addRecord(LatLng ll) {
@@ -159,8 +160,10 @@ public class RecordModel {
         if(last != null){
             float distance = AMapUtils.calculateLineDistance(ll, last.getLatlnt());
             float lastDistance = mStatus.lastDistance();
+
+            Log.d("RecordModel", "distance: " + distance + " lastDis: " + lastDistance);
+
             if(distance > 50 && mStatus.lastDistance() > 5 && (distance /lastDistance > 3) ){
-                //TODO: 定位不靠谱的情况下是否需要mock 一个点？
                 return;
             }
         }
@@ -172,7 +175,7 @@ public class RecordModel {
         }
     }
 
-    public static List<TimeLatLng> parseStringToLatLng(String track) { //TODO:能改成TimeLatLng最好
+    public static List<TimeLatLng> parseStringToLatLng(String track) {
         List<TimeLatLng> result = new ArrayList<>();
         String temp = track.substring(1, track.length() - 1);
         List<String> lats = new ArrayList<>();

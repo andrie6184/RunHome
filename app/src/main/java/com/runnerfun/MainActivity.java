@@ -27,6 +27,7 @@ import com.runnerfun.beans.RunUploadDB;
 import com.runnerfun.network.NetworkManager;
 import com.runnerfun.tools.ApplicationUtils;
 import com.runnerfun.widget.NoScrollViewPager;
+import com.runnerfun.xyzrunpackage.RunStateFragment;
 
 import org.litepal.crud.DataSupport;
 
@@ -233,9 +234,9 @@ public class MainActivity extends BaseFragmentActivity {
 
         ContentFragmentAdapter(FragmentManager fm) {
             super(fm);
-            mFragmentList = new ArrayList<Fragment>();
+            mFragmentList = new ArrayList<>();
             mFragmentList.add(new ShopFragment());
-            mFragmentList.add(new RunFragment());
+            mFragmentList.add(new RunStateFragment());
             mFragmentList.add(new UserFragment());
         }
 
