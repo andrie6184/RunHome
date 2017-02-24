@@ -1,20 +1,18 @@
 package com.runnerfun.xyzrunpackage;
 
-import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
@@ -23,10 +21,7 @@ import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.model.LatLng;
-import com.runnerfun.LockScreenActivity;
-import com.runnerfun.MainActivity;
 import com.runnerfun.R;
-import com.runnerfun.RecordService;
 import com.runnerfun.RunApplication;
 import com.runnerfun.RunnerConnection;
 import com.runnerfun.UserFragment;
@@ -61,9 +56,8 @@ public class RunRecordService extends Service implements AMapLocationListener {
     private static final String SPEAK_VOICE = "恭喜你，已经跑了%s公里，上一公里配速%s，您总共用时%s";
 
     private RecordServiceBinder binder;
-    private PendingIntent intent;
     private DeamonServiceConnection connection;
-    private ScreenOFFReceiver receiver;
+    // private ScreenOFFReceiver receiver;
 
     private AMapLocationClient client = null;
     private SpeechUtil speech = new SpeechUtil();
@@ -80,33 +74,30 @@ public class RunRecordService extends Service implements AMapLocationListener {
         }
         connection = new DeamonServiceConnection();
 
-        IntentFilter filter = new IntentFilter();
+        /*IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_OFF);
-        registerReceiver(receiver = new ScreenOFFReceiver(), filter);
+        registerReceiver(receiver = new ScreenOFFReceiver(), filter);*/
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent == null) {
-            return START_NOT_STICKY;
+
+        Toast.makeText(RunRecordService.this, "RunRecordService onStartCommand action:"
+                + intent.getAction(), Toast.LENGTH_LONG).show();
+
+        if (intent != null && intent.getAction().equals(ACTION_RECORD_SERVICE_START)) {
+            doStart(intent, startId);
+            return START_STICKY;
+        } else {
+            doStop();
+            return START_STICKY_COMPATIBILITY;
         }
-        switch (intent.getAction()) {
-            case ACTION_RECORD_SERVICE_START:
-                doStart();
-                break;
-            case ACTION_RECORD_SERVICE_STOP:
-                doStop();
-                break;
-            default:
-                break;
-        }
-        return START_STICKY;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(receiver);
+        // unregisterReceiver(receiver);
     }
 
     public static void startRun(Context context) {
@@ -121,27 +112,24 @@ public class RunRecordService extends Service implements AMapLocationListener {
         context.startService(i);
     }
 
-    private void doStart() {
-        Intent start = new Intent(RunRecordService.this, RunDeamonService.class);
+    private void doStart(Intent i0, int startId) {
+        Intent start = new Intent(this, RunDeamonService.class);
         start.setAction(RunDeamonService.ACTION_DEAMON_SERVICE_START);
         startService(start);
 
-        bindService(new Intent(this, RecordService.class), connection, Context.BIND_IMPORTANT);
-
-        Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
-        intent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-        android.support.v4.app.NotificationCompat.Builder mNotifyBuilder
-                = new NotificationCompat.Builder(this)
+        bindService(new Intent(this, RunDeamonService.class), connection, Context.BIND_IMPORTANT);
+        PendingIntent pIntent = PendingIntent.getService(this, 0, i0, 0);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setTicker("跑步进行中...")
+                .setContentText("跑步进行中...")
+                .setContentTitle("跑步之家")
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setTicker("")
-                .setWhen(System.currentTimeMillis())
-                .setContentTitle(getString(R.string.app_name))
-                .setContentText("跑步中")
-                .setContentIntent(intent);
-        Notification notification = mNotifyBuilder.build();
+                .setContentIntent(pIntent)
+                .setWhen(System.currentTimeMillis());
+        Notification notification = builder.build();
 
-        startForeground(1234, notification);
+        // 设置service为前台进程，避免手机休眠时系统自动杀掉该服务
+        startForeground(startId, notification);
 
         if (client != null) {
             client.onDestroy();
@@ -151,8 +139,9 @@ public class RunRecordService extends Service implements AMapLocationListener {
         AMapLocationClientOption option = new AMapLocationClientOption();
         option.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
         option.setOnceLocation(false);
-        option.setGpsFirst(true);
-        option.setMockEnable(false);
+        option.setOnceLocationLatest(true);
+        // option.setGpsFirst(true);
+        // option.setMockEnable(false);
         option.setInterval(2000);
         client.setLocationOption(option);
         client.startLocation();
@@ -162,6 +151,10 @@ public class RunRecordService extends Service implements AMapLocationListener {
     }
 
     private void doStop() {
+        Intent stop = new Intent(RunRecordService.this, RunDeamonService.class);
+        stop.setAction(RunDeamonService.ACTION_DEAMON_SERVICE_STOP);
+        startService(stop);
+
         if (ConfigModel.instance.ismUserVoice()) {
             speech.speak("跑步结束");
         }
@@ -172,16 +165,14 @@ public class RunRecordService extends Service implements AMapLocationListener {
         }
         RunModel.instance.stopRecord();
 
-        unbindService(connection);
-
-        Intent stop = new Intent(RunRecordService.this, RunDeamonService.class);
-        stop.setAction(RunDeamonService.ACTION_DEAMON_SERVICE_STOP);
-        startService(stop);
-
+        try {
+            unbindService(connection);
+        } catch (Exception e) {
+            Log.e("local", "unbind error " + e.getLocalizedMessage());
+        }
         stopForeground(true);
-        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-        am.cancel(intent);
-
+        // AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+        // am.cancel(intent);
         uploadServiceData();
     }
 
@@ -281,13 +272,13 @@ public class RunRecordService extends Service implements AMapLocationListener {
 
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
-//        if (aMapLocation != null) {
-//            Timber.d("aMapLocation.getErrorCode(): " + aMapLocation.getErrorCode());
-//            Timber.d("aMapLocation.getAccuracy(): " + aMapLocation.getAccuracy());
-//            Timber.d("aMapLocation.getLocationType(): " + aMapLocation.getLocationType());
-//            Timber.d("aMapLocation.getLatitude(): " + aMapLocation.getLatitude()
-//                    + "  aMapLocation.getLongitude(): " + aMapLocation.getLongitude());
-//        }
+        if (aMapLocation != null) {
+            Timber.d("aMapLocation.getErrorCode(): " + aMapLocation.getErrorCode());
+            Timber.d("aMapLocation.getAccuracy(): " + aMapLocation.getAccuracy());
+            Timber.d("aMapLocation.getLocationType(): " + aMapLocation.getLocationType());
+            Timber.d("aMapLocation.getLatitude(): " + aMapLocation.getLatitude()
+                    + "  aMapLocation.getLongitude(): " + aMapLocation.getLongitude());
+        }
 
         if (aMapLocation != null && aMapLocation.getErrorCode() == 0 && aMapLocation.getAccuracy() < 50f
                 && (aMapLocation.getLocationType() == AMapLocation.LOCATION_TYPE_GPS
@@ -306,7 +297,8 @@ public class RunRecordService extends Service implements AMapLocationListener {
 
         // speak speed.
         if (ConfigModel.instance.ismUserVoice() && RunModel.instance.getDistance()
-                >= (RunModel.instance.getRecord().mileFlag * 1000)) {
+                >= (RunModel.instance.getRecord().mileFlag * 1000) &&
+                RunModel.instance.getRecord().mileFlag > 0) {
             try {
                 String dis = UITools.numberFormat(RunModel.instance.getDistance() / 1000);
 
@@ -368,17 +360,16 @@ public class RunRecordService extends Service implements AMapLocationListener {
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
             // 启动RemoteService
-            Timber.i("runnerfun", "RunDeamonService，重新启动");
+            Toast.makeText(RunRecordService.this, "RunDeamonService断开，重新启动", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(RunRecordService.this, RunDeamonService.class);
-            intent.setAction(ACTION_RECORD_SERVICE_START);
+            intent.setAction(RunDeamonService.ACTION_DEAMON_SERVICE_START);
             RunRecordService.this.startService(intent);
-            RunRecordService.this.bindService(new Intent(RunRecordService.this, RunDeamonService.class),
-                    connection, Context.BIND_IMPORTANT);
+            RunRecordService.this.bindService(intent, connection, Context.BIND_IMPORTANT);
         }
 
     }
 
-    private class ScreenOFFReceiver extends BroadcastReceiver {
+    /*private class ScreenOFFReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
@@ -387,6 +378,6 @@ public class RunRecordService extends Service implements AMapLocationListener {
                 startActivity(mLockIntent);
             }
         }
-    }
+    }*/
 
 }

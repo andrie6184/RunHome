@@ -244,7 +244,7 @@ public class RunMapActivity extends BaseActivity implements AMapLocationListener
                         @Override
                         public void call(Long aLong) {
                             updateRecordValue();
-                            drawLines(RunModel.instance.getRecord().tracks);
+                            // drawLines(RunModel.instance.getRecord().tracks);
                         }
                     }, new Action1<Throwable>() {
                         @Override

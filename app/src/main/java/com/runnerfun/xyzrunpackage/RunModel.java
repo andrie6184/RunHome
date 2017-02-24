@@ -74,7 +74,9 @@ public class RunModel {
     }
 
     public void startRecord() {
-        record = new RunRecord();
+        if (record == null) {
+            record = new RunRecord();
+        }
         record.state = RUN_STATE_RUNNING;
         record.startTime = System.currentTimeMillis();
         record.tracks = new ArrayList<>();
@@ -147,6 +149,7 @@ public class RunModel {
     public void stopRecord() {
         record.state = RUN_STATE_STOP;
         record.lastPauseTime = 0;
+        DataSupport.deleteAll(RunRecordDB.class);
     }
 
     private void readCacheRecord() {

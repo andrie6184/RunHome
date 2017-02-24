@@ -145,7 +145,7 @@
             android:name=".xyzrunpackage.RunDeamonService"
             android:enabled="true"
             android:exported="true"
-            android:process=":deamon"/>
+            android:process=":com.runnerfun.deamon"/>
 
         <!-- new version end -->
 
