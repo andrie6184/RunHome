@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -85,11 +86,10 @@ public class RunMapActivity extends BaseActivity implements AMapLocationListener
         ButterKnife.bind(this);
         mMap.onCreate(savedInstanceState);
 
-        receiver = new RunMapReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(RunModel.RUN_SERVICE_START_ACTION);
-        filter.addAction(RUN_MAP_FINISH_ACTION);
         manager = LocalBroadcastManager.getInstance(this);
+        IntentFilter filter = new IntentFilter(RUN_MAP_FINISH_ACTION);
+        filter.addAction(RunModel.RUN_SERVICE_START_ACTION);
+        receiver = new RunMapReceiver();
         manager.registerReceiver(receiver, filter);
 
         init();
@@ -163,6 +163,8 @@ public class RunMapActivity extends BaseActivity implements AMapLocationListener
         stop = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(),
                 R.drawable.zhong));
 
+        Log.d("RunMapActivity", "init() state " + RunModel.instance.getState());
+
         if (RunModel.instance.getState() == RunModel.RUN_STATE_STOP) {
             mPanelWidget.setVisibility(View.GONE);
             client.startLocation();
@@ -200,6 +202,9 @@ public class RunMapActivity extends BaseActivity implements AMapLocationListener
 
     @Override
     public void onRecordChange(TimeLatLng ll) {
+
+        Log.d("RunMapActivity", "onRecordChange(): " + ll.getTime());
+
         drawLines(RunModel.instance.getRecord().tracks);
         // zoom(mMap.getMap().getCameraPosition().zoom)
         CameraUpdate c = CameraUpdateFactory.newCameraPosition(CameraPosition.builder()
@@ -263,6 +268,9 @@ public class RunMapActivity extends BaseActivity implements AMapLocationListener
     }
 
     private void updateRecordValue() {
+
+        Log.d("RunMapActivity", "updateRecordValue() recordTime: " + RunModel.instance.getRecordTime());
+
         if (RunModel.instance.getRecordTime() > 0 && RunModel.instance.getDistance() > 0) {
             float seconds = RunModel.instance.getRecordTime() / RunModel.instance.getDistance();
             int minutes = (int) seconds / 60;

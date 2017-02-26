@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -196,6 +197,7 @@ public class RunStateFragment extends Fragment {
         if (RunModel.instance.getState() == RunModel.RUN_STATE_RUNNING
                 || RunModel.instance.getState() == RunModel.RUN_STATE_PAUSE) {
             doStop();
+            mClockView.setText("00:00:00");
         }
     }
 
@@ -320,6 +322,7 @@ public class RunStateFragment extends Fragment {
     private class UserCoinReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.d("UserCoinReceiver", "UserCoinReceiver action: " + intent.getAction());
             setMoney();
         }
     }

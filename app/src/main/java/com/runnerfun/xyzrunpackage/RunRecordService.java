@@ -81,10 +81,6 @@ public class RunRecordService extends Service implements AMapLocationListener {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-        Toast.makeText(RunRecordService.this, "RunRecordService onStartCommand action:"
-                + intent.getAction(), Toast.LENGTH_LONG).show();
-
         if (intent != null && intent.getAction().equals(ACTION_RECORD_SERVICE_START)) {
             doStart(intent, startId);
             return START_STICKY;
@@ -133,20 +129,25 @@ public class RunRecordService extends Service implements AMapLocationListener {
 
         if (client != null) {
             client.onDestroy();
+            client = null;
         }
         client = new AMapLocationClient(this);
         client.setLocationListener(this);
         AMapLocationClientOption option = new AMapLocationClientOption();
         option.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
         option.setOnceLocation(false);
-        option.setOnceLocationLatest(true);
+        option.setLocationCacheEnable(false);
         // option.setGpsFirst(true);
         // option.setMockEnable(false);
         option.setInterval(2000);
         client.setLocationOption(option);
         client.startLocation();
 
-        LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(RunModel.RUN_SERVICE_START_ACTION));
+        Intent broadcast = new Intent(RunModel.RUN_SERVICE_START_ACTION);
+
+        Log.d("RunRecordService", "RunRecordService send action: " + broadcast.getAction());
+
+        LocalBroadcastManager.getInstance(this).sendBroadcast(broadcast);
         RunModel.instance.startRecord();
     }
 
@@ -163,7 +164,6 @@ public class RunRecordService extends Service implements AMapLocationListener {
             client.stopLocation();
             client.onDestroy();
         }
-        RunModel.instance.stopRecord();
 
         try {
             unbindService(connection);
@@ -174,9 +174,17 @@ public class RunRecordService extends Service implements AMapLocationListener {
         // AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
         // am.cancel(intent);
         uploadServiceData();
+        RunModel.instance.stopRecord();
     }
 
     private void uploadServiceData() {
+        if (RunModel.instance.getDistance() <= 10) {
+            Toast.makeText(RunApplication.getAppContex(), "跑步距离太短,本次记录无效", Toast.LENGTH_SHORT).show();
+            sendBroadcast(new Intent(RunMapActivity.RUN_MAP_FINISH_ACTION));
+            stopSelf();
+            return;
+        }
+
         final RunUploadBean bean = new RunUploadBean();
         final String track = getTrack(RunModel.instance.getRecord().tracks);
         SimpleDateFormat format = new SimpleDateFormat("yy-MM-dd hh:mm:ss", Locale.getDefault());
@@ -188,11 +196,15 @@ public class RunRecordService extends Service implements AMapLocationListener {
         bean.total_distance = RunModel.instance.getTotalDistance() / 1000; //上传公里
         bean.position = RunModel.instance.getRecord().position;
 
-        if ((bean.total_distance * 1000) <= 10) {
-            Toast.makeText(RunApplication.getAppContex(), "跑步距离太短,本次记录无效", Toast.LENGTH_SHORT).show();
-            stopSelf();
-            return;
-        }
+        final Intent trackIntent = new Intent(RunRecordService.this, TrackMapActivity.class);
+        trackIntent.putExtra(TrackMapActivity.PARAM_TRACK_TIME, RunModel.instance.getRecordTime());
+        trackIntent.putExtra(TrackMapActivity.PARAM_TRACK_DISTANCE, RunModel.instance.getTotalDistance());
+        trackIntent.putExtra(TrackMapActivity.PARAM_TRACK_CALORIE, RunModel.instance.getCalorie());
+        trackIntent.putExtra(TrackMapActivity.PARAM_TRACK_ARRAY, track);
+        trackIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        LocalBroadcastManager.getInstance(RunRecordService.this).sendBroadcast(
+                new Intent(RunMapActivity.RUN_MAP_FINISH_ACTION));
 
         NetworkManager.instance.getSaveRunRecordObservable(bean)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -208,13 +220,9 @@ public class RunRecordService extends Service implements AMapLocationListener {
 
                         LocalBroadcastManager.getInstance(RunApplication.getAppContex())
                                 .sendBroadcast(new Intent(UserFragment.USER_INFO_CHANGED_ACTION));
-                        Timber.d("hallucination", "trigger");
 
-                        Intent intent1 = new Intent(RunRecordService.this, TrackMapActivity.class);
-                        intent1.putExtra(TrackMapActivity.PARAM_TRACK_RUN_ID, bean.getData().getId());
-                        startActivity(intent1);
-                        LocalBroadcastManager.getInstance(RunRecordService.this).sendBroadcast(
-                                new Intent(RunMapActivity.RUN_MAP_FINISH_ACTION));
+                        trackIntent.putExtra(TrackMapActivity.PARAM_TRACK_RUN_ID, bean.getData().getId());
+                        startActivity(trackIntent);
 
                         return NetworkManager.instance.getUploadTrackObservable(track, bean.getData()
                                 .getId()).subscribeOn(Schedulers.io());
@@ -234,7 +242,7 @@ public class RunRecordService extends Service implements AMapLocationListener {
                 saveModel.setId(System.currentTimeMillis());
                 saveModel.setTrack(track);
                 saveModel.save();
-                Timber.e(throwable.toString());
+                Timber.e("uploadServiceData error :" + throwable.getMessage());
                 stopSelf();
             }
         });

@@ -1,6 +1,7 @@
 package com.runnerfun.xyzrunpackage;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.model.LatLng;
@@ -74,11 +75,14 @@ public class RunModel {
     }
 
     public void startRecord() {
+
+        Log.d("RunModel", "startRecord() is record null: " + (record == null));
+
         if (record == null) {
             record = new RunRecord();
+            record.startTime = System.currentTimeMillis();
         }
         record.state = RUN_STATE_RUNNING;
-        record.startTime = System.currentTimeMillis();
         record.tracks = new ArrayList<>();
     }
 
@@ -147,13 +151,19 @@ public class RunModel {
     }
 
     public void stopRecord() {
-        record.state = RUN_STATE_STOP;
-        record.lastPauseTime = 0;
+        record = null;
         DataSupport.deleteAll(RunRecordDB.class);
+
+        Log.d("RunModel", "stopRecord() record size: " + DataSupport.count(RunRecordDB.class));
     }
 
     private void readCacheRecord() {
-        record = RunRecord.fromRunRecordDB(DataSupport.findFirst(RunRecordDB.class));
+        RunRecordDB db = DataSupport.findFirst(RunRecordDB.class);
+        if (db != null) {
+            record = RunRecord.fromRunRecordDB(db);
+        }
+
+        Log.d("RunModel", "readCacheRecord() is record null: " + (record == null));
     }
 
     public long getStartTime() {

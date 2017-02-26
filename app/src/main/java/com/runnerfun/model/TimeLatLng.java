@@ -3,6 +3,7 @@ package com.runnerfun.model;
 import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.model.LatLng;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import static java.lang.Math.abs;
  * Created by andrie on 2016/12/23.
  */
 
-public class TimeLatLng  {
+public class TimeLatLng implements Serializable {
     public LatLng getLatlnt() {
         return latlnt;
     }

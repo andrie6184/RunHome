@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdate;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
@@ -21,6 +22,7 @@ import com.amap.api.maps.model.PolylineOptions;
 import com.runnerfun.BaseActivity;
 import com.runnerfun.R;
 import com.runnerfun.ShareTargetActivity;
+import com.runnerfun.model.ConfigModel;
 import com.runnerfun.model.TimeLatLng;
 import com.runnerfun.tools.TimeStringUtils;
 
@@ -36,6 +38,10 @@ import butterknife.OnClick;
 public class TrackMapActivity extends BaseActivity {
 
     public static final String PARAM_TRACK_RUN_ID = "TRACK_RUN_ID";
+    public static final String PARAM_TRACK_TIME = "PARAM_TRACK_TIME";
+    public static final String PARAM_TRACK_DISTANCE = "PARAM_TRACK_DISTANCE";
+    public static final String PARAM_TRACK_CALORIE = "PARAM_TRACK_CALORIE";
+    public static final String PARAM_TRACK_ARRAY = "TRACK_ARRAY";
 
     @BindView(R.id.map)
     MapView mMap;
@@ -44,6 +50,7 @@ public class TrackMapActivity extends BaseActivity {
     private BitmapDescriptor start = null;
 
     private String rid;
+    private List<TimeLatLng> points;
     private DecimalFormat decimalFormat = new DecimalFormat("0.000");
 
     @Override
@@ -52,7 +59,14 @@ public class TrackMapActivity extends BaseActivity {
         setContentView(R.layout.activity_track_map);
         ButterKnife.bind(this);
         rid = getIntent().getStringExtra(PARAM_TRACK_RUN_ID);
+        mMap.onCreate(savedInstanceState);
         init();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mMap.onSaveInstanceState(outState);
     }
 
     @Override
@@ -74,6 +88,12 @@ public class TrackMapActivity extends BaseActivity {
     }
 
     private void init() {
+        if (ConfigModel.instance.getmMapType() == 1) {
+            mMap.getMap().setMapType(AMap.MAP_TYPE_SATELLITE);
+        } else if (ConfigModel.instance.getmMapType() == 2) {
+            mMap.getMap().setMapType(AMap.MAP_TYPE_NIGHT);
+        }
+
         stop = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(),
                 R.drawable.zhong));
         start = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(),
@@ -95,22 +115,23 @@ public class TrackMapActivity extends BaseActivity {
         mDisValue.setTypeface(boldTypeFace);
         mTimeValue.setTypeface(boldTypeFace);
 
-        if (RunModel.instance.getState() == RunModel.RUN_STATE_STOP) {
-            showRecord(RunModel.instance.getRecord().tracks);
+        showRecord(points = RunModel.parseTrack2LatLng(getIntent().getStringExtra(PARAM_TRACK_ARRAY)));
+        long time = getIntent().getLongExtra(PARAM_TRACK_TIME, 0);
+        float dis = getIntent().getFloatExtra(PARAM_TRACK_DISTANCE, 0);
+        float cal = getIntent().getFloatExtra(PARAM_TRACK_CALORIE, 0);
 
-            if (RunModel.instance.getRecordTime() > 0 && RunModel.instance.getDistance() > 0) {
-                float seconds = RunModel.instance.getRecordTime() / RunModel.instance.getDistance();
-                int minutes = (int) seconds / 60;
-                String speedShow = String.format(Locale.getDefault(), "%d'%d\"", minutes, (int) (seconds % 60));
-                mSpeedValue.setText(speedShow);
-            } else {
-                mSpeedValue.setText("0'00\"");
-            }
-            String distance = decimalFormat.format(RunModel.instance.getDistance() / 1000);
-            mDisValue.setText("" + distance + "km");
-            mTimeValue.setText(TimeStringUtils.getTime(RunModel.instance.getRecordTime()));
-            mCalValue.setText("" + decimalFormat.format(RunModel.instance.getCalorie() / 1000) + "kcal");
+        if (time > 0 && dis > 0) {
+            float seconds = time / dis;
+            int minutes = (int) seconds / 60;
+            String speedShow = String.format(Locale.getDefault(), "%d'%d\"", minutes, (int) (seconds % 60));
+            mSpeedValue.setText(speedShow);
+        } else {
+            mSpeedValue.setText("0'00\"");
         }
+        String distance = decimalFormat.format(dis / 1000);
+        mDisValue.setText("" + distance + "km");
+        mTimeValue.setText(TimeStringUtils.getTime(time));
+        mCalValue.setText("" + decimalFormat.format(cal / 1000) + "kcal");
     }
 
     @OnClick(R.id.cancel_btn)
@@ -156,11 +177,10 @@ public class TrackMapActivity extends BaseActivity {
     }
 
     private void drawStart() {
-        if (RunModel.instance.getRecord().tracks == null
-                || RunModel.instance.getRecord().tracks.size() == 0) {
+        if (points == null || points.size() == 0) {
             return;
         }
-        LatLng first = RunModel.instance.getRecord().tracks.get(0).getLatlnt();
+        LatLng first = points.get(0).getLatlnt();
         if (first == null) {
             return;
         }
@@ -175,11 +195,10 @@ public class TrackMapActivity extends BaseActivity {
     }
 
     private void drawEnd() {
-        List<TimeLatLng> tracks = RunModel.instance.getRecord().tracks;
-        if (tracks == null || tracks.size() == 0) {
+        if (points == null || points.size() == 0) {
             return;
         }
-        TimeLatLng last = tracks.get(tracks.size() - 1);
+        TimeLatLng last = points.get(points.size() - 1);
         if (last == null) {
             return;
         }
