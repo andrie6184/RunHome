@@ -62,6 +62,8 @@ public class RunRecordService extends Service implements AMapLocationListener {
     private AMapLocationClient client = null;
     private SpeechUtil speech = new SpeechUtil();
 
+    private int ignore = 3;
+
     public RunRecordService() {
         super();
     }
@@ -109,6 +111,7 @@ public class RunRecordService extends Service implements AMapLocationListener {
     }
 
     private void doStart(Intent i0, int startId) {
+        ignore = 3;
         Intent start = new Intent(this, RunDeamonService.class);
         start.setAction(RunDeamonService.ACTION_DEAMON_SERVICE_START);
         startService(start);
@@ -286,6 +289,10 @@ public class RunRecordService extends Service implements AMapLocationListener {
             Timber.d("aMapLocation.getLocationType(): " + aMapLocation.getLocationType());
             Timber.d("aMapLocation.getLatitude(): " + aMapLocation.getLatitude()
                     + "  aMapLocation.getLongitude(): " + aMapLocation.getLongitude());
+        }
+
+        if (--ignore > 0) {
+            return;
         }
 
         if (aMapLocation != null && aMapLocation.getErrorCode() == 0 && aMapLocation.getAccuracy() < 50f
