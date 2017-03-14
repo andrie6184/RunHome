@@ -78,7 +78,7 @@ public class ConfigModel {
 
     public void load(Context c){
         SharedPreferences sp = c.getSharedPreferences("config", Context.MODE_PRIVATE);
-        mHideOnline = sp.getBoolean("hide_onlie", false);
+        mHideOnline = sp.getBoolean("hide_online", false);
         mUserVoice = sp.getBoolean("use_voice", true);
         mMapType = sp.getInt("map_type", 0);
         mCountDownSecond = sp.getInt("second", 3);

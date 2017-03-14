@@ -102,7 +102,7 @@ public class RunModel {
         }
     }
 
-    public void updateRecord(TimeLatLng latLng) {
+    public void updateRecord(TimeLatLng latLng, boolean isCell) {
 
         Timber.d("record.state: " + record.state);
 
@@ -127,7 +127,9 @@ public class RunModel {
                 // TODO check the condition!!!
                 if (dis > 50 && record.lastDistance > 5 && (dis / record.lastDistance > 3)) {
                     return;
-                } else if (latLng.speed(last) < 12.2f) { // TODO maybe 7.2f
+                } else if (latLng.speed(last) < 12.2f && !isCell) { // TODO maybe 7.2f
+                    record.distance += dis;
+                } else if (latLng.speed(last) < 20.2f && isCell) {
                     record.distance += dis;
                 }
                 record.lastDistance = dis;

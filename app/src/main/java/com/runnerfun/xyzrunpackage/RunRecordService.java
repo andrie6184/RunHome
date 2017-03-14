@@ -86,10 +86,11 @@ public class RunRecordService extends Service implements AMapLocationListener {
         if (intent != null && intent.getAction().equals(ACTION_RECORD_SERVICE_START)) {
             doStart(intent, startId);
             return START_STICKY;
-        } else {
+        } else if (intent != null && intent.getAction().equals(ACTION_RECORD_SERVICE_STOP)) {
             doStop();
             return START_STICKY_COMPATIBILITY;
         }
+        return START_NOT_STICKY;
     }
 
     @Override
@@ -181,7 +182,9 @@ public class RunRecordService extends Service implements AMapLocationListener {
     }
 
     private void uploadServiceData() {
-        if (RunModel.instance.getDistance() <= 10) {
+        if (RunModel.instance.getDistance() <= 10 || RunModel.instance.getRecord() == null
+                || RunModel.instance.getRecord().tracks == null
+                || RunModel.instance.getRecord().tracks.size() <= 0) {
             Toast.makeText(RunApplication.getAppContex(), "跑步距离太短,本次记录无效", Toast.LENGTH_SHORT).show();
             sendBroadcast(new Intent(RunMapActivity.RUN_MAP_FINISH_ACTION));
             stopSelf();
@@ -190,7 +193,7 @@ public class RunRecordService extends Service implements AMapLocationListener {
 
         final RunUploadBean bean = new RunUploadBean();
         final String track = getTrack(RunModel.instance.getRecord().tracks);
-        SimpleDateFormat format = new SimpleDateFormat("yy-MM-dd hh:mm:ss", Locale.getDefault());
+        SimpleDateFormat format = new SimpleDateFormat("yy-MM-dd HH:mm:ss", Locale.getDefault());
         bean.startTime = format.format(new Date(RunModel.instance.getStartTime()));
         bean.calorie = RunModel.instance.getCalorie();
         bean.distance = RunModel.instance.getDistance() / 1000; //上传公里
@@ -216,6 +219,10 @@ public class RunRecordService extends Service implements AMapLocationListener {
                         Observable<?>>() {
                     @Override
                     public Observable<?> call(ResponseBean<RunSaveResultBean> bean) {
+                        if (ConfigModel.instance.ismUserVoice()) {
+                            speech.speak(String.format(Locale.getDefault(), "已获得%s里币",
+                                    bean.getData().getCoin()));
+                        }
                         Toast.makeText(RunApplication.getAppContex(), String.format(Locale.getDefault(),
                                 "已获得%s里币", bean.getData().getCoin()), Toast.LENGTH_SHORT).show();
                         ThirdpartAuthManager.setLastRidForShare(bean.getData().getId());
@@ -295,18 +302,28 @@ public class RunRecordService extends Service implements AMapLocationListener {
             return;
         }
 
-        if (aMapLocation != null && aMapLocation.getErrorCode() == 0 && aMapLocation.getAccuracy() < 50f
-                && (aMapLocation.getLocationType() == AMapLocation.LOCATION_TYPE_GPS
-                || aMapLocation.getLocationType() == AMapLocation.LOCATION_TYPE_WIFI
-                || aMapLocation.getLocationType() == AMapLocation.LOCATION_TYPE_CELL)) {
+        if (aMapLocation != null && aMapLocation.getErrorCode() == 0) {
+            if (aMapLocation.getAccuracy() < 50f &&
+                    (aMapLocation.getLocationType() == AMapLocation.LOCATION_TYPE_GPS
+                            || aMapLocation.getLocationType() == AMapLocation.LOCATION_TYPE_WIFI)) {
+                LatLng po = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
+                RunModel.instance.updateRecord(new TimeLatLng(po), false);
 
-            LatLng po = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
-            RunModel.instance.updateRecord(new TimeLatLng(po));
+                if (TextUtils.isEmpty(RunModel.instance.getRecord().position)
+                        && !TextUtils.isEmpty(aMapLocation.getCity())) {
+                    RunModel.instance.getRecord().position = aMapLocation.getCountry()
+                            + aMapLocation.getCity() + aMapLocation.getDistrict();
+                }
+            } else if (aMapLocation.getAccuracy() <= 40f &&
+                    aMapLocation.getLocationType() == AMapLocation.LOCATION_TYPE_CELL) {
+                LatLng po = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
+                RunModel.instance.updateRecord(new TimeLatLng(po), true);
 
-            if (TextUtils.isEmpty(RunModel.instance.getRecord().position)
-                    && !TextUtils.isEmpty(aMapLocation.getCity())) {
-                RunModel.instance.getRecord().position = aMapLocation.getCountry()
-                        + aMapLocation.getCity() + aMapLocation.getDistrict();
+                if (TextUtils.isEmpty(RunModel.instance.getRecord().position)
+                        && !TextUtils.isEmpty(aMapLocation.getCity())) {
+                    RunModel.instance.getRecord().position = aMapLocation.getCountry()
+                            + aMapLocation.getCity() + aMapLocation.getDistrict();
+                }
             }
         }
 

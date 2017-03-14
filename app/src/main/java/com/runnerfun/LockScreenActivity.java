@@ -73,7 +73,7 @@ public class LockScreenActivity extends BaseActivity {
         underView.mHandler = new Handler();
         underView.mActivity = this;
 
-        Intent intent = new Intent(this, RunRecordService.class);
+        Intent intent = new Intent(this, RecordService.class);
         bindService(intent, mConnection, BIND_AUTO_CREATE);
     }
 
@@ -141,7 +141,7 @@ public class LockScreenActivity extends BaseActivity {
     @OnClick(R.id.stop_btn)
     void onStopClicked(View view) {
         unbindService(mConnection);
-        RunRecordService.stopRun(this);
+        // RunRecordService.stopRun(this);
         finish();
     }
 
