@@ -69,6 +69,7 @@ public class RunStateFragment extends Fragment {
     private LocalBroadcastManager mLocalManager;
     private UserCoinReceiver mReceiver;
 
+    private DecimalFormat disFormat = new DecimalFormat("0.00");
     private DecimalFormat decimalFormat = new DecimalFormat("0.000");
     private SpeechUtil mSpeechUtil = new SpeechUtil();
 
@@ -279,7 +280,7 @@ public class RunStateFragment extends Fragment {
 
     private void refreshResult() {
         mClockView.setText(TimeStringUtils.getTime(RunModel.instance.getRecordTime()));
-        mKmValue.setText(decimalFormat.format(RunModel.instance.getDistance() / 1000));
+        mKmValue.setText(disFormat.format(RunModel.instance.getDistance() / 1000));
         mKaclValue.setText(UITools.numberFormat(RunModel.instance.getCalorie() / 1000));
 
         if (RunModel.instance.getRecordTime() > 0 && RunModel.instance.getDistance() > 0) {

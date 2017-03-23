@@ -256,7 +256,6 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
     }
 
     private void pause() {
-        //TODO: resume
         if (RecordModel.instance.isRecording()) {
             RecordService.pauseRecord(this);
             mPauseBtn.setText("继续");
@@ -267,7 +266,6 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
     }
 
     private void stop() {
-        //TODO: start
         RecordService.stopRecord(this);
         mPanelWidget.setVisibility(View.GONE);
         // mShareView.setVisibility(View.VISIBLE);
@@ -381,17 +379,22 @@ public class MapActivity extends BaseActivity implements AMapLocationListener,
             return;
         }
 
-        TimeLatLng start = records.get(0);
+        // TimeLatLng start = records.get(0);
         PolylineOptions po = new PolylineOptions();
         List<Integer> colors = new ArrayList<>();
+        int count = 0;
         for (TimeLatLng ll : records) {
+            if (records.size() > 2000 && count % 3 != 0) {
+                continue;
+            }
             if (ll.getSpeed() > (12.2f / 1000f)) {
                 colors.add(Color.RED);
             } else {
                 colors.add(Color.GREEN);
             }
+            count++;
         }
-//        po.useGradient(true);
+        // po.useGradient(true);
         po.colorValues(colors);
         po.addAll(TimeLatLng.toLatLngList(records));
         po.width(10f);

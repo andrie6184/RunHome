@@ -9,6 +9,7 @@ import android.webkit.CookieSyncManager;
 
 import com.avos.avoscloud.AVAnalytics;
 import com.avos.avoscloud.AVOSCloud;
+//import com.runnerfun.mock.LogToFile;
 import com.runnerfun.model.ConfigModel;
 import com.squareup.picasso.Picasso;
 
@@ -72,6 +73,9 @@ public class RunApplication extends Application {
         JPushInterface.setDebugMode(true);
         JPushInterface.init(this);
         JPushInterface.stopCrashHandler(this); //close crash report, duplicate with LeanCloud.
+
+        // init log writer.
+        // LogToFile.init(this);
     }
 
 }

@@ -51,6 +51,7 @@ public class TrackMapActivity extends BaseActivity {
 
     private String rid;
     private List<TimeLatLng> points;
+    private DecimalFormat disFormat = new DecimalFormat("0.00");
     private DecimalFormat decimalFormat = new DecimalFormat("0.000");
 
     @Override
@@ -128,10 +129,10 @@ public class TrackMapActivity extends BaseActivity {
         } else {
             mSpeedValue.setText("0'00\"");
         }
-        String distance = decimalFormat.format(dis / 1000);
+        String distance = disFormat.format(dis / 1000);
         mDisValue.setText("" + distance + "km");
         mTimeValue.setText(TimeStringUtils.getTime(time));
-        mCalValue.setText("" + decimalFormat.format(cal / 1000) + "kcal");
+        mCalValue.setText("" + decimalFormat.format(cal) + "kcal");
     }
 
     @OnClick(R.id.cancel_btn)

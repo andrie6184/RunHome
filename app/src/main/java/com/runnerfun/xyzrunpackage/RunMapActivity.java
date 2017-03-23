@@ -70,6 +70,7 @@ public class RunMapActivity extends BaseActivity implements AMapLocationListener
     private AMapLocationClient client = null;
 
     private Subscription timer = null;
+    private DecimalFormat disFormat = new DecimalFormat("0.00");
     private DecimalFormat decimalFormat = new DecimalFormat("0.000");
 
     private BitmapDescriptor run = null;
@@ -163,8 +164,6 @@ public class RunMapActivity extends BaseActivity implements AMapLocationListener
         stop = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(),
                 R.drawable.zhong));
 
-        Log.d("RunMapActivity", "init() state " + RunModel.instance.getState());
-
         if (RunModel.instance.getState() == RunModel.RUN_STATE_STOP) {
             mPanelWidget.setVisibility(View.GONE);
             client.startLocation();
@@ -202,9 +201,6 @@ public class RunMapActivity extends BaseActivity implements AMapLocationListener
 
     @Override
     public void onRecordChange(TimeLatLng ll) {
-
-        Log.d("RunMapActivity", "onRecordChange(): " + ll.getTime());
-
         drawLines(RunModel.instance.getRecord().tracks);
         // zoom(mMap.getMap().getCameraPosition().zoom)
         CameraUpdate c = CameraUpdateFactory.newCameraPosition(CameraPosition.builder()
@@ -268,9 +264,6 @@ public class RunMapActivity extends BaseActivity implements AMapLocationListener
     }
 
     private void updateRecordValue() {
-
-        Log.d("RunMapActivity", "updateRecordValue() recordTime: " + RunModel.instance.getRecordTime());
-
         if (RunModel.instance.getRecordTime() > 0 && RunModel.instance.getDistance() > 0) {
             float seconds = RunModel.instance.getRecordTime() / RunModel.instance.getDistance();
             int minutes = (int) seconds / 60;
@@ -279,10 +272,10 @@ public class RunMapActivity extends BaseActivity implements AMapLocationListener
         } else {
             mSpeedValue.setText("0'00\"");
         }
-        String distance = decimalFormat.format(RunModel.instance.getDistance() / 1000);
+        String distance = disFormat.format(RunModel.instance.getDistance() / 1000);
         mDisValue.setText("" + distance + "km");
         mTimeValue.setText(TimeStringUtils.getTime(RunModel.instance.getRecordTime()));
-        mCalValue.setText("" + decimalFormat.format(RunModel.instance.getCalorie() / 1000) + "kcal");
+        mCalValue.setText("" + decimalFormat.format(RunModel.instance.getCalorie()) + "kcal");
     }
 
     private void moveTo(LatLng ll) {

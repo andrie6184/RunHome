@@ -1,7 +1,6 @@
 package com.runnerfun.xyzrunpackage;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.model.LatLng;
@@ -9,6 +8,7 @@ import com.google.gson.Gson;
 import com.runnerfun.RunApplication;
 import com.runnerfun.UserFragment;
 import com.runnerfun.beans.UserInfo;
+//import com.runnerfun.mock.LogToFile;
 import com.runnerfun.model.ConfigModel;
 import com.runnerfun.model.TimeLatLng;
 import com.runnerfun.tools.SpeechUtil;
@@ -76,7 +76,7 @@ public class RunModel {
 
     public void startRecord() {
 
-        Log.d("RunModel", "startRecord() is record null: " + (record == null));
+        // Log.d("RunModel", "startRecord() is record null: " + (record == null));
 
         if (record == null) {
             record = new RunRecord();
@@ -104,7 +104,7 @@ public class RunModel {
 
     public void updateRecord(TimeLatLng latLng, boolean isCell) {
 
-        Timber.d("record.state: " + record.state);
+        // Timber.d("record.state: " + record.state);
 
         if (record.state == RUN_STATE_STOP) {
             return;
@@ -122,7 +122,9 @@ public class RunModel {
                 TimeLatLng last = record.tracks.get(record.tracks.size() - 1);
                 float dis = AMapUtils.calculateLineDistance(latLng.getLatlnt(), last.getLatlnt());
 
-                Timber.d("dis: " + dis + " record.lastDistance: " + record.lastDistance);
+                String log1 = "dis: " + dis + " record.lastDistance: " + record.lastDistance;
+                Timber.d(log1);
+                // LogToFile.d("updateRecord", log1);
 
                 // TODO check the condition!!!
                 if (dis > 50 && record.lastDistance > 5 && (dis / record.lastDistance > 3)) {
@@ -135,12 +137,17 @@ public class RunModel {
                 record.lastDistance = dis;
                 record.totalDistance += dis;
 
-                Timber.d("record.lastDistance: " + record.lastDistance + " record.totalDistance: " + record.totalDistance);
+                String log2 = "record.lastDistance: " + record.lastDistance + " record.totalDistance: "
+                        + record.totalDistance;
+                Timber.d(log2);
+                // LogToFile.d("updateRecord", log2);
 
                 record.calorie = weight * (record.distance / 1000f) * 1.036f;
                 record.tracks.add(latLng);
 
-                Timber.d("record.tracks.size(): " + record.tracks.size());
+                String log3 = "record.tracks.size(): " + record.tracks.size();
+                Timber.d(log3);
+                // LogToFile.d("updateRecord", log3);
             }
             // save to database.
             DataSupport.deleteAll(RunRecordDB.class);
@@ -156,7 +163,7 @@ public class RunModel {
         record = null;
         DataSupport.deleteAll(RunRecordDB.class);
 
-        Log.d("RunModel", "stopRecord() record size: " + DataSupport.count(RunRecordDB.class));
+        // Log.d("RunModel", "stopRecord() record size: " + DataSupport.count(RunRecordDB.class));
     }
 
     private void readCacheRecord() {
@@ -165,7 +172,7 @@ public class RunModel {
             record = RunRecord.fromRunRecordDB(db);
         }
 
-        Log.d("RunModel", "readCacheRecord() is record null: " + (record == null));
+        // Log.d("RunModel", "readCacheRecord() is record null: " + (record == null));
     }
 
     public long getStartTime() {

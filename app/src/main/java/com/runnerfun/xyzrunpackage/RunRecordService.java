@@ -29,6 +29,7 @@ import com.runnerfun.beans.ResponseBean;
 import com.runnerfun.beans.RunSaveResultBean;
 import com.runnerfun.beans.RunUploadBean;
 import com.runnerfun.beans.RunUploadDB;
+//import com.runnerfun.mock.LogToFile;
 import com.runnerfun.model.ConfigModel;
 import com.runnerfun.model.TimeLatLng;
 import com.runnerfun.network.NetworkManager;
@@ -290,20 +291,22 @@ public class RunRecordService extends Service implements AMapLocationListener {
 
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
-        if (aMapLocation != null) {
-            Timber.d("aMapLocation.getErrorCode(): " + aMapLocation.getErrorCode());
-            Timber.d("aMapLocation.getAccuracy(): " + aMapLocation.getAccuracy());
-            Timber.d("aMapLocation.getLocationType(): " + aMapLocation.getLocationType());
-            Timber.d("aMapLocation.getLatitude(): " + aMapLocation.getLatitude()
-                    + "  aMapLocation.getLongitude(): " + aMapLocation.getLongitude());
-        }
-
         if (--ignore > 0) {
             return;
         }
 
+        /*if (aMapLocation != null) {
+            StringBuffer log = new StringBuffer("aMapLocation.getErrorCode(): ");
+            log.append(aMapLocation.getErrorCode());
+            log.append("  aMapLocation.getAccuracy(): ").append(aMapLocation.getAccuracy());
+            log.append("  aMapLocation.getLocationType(): ").append(aMapLocation.getLocationType());
+            log.append("  aMapLocation.getLatitude(): ").append(aMapLocation.getLatitude());
+            log.append("  aMapLocation.getLongitude(): ").append(aMapLocation.getLongitude()).append("/r/n");
+            LogToFile.d("onLocationChanged", log.toString());
+        }*/
+
         if (aMapLocation != null && aMapLocation.getErrorCode() == 0) {
-            if (aMapLocation.getAccuracy() < 50f &&
+            if (aMapLocation.getAccuracy() < 40f &&
                     (aMapLocation.getLocationType() == AMapLocation.LOCATION_TYPE_GPS
                             || aMapLocation.getLocationType() == AMapLocation.LOCATION_TYPE_WIFI)) {
                 LatLng po = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
@@ -314,8 +317,9 @@ public class RunRecordService extends Service implements AMapLocationListener {
                     RunModel.instance.getRecord().position = aMapLocation.getCountry()
                             + aMapLocation.getCity() + aMapLocation.getDistrict();
                 }
-            } else if (aMapLocation.getAccuracy() <= 40f &&
-                    aMapLocation.getLocationType() == AMapLocation.LOCATION_TYPE_CELL) {
+            } else if (aMapLocation.getAccuracy() <= 25f &&
+                    aMapLocation.getLocationType() != AMapLocation.LOCATION_TYPE_GPS
+                    && aMapLocation.getLocationType() != AMapLocation.LOCATION_TYPE_WIFI) {
                 LatLng po = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
                 RunModel.instance.updateRecord(new TimeLatLng(po), true);
 
